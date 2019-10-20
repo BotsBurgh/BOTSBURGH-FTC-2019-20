@@ -1,18 +1,18 @@
 /*
-Copyright 2019 FIRST Tech Challenge Team 11792
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
-associated documentation files (the "Software"), to deal in the Software without restriction,
-including without limitation the rights to use, copy, modify, merge, publish, distribute,
-sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-The above copyright notice and this permission notice shall be included in all copies or substantial
-portions of the Software.
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
-NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-*/
+ * Copyright 2019 FIRST Tech Challenge Team 11792
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+ * associated documentation files (the "Software"), to deal in the Software without restriction,
+ * including without limitation the rights to use, copy, modify, merge, publish, distribute,
+ * sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * The above copyright notice and this permission notice shall be included in all copies or substantial
+ * portions of the Software.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
+ * NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 
 package org.firstinspires.ftc.teamcode;
 
@@ -32,6 +32,7 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.hardware.LightSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
@@ -52,6 +53,9 @@ public class Sensor {
     private static final double RED_THESH =   30;
     private static final double GREEN_THESH = 50;
     private static final double BLUE_THESH =  40;
+
+    // Light sensor configuration
+    private static final double LIGHT_THRESH = 20;
 
     // TODO: Initialize more sensors
     BNO055IMU gyro; // Initializes gyroscope
@@ -88,15 +92,28 @@ public class Sensor {
         this.cd_color = cd;
         this.cd_dist  = cd2;
     }
-    public String getRGB() {
+
+    public double getLight() {
+        return (cd_color.red() + cd_color.blue() + cd_color.green()) / 3.0;
+    }
+
+    public boolean getDark() {
+        return (getLight() < LIGHT_THRESH);
+    }
+
+    /**
+     * Gets the RGB value of the color sensor
+     * @return 0 if red, 1 if green, 2 if blue, 3 if none
+     */
+    public int getRGB() {
         if ((cd_color.red()>cd_color.blue()) && (cd_color.red()>cd_color.green()) && cd_color.red()>RED_THESH) {
-            return "red";
+            return 0;
         } else if ((cd_color.green()>cd_color.red()) && (cd_color.green()>cd_color.blue()) && cd_color.red()>GREEN_THESH) {
-            return "green";
+            return 1;
         } else if ((cd_color.blue()>cd_color.red()) && (cd_color.blue()>cd_color.green()) && cd_color.red()>BLUE_THESH) {
-            return "blue";
+            return 2;
         } else {
-            return "grey";
+            return 3;
         }
     }
 
