@@ -28,22 +28,21 @@ import com.qualcomm.robotcore.util.Range;
 @TeleOp(name="Scissor Lift")
 public class ScissorLift extends LinearOpMode {
     // Declare variables
-    private static final double ELEVATOR_THRESH = 0.6;
+    private static final double ELEVATOR_THRESH = 0.75;
     private static final int CYCLE_MS = 50;
-    private double elevator_speed;
+    private double elevatorSpeed;
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor scissorlift;
-    private Sensor scissorcolor;
-    private boolean direction, switched; // True for up, false for down
-
+    private DcMotor scissorLift;
+    private Sensor scissorDownLimit, scissorUpLimit; // UpLimit prevents the scissor lift from going
+                                                    // up, and DownLimit is the opposite.
+    private double sul, sud;
     @Override
     public void runOpMode() {
-        scissorlift = hardwareMap.get(DcMotor.class, "scissorlift");
-        scissorcolor = new Sensor(hardwareMap.get(ColorSensor.class, "scissorcolor"));
+        scissorLift = hardwareMap.get(DcMotor.class, "scissorLift");
+        scissorDownLimit = new Sensor(hardwareMap.get(ColorSensor.class, "scissorDownLimit"));
+        scissorUpLimit = new Sensor(hardwareMap.get(ColorSensor.class, "scissorUpLimit"));
 
-        direction = true; // Because we start at the bottom (without the lift extended)
-        switched = false;
-        elevator_speed = 0;
+        elevatorSpeed = 0;
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -54,44 +53,39 @@ public class ScissorLift extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            if (scissorcolor.getRGB() == 0) {
-                if (direction == true && !switched) {
-                    direction = false; switched = true;
-                } else if (direction == false && !switched) {
-                    direction = true; switched = true;
-                }
-
-                telemetry.addData("Can Go UP", direction == true);
+            sul = scissorUpLimit.getRGB();
+            sud = scissorDownLimit.getRGB();
+            // Check if the limit switch is hit either way, and set the movable direction.
+            if ((sul == 0) && (gamepad2.left_stick_y < 0.1)) {
+                // If we cannot go up, and the user tries to go up, we don't allow that to happen.
+                elevatorSpeed = 0;
+            } else if ((sud == 0) && (gamepad2.left_stick_y > 0.1)) {
+                // If we cannot go down, and the user tries to go down, we don't allow that to happen.
+                elevatorSpeed = 0;
+            } else if (Math.abs(gamepad2.left_stick_y) > 0.1){
+                // If the user moves the stick more than 10%, and none of the other conditions are fulfilled, we allow the scissor lift to move
+                elevatorSpeed = gamepad2.left_stick_y;
             } else {
-                switched = false;
-            }
-
-            if ((gamepad2.left_stick_y > 0 && direction == false) || gamepad2.left_stick_y < 0 && direction == true) {
-                elevator_speed = 0;
-            } else {
-                elevator_speed = gamepad2.left_stick_y;
-            }
-
-            // Let User manually change direction
-            if (gamepad2.a) {
-                direction = true;
-            } else if (gamepad2.b) {
-                direction = false;
+                // If the user is not doing anything, we don't allow the scissor lift to move
+                elevatorSpeed = 0;
             }
 
             // Display the current value
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Motor Power", "%5.2f", elevator_speed * ELEVATOR_THRESH);
-            telemetry.addData("Direction", direction);
+            telemetry.addData("Motor Power", "%5.2f", elevatorSpeed * ELEVATOR_THRESH);
+            telemetry.addData("Up Limit", sul);
+            //telemetry.addData("Up Red", scissorUpLimit.getRed());
+            telemetry.addData("Down Limit", sud);
+            //telemetry.addData("Down Red", scissorDownLimit.getRed());
             telemetry.addData(">", "Press Stop to end test." );
             telemetry.update();
 
             // Set the motor to the new power and pause;
-            scissorlift.setPower(elevator_speed * ELEVATOR_THRESH);
+            scissorLift.setPower(elevatorSpeed * ELEVATOR_THRESH);
             sleep(CYCLE_MS);
             idle();
         }
-        scissorlift.setPower(0);
+        scissorLift.setPower(0);
 
         telemetry.addData(">", "Done");
         telemetry.update();

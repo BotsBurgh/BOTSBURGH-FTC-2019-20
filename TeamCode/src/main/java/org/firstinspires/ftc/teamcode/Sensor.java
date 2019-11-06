@@ -117,6 +117,18 @@ public class Sensor {
         }
     }
 
+    public int getRed() {
+        return cd_color.red();
+    }
+
+    public int getGreen() {
+        return cd_color.green();
+    }
+
+    public int getBlue() {
+        return cd_color.blue();
+    }
+
     Sensor(DigitalChannel button) {
         this.button = button;
         button.setMode(DigitalChannel.Mode.INPUT);
