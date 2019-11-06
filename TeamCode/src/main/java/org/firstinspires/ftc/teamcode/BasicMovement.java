@@ -19,7 +19,6 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -40,6 +39,12 @@ public class BasicMovement extends LinearOpMode {
         lb = hardwareMap.get(DcMotor.class, "lb");
         //rf  = hardwareMap.get(DcMotor.class, "rf");
         rb = hardwareMap.get(DcMotor.class, "rb");
+
+        // Setup a variable for each drive wheel to save power level for telemetry
+        double leftPower;
+        double rightPower;
+
+        double mod;
 
         //base = new Movement(lf, rf, lb, rb);
         base = new Movement(lb, rb);
@@ -62,13 +67,6 @@ public class BasicMovement extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-
-            // Setup a variable for each drive wheel to save power level for telemetry
-            double leftPower;
-            double rightPower;
-
-            double mod;
-
             // Adjust speed based on the bumpers. Idea from Robotic Doges
             if (gamepad1.left_bumper) {
                 mod = 1;
