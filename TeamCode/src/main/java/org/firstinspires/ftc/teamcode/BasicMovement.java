@@ -35,7 +35,7 @@ public class BasicMovement extends LinearOpMode {
     private DcMotor scissorLift;
     private Sensor scissorDownLimit, scissorUpLimit; // UpLimit prevents the scissor lift from going
                                                      // up, and DownLimit is the opposite.
-    private double sul, sud;
+    private double sul, sud; // Sensor up limit and down limit. Stores color values from sensors
 
     private long count = 0;
 
@@ -62,8 +62,11 @@ public class BasicMovement extends LinearOpMode {
         lb.setDirection(DcMotor.Direction.REVERSE);
         rb.setDirection(DcMotor.Direction.FORWARD);
 
+        lb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         scissorDownLimit = new Sensor(hardwareMap.get(ColorSensor.class, "scissorDownLimit"));
-        scissorUpLimit = new Sensor(hardwareMap.get(ColorSensor.class, "scissorUpLimit"));
+        scissorUpLimit   = new Sensor(hardwareMap.get(ColorSensor.class, "scissorUpLimit"));
 
         elevatorSpeed = 0;
 
