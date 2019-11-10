@@ -48,23 +48,16 @@ public class Movement {
     private int SLEEP_MS = 100; // For scanning the servo
 
     // Arm configuration
-    final private static double ARM_POWER     = 0.1;  // Base power sent to arm. Will be adjusted.
-    final private static double EXTEND_POWER  = 0.6;  // Extending power/speed
-    final private static int    EXTEND_TIC    = 2000; // Extend distance (in tics)
-    final private static double ARM_MAX       = 90.0; // The degrees that the arm is at it's maximum angle
-    final private static double ARM_MIN       = 0.0;  // The degrees that the arm is at it's minimum angle
-    final private static double FREEZE_THRESH = 5.0;  // The play in the arm (for preventing it from moving)
-    final private static double FREEZE_STEP   = 0.0001; // The step value for the arm freezing
+    final private static double ELEVATOR_THRESH = 0.75;
 
-    private double ARM_SERVO = 1; // The range of the servos in the arm
-    private DcMotor motorFL, motorFR, motorBL, motorBR;
+
+    private DcMotor motorFL, motorFR, motorBL, motorBR, elevator;
     private BNO055IMU gyro;
     private Servo s1, s2;
     private CRServo wheel;
-    private DcMotor armTilt, armExtend;
 
     /**
-     * Initialize the class with driving functionality
+     * Initialize the class with full autonomous driving functionality
      * @param motorFL The front left motor
      * @param motorFR The front right motor
      * @param motorBL The back left motor
@@ -72,13 +65,20 @@ public class Movement {
      * @param gyro The BNO055IMU gyroscope
      */
     Movement(DcMotor motorFL, DcMotor motorFR, DcMotor motorBL, DcMotor motorBR, BNO055IMU gyro) {
-        this.motorFL   = motorFL;
-        this.motorFR   = motorFR;
-        this.motorBL   = motorBL;
-        this.motorBR   = motorBR;
-        this.gyro      = gyro;
+        this.motorFL = motorFL;
+        this.motorFR = motorFR;
+        this.motorBL = motorBL;
+        this.motorBR = motorBR;
+        this.gyro = gyro;
     }
 
+    /**
+     * Initialize the class with only individual motor functionality
+     * @param motorFL
+     * @param motorFR
+     * @param motorBL
+     * @param motorBR
+     */
     Movement(DcMotor motorFL, DcMotor motorFR, DcMotor motorBL, DcMotor motorBR) {
         this.motorFL   = motorFL;
         this.motorFR   = motorFR;
@@ -86,20 +86,27 @@ public class Movement {
         this.motorBR   = motorBR;
     }
 
+    /**
+     * Initialize the class with only two sides' functionality
+     * @param motorL
+     * @param motorR
+     */
     Movement(DcMotor motorL, DcMotor motorR) {
         this.motorBL   = motorL;
         this.motorBR   = motorR;
     }
 
     /**
-     * Initialize the class with just the lower arm functionality
-     * @param armTilt The motor moving the arm
-     * @param armExtend The motor extending the arm
+     * Initialize the class with the two sides and the elevator functionality
+     * @param motorL
+     * @param motorR
+     * @param elevator
      */
-    //Movement(DcMotor armTilt, DcMotor armExtend) {
-    //    this.armTilt = armTilt;
-    //    this.armExtend = armExtend;
-    //}
+    Movement(DcMotor motorL, DcMotor motorR, DcMotor elevator) {
+        this.motorBL   = motorL;
+        this.motorBR   = motorR;
+        this.elevator  = elevator;
+    }
 
     /**
      * Initialize the class with just the upper arm functionality
@@ -209,7 +216,7 @@ public class Movement {
      * @param blPower Power to the back left wheel
      * @param brPower Power to the back right wheel
      */
-    public void quadMove(double flPower, double frPower, double blPower, double brPower) {
+    public void move4x4(double flPower, double frPower, double blPower, double brPower) {
         motorFL.setPower(flPower);
         motorFR.setPower(frPower);
         motorBL.setPower(blPower);
@@ -217,6 +224,11 @@ public class Movement {
         //if ((flPower > 0) && ()
     }
 
+    /**
+     * Move the base with four motors based on individual sides, not wheels
+     * @param lPower Power to the left side
+     * @param rPower Power to the right side
+     */
     public void move2x4(double lPower, double rPower) {
         motorFL.setPower(lPower);
         motorFR.setPower(rPower);
@@ -224,16 +236,14 @@ public class Movement {
         motorBR.setPower(rPower);
     }
 
+    /**
+     * Move the base with two motors and two values
+     * @param lPower Power sent to back left motor
+     * @param rPower Power sent to back right motor
+     */
     public void move2x2(double lPower, double rPower) {
         motorBL.setPower(lPower);
         motorBR.setPower(rPower);
-    }
-
-    public void armTilt(double degrees) {
-        armTilt.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        int target = (int)((27.0*degrees)/28.0);
-        armTilt.setTargetPosition(target);
-        armTilt.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
     /**
@@ -243,6 +253,14 @@ public class Movement {
     public void armIntake(double speed) {
         wheel.setPower(speed);
 
+    }
+
+    /**
+     * Moves the elevator up and down, depending on the power sent to the motor. Subject to threshold
+     * @param speed
+     */
+    public void moveElevator(double speed) {
+        elevator.setPower(speed*ELEVATOR_THRESH);
     }
 
     //----------------------------------------------------------------------------------------------

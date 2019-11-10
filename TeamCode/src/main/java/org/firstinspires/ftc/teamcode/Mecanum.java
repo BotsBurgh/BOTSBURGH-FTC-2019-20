@@ -77,7 +77,7 @@ public class Mecanum extends LinearOpMode {
             double blPower = Range.clip((y1 + x1 - rotation), -.8, .8);
             double brPower = Range.clip((y1 - x1 + rotation), -.8, .8);
 
-            movement.quadMove(flPower, frPower, blPower, brPower);
+            movement.move4x4(flPower, frPower, blPower, brPower);
 
             telemetry.addData("Back Left", motorBL.getCurrentPosition());
             telemetry.addData("Back Right", motorBR.getCurrentPosition());

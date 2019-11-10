@@ -18,6 +18,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -29,16 +30,21 @@ public class BasicMovement extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor lf, lb, rf, rb;
     Movement base;
+    // Declare variables
+    private double elevatorSpeed;
+    private DcMotor scissorLift;
+    private Sensor scissorDownLimit, scissorUpLimit; // UpLimit prevents the scissor lift from going
+                                                     // up, and DownLimit is the opposite.
+    private double sul, sud;
 
     @Override
     public void runOpMode() {
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        //lf  = hardwareMap.get(DcMotor.class, "lf");
         lb = hardwareMap.get(DcMotor.class, "lb");
-        //rf  = hardwareMap.get(DcMotor.class, "rf");
         rb = hardwareMap.get(DcMotor.class, "rb");
+        scissorLift = hardwareMap.get(DcMotor.class, "scissorLift");
 
         // Setup a variable for each drive wheel to save power level for telemetry
         double leftPower;
@@ -47,14 +53,17 @@ public class BasicMovement extends LinearOpMode {
         double mod;
 
         //base = new Movement(lf, rf, lb, rb);
-        base = new Movement(lb, rb);
+        base = new Movement(lb, rb, scissorLift);
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
-        //lf.setDirection(DcMotor.Direction.FORWARD);
         lb.setDirection(DcMotor.Direction.REVERSE);
-        //rf.setDirection(DcMotor.Direction.REVERSE);
         rb.setDirection(DcMotor.Direction.FORWARD);
+
+        scissorDownLimit = new Sensor(hardwareMap.get(ColorSensor.class, "scissorDownLimit"));
+        scissorUpLimit = new Sensor(hardwareMap.get(ColorSensor.class, "scissorUpLimit"));
+
+        elevatorSpeed = 0;
 
         //lf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
@@ -91,9 +100,32 @@ public class BasicMovement extends LinearOpMode {
             // leftPower  = -gamepad1.left_stick_y ;
             // rightPower = -gamepad1.right_stick_y ;
 
+            sul = scissorUpLimit.getRGB();
+            sud = scissorDownLimit.getRGB();
+            // Check if the limit switch is hit either way, and set the movable direction.
+            if ((sul == 0) && (gamepad2.left_stick_y < 0.1)) {
+                // If we cannot go up, and the user tries to go up, we don't allow that to happen.
+                elevatorSpeed = 0;
+            } else if ((sud == 0) && (gamepad2.left_stick_y > 0.1)) {
+                // If we cannot go down, and the user tries to go down, we don't allow that to happen.
+                elevatorSpeed = 0;
+            } else if (Math.abs(gamepad2.left_stick_y) > 0.1){
+                // If the user moves the stick more than 10%, and none of the other conditions are fulfilled, we allow the scissor lift to move
+                elevatorSpeed = gamepad2.left_stick_y;
+            } else {
+                // If the user is not doing anything, we don't allow the scissor lift to move
+                elevatorSpeed = 0;
+            }
+
             // Send calculated power to wheels
             base.move2x2(leftPower, rightPower);
+            base.moveElevator(elevatorSpeed);
 
+            // Display the current value(s)
+            telemetry.addData("Status", "Run Time: " + runtime.toString());
+            telemetry.addData("Motor Power", "%5.2f", elevatorSpeed);
+            telemetry.addData("Up Limit", sul);
+            telemetry.addData("Down Limit", sud);
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
