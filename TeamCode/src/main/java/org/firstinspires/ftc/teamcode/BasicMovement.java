@@ -37,6 +37,8 @@ public class BasicMovement extends LinearOpMode {
                                                      // up, and DownLimit is the opposite.
     private double sul, sud;
 
+    private long count = 0;
+
     @Override
     public void runOpMode() {
         // Initialize the hardware variables. Note that the strings used here as parameters
@@ -64,6 +66,9 @@ public class BasicMovement extends LinearOpMode {
         scissorUpLimit = new Sensor(hardwareMap.get(ColorSensor.class, "scissorUpLimit"));
 
         elevatorSpeed = 0;
+
+        sul = 3;
+        sud = 3;
 
         //lf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
@@ -100,8 +105,11 @@ public class BasicMovement extends LinearOpMode {
             // leftPower  = -gamepad1.left_stick_y ;
             // rightPower = -gamepad1.right_stick_y ;
 
-            sul = scissorUpLimit.getRGB();
-            sud = scissorDownLimit.getRGB();
+            if (count % 10 == 0) {
+                sul = scissorUpLimit.getRGB();
+                sud = scissorDownLimit.getRGB();
+            }
+
             // Check if the limit switch is hit either way, and set the movable direction.
             if ((sul == 0) && (gamepad2.left_stick_y < 0.1)) {
                 // If we cannot go up, and the user tries to go up, we don't allow that to happen.
@@ -130,6 +138,7 @@ public class BasicMovement extends LinearOpMode {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
             telemetry.update();
+            count++;
         }
     }
 }
