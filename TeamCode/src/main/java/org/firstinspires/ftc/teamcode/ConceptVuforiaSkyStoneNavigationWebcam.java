@@ -29,7 +29,6 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -114,7 +113,7 @@ public class ConceptVuforiaSkyStoneNavigationWebcam extends LinearOpMode {
 
     // Constants for the center support targets
     private static final float bridgeZ = 6.42f * mmPerInch;
-    private static final float bridgeY = 23 * mmPerInch;
+    private static final float bridgeY = 23f   * mmPerInch;
     private static final float bridgeX = 5.18f * mmPerInch;
     private static final float bridgeRotY = 59; // Units are degrees
     private static final float bridgeRotZ = 180;
@@ -137,7 +136,7 @@ public class ConceptVuforiaSkyStoneNavigationWebcam extends LinearOpMode {
     // TODO: We're gonna have to change these in order to account for the upward angle of the camera
     private float phoneXRotate    = 0;
     private float phoneYRotate    = 0;
-    private float phoneZRotate    = 0;
+    private float phoneZRotate    = 9.5f;
 
     @Override public void runOpMode() {
         /*
@@ -304,9 +303,9 @@ public class ConceptVuforiaSkyStoneNavigationWebcam extends LinearOpMode {
         // Next, translate the camera lens to where it is on the robot.
         // In this example, it is centered (left to right), but forward of the middle of the robot, and above ground level.
         // TODO: Find the actual values of these numbers
-        final float CAMERA_FORWARD_DISPLACEMENT  = 8.0f * mmPerInch;   // eg: Camera is 4 Inches in front of robot-center
-        final float CAMERA_VERTICAL_DISPLACEMENT = 2.0f * mmPerInch;   // eg: Camera is 8 Inches above ground
-        final float CAMERA_LEFT_DISPLACEMENT     = 8.0f;     // eg: Camera is ON the robot's center line
+        final float CAMERA_FORWARD_DISPLACEMENT  = 7.88f  * mmPerInch;   // eg: Camera is 4 Inches in front of robot-center
+        final float CAMERA_VERTICAL_DISPLACEMENT = 4.5f   * mmPerInch;   // eg: Camera is 8 Inches above ground
+        final float CAMERA_LEFT_DISPLACEMENT     = 5.625f * mmPerInch;   // eg: Camera is ON the robot's center line
 
         OpenGLMatrix robotFromCamera = OpenGLMatrix
                 .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
