@@ -87,7 +87,7 @@ public class ConceptVuforiaSkyStoneNavigationWebcam extends LinearOpMode {
 
     // IMPORTANT: If you are using a USB WebCam, you must select CAMERA_CHOICE = BACK; and PHONE_IS_PORTRAIT = false;
     private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
-    private static final boolean PHONE_IS_PORTRAIT = false  ;
+    private static final boolean PHONE_IS_PORTRAIT = true; // Set to true because our camera is rotated at 90 degrees
 
     /*
      * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
@@ -107,7 +107,7 @@ public class ConceptVuforiaSkyStoneNavigationWebcam extends LinearOpMode {
     // Since ImageTarget trackables use mm to specifiy their dimensions, we must use mm for all the physical dimension.
     // We will define some constants and conversions here
     private static final float mmPerInch        = 25.4f;
-    private static final float mmTargetHeight   = (6) * mmPerInch;          // the height of the center of the target image above the floor
+    private static final float mmTargetHeight   = (6) * mmPerInch; // the height of the center of the target image above the floor
 
     // Constant for Stone Target
     private static final float stoneZ = 2.00f * mmPerInch;
@@ -116,7 +116,7 @@ public class ConceptVuforiaSkyStoneNavigationWebcam extends LinearOpMode {
     private static final float bridgeZ = 6.42f * mmPerInch;
     private static final float bridgeY = 23 * mmPerInch;
     private static final float bridgeX = 5.18f * mmPerInch;
-    private static final float bridgeRotY = 59;                                 // Units are degrees
+    private static final float bridgeRotY = 59; // Units are degrees
     private static final float bridgeRotZ = 180;
 
     // Constants for perimeter targets
@@ -134,6 +134,7 @@ public class ConceptVuforiaSkyStoneNavigationWebcam extends LinearOpMode {
     WebcamName webcamName = null;
 
     private boolean targetVisible = false;
+    // TODO: We're gonna have to change these in order to account for the upward angle of the camera
     private float phoneXRotate    = 0;
     private float phoneYRotate    = 0;
     private float phoneZRotate    = 0;
@@ -302,6 +303,7 @@ public class ConceptVuforiaSkyStoneNavigationWebcam extends LinearOpMode {
 
         // Next, translate the camera lens to where it is on the robot.
         // In this example, it is centered (left to right), but forward of the middle of the robot, and above ground level.
+        // TODO: Find the actual values of these numbers
         final float CAMERA_FORWARD_DISPLACEMENT  = 8.0f * mmPerInch;   // eg: Camera is 4 Inches in front of robot-center
         final float CAMERA_VERTICAL_DISPLACEMENT = 2.0f * mmPerInch;   // eg: Camera is 8 Inches above ground
         final float CAMERA_LEFT_DISPLACEMENT     = 8.0f;     // eg: Camera is ON the robot's center line
