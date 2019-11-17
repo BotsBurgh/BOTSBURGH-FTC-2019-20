@@ -409,7 +409,7 @@ public class Sensor {
         targetsSkyStone.activate();
     }
 
-    public VectorF getVuforiaPos() {
+    public VectorF getVuforiaPosition() {
         VectorF translation;
         Orientation rotation;
         targetVisible = false;
