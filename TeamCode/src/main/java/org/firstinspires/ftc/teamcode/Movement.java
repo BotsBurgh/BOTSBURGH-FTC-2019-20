@@ -16,6 +16,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 
 package org.firstinspires.ftc.teamcode;
 
+import android.text.method.MovementMethod;
+
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -36,177 +38,54 @@ import java.util.Locale;
 import static android.os.SystemClock.sleep;
 
 /**
- * The Movement class
- *
- * In this class, you can move the robot easily.
- * So far: Move the arm and drive the robot
- * Created by Nitesh and Sambhav
+ * The Movement class. Moves the robot around through multiple functions.
  */
 public class Movement {
     private double TURN_POWER  = 0.4; // How fast to turn
     private double DRIVE_POWER = 0.6; // How fast to drive
-    private int SLEEP_MS = 100; // For scanning the servo
 
     // Elevator configuration
     final private static double ELEVATOR_THRESH = 0.80;
 
-
-    private DcMotor motorFL, motorFR, motorBL, motorBR, elevator;
-    private BNO055IMU gyro;
-    private Servo s1, s2;
-    private CRServo wheel;
-
     /**
-     * Initialize the class with full autonomous driving functionality
-     * @param motorFL The front left motor
-     * @param motorFR The front right motor
-     * @param motorBL The back left motor
-     * @param motorBR The back right motor
-     * @param gyro The BNO055IMU gyroscope
+     ######  #######    #     # ####### #######    ####### ######  ### #######
+     #     # #     #    ##    # #     #    #       #       #     #  #     #
+     #     # #     #    # #   # #     #    #       #       #     #  #     #
+     #     # #     #    #  #  # #     #    #       #####   #     #  #     #
+     #     # #     #    #   # # #     #    #       #       #     #  #     #
+     #     # #     #    #    ## #     #    #       #       #     #  #     #
+     ######  #######    #     # #######    #       ####### ######  ###    #
+
+     ######  ####### #       ####### #     #    ####### #     # ###  #####
+     #     # #       #       #     # #  #  #       #    #     #  #  #     #
+     #     # #       #       #     # #  #  #       #    #     #  #  #
+     ######  #####   #       #     # #  #  #       #    #######  #   #####
+     #     # #       #       #     # #  #  #       #    #     #  #        #
+     #     # #       #       #     # #  #  #       #    #     #  #  #     #
+     ######  ####### ####### #######  ## ##        #    #     # ###  #####
+
+     #       ### #     # #######
+     #        #  ##    # #
+     #        #  # #   # #
+     #        #  #  #  # #####
+     #        #  #   # # #
+     #        #  #    ## #
+     ####### ### #     # #######
+     (Unless if you know what you are doing)
      */
-    Movement(DcMotor motorFL, DcMotor motorFR, DcMotor motorBL, DcMotor motorBR, BNO055IMU gyro) {
-        this.motorFL = motorFL;
-        this.motorFR = motorFR;
-        this.motorBL = motorBL;
-        this.motorBR = motorBR;
-        this.gyro = gyro;
+
+    private DcMotor[] motors;
+    private Servo[] servos;
+    private CRServo[] crservos;
+    
+    public Movement(MovementBuilder b) {
+        this.motors = b.motors;
+        this.servos = b.servos;
+        this.crservos = b.crservos;
     }
 
-    /**
-     * Initialize the class with only individual motor functionality
-     * @param motorFL
-     * @param motorFR
-     * @param motorBL
-     * @param motorBR
-     */
-    Movement(DcMotor motorFL, DcMotor motorFR, DcMotor motorBL, DcMotor motorBR) {
-        this.motorFL   = motorFL;
-        this.motorFR   = motorFR;
-        this.motorBL   = motorBL;
-        this.motorBR   = motorBR;
-    }
-
-    /**
-     * Initialize the class with only two sides' functionality
-     * @param motorL
-     * @param motorR
-     */
-    Movement(DcMotor motorL, DcMotor motorR) {
-        this.motorBL   = motorL;
-        this.motorBR   = motorR;
-    }
-
-    /**
-     * Initialize the class with the two sides and the elevator functionality
-     * @param motorL
-     * @param motorR
-     * @param elevator
-     */
-    Movement(DcMotor motorL, DcMotor motorR, DcMotor elevator) {
-        this.motorBL   = motorL;
-        this.motorBR   = motorR;
-        this.elevator  = elevator;
-    }
-
-    /**
-     * Initialize the class with just the upper arm functionality
-     * @param s1 The servo on the right
-     * @param s2 The servo on the left
-     * @param wl The CRservo on the intake
-     */
-    Movement(Servo s1, Servo s2, CRServo wl) {
-        this.s1 = s1;
-        this.s2 = s2;
-        this.wheel = wl;
-    }
-
-    /**
-     * Moves based on the encoder
-     * @param inches How much to move forward or backward in inches
-     */
-    public void moveEnc(int inches) {
-        motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motorFL.setTargetPosition(inches);
-        motorFR.setTargetPosition(inches);
-        motorBL.setTargetPosition(inches);
-        motorBR.setTargetPosition(inches);
-        motorFL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorFR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorBL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motorBR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        if (inches < 0) {
-            motorFL.setPower(DRIVE_POWER);
-            motorFR.setPower(DRIVE_POWER);
-            motorBL.setPower(DRIVE_POWER);
-            motorBR.setPower(DRIVE_POWER);
-        } else if (inches > 0) {
-            motorFL.setPower(-DRIVE_POWER);
-            motorFR.setPower(-DRIVE_POWER);
-            motorBL.setPower(-DRIVE_POWER);
-            motorBR.setPower(-DRIVE_POWER);
-        } else {
-            motorFL.setPower(0);
-            motorFR.setPower(0);
-            motorBL.setPower(0);
-            motorBR.setPower(0);
-        }
-    }
-
-    /**
-     * Turns the robot with the gyroscope
-     * @param angles Turns the robot with an Orientation object
-     */
-    public void gyroTurn(double angles) {
-        gyro.startAccelerationIntegration(new Position(), new Velocity(), 1000);
-        Orientation current = gyro.getAngularOrientation();
-        if (current.firstAngle > angles) {
-            while (Math.abs(current.firstAngle - angles)>5) {
-                motorFL.setPower(TURN_POWER);
-                motorFR.setPower(-TURN_POWER);
-                motorBL.setPower(TURN_POWER);
-                motorBR.setPower(-TURN_POWER);
-            }
-        } else if (current.firstAngle < angles) {
-            while (Math.abs(current.firstAngle-angles)>5) {
-                motorFL.setPower(-TURN_POWER);
-                motorFR.setPower(TURN_POWER);
-                motorBL.setPower(-TURN_POWER);
-                motorBR.setPower(TURN_POWER);
-            }
-        } else {
-            motorFL.setPower(0);
-            motorFR.setPower(0);
-            motorBL.setPower(0);
-            motorBR.setPower(0);
-        }
-
-    }
-
-    /**
-     * Moves servos based on speed
-     * @param servo The servo to move
-     * @param target The end location
-     * @param speed How fast (percent). Must be positive
-     */
-    public void servoMove(Servo servo, double target, double speed) {
-        double increment = 1.0-Math.abs(speed);
-        double current=servo.getPosition();
-        while (current!=target) {
-            if (current<target) {
-                current+=increment;
-                servo.setPosition(current);
-                sleep(SLEEP_MS);
-            } else if (current>target) {
-                current-=increment;
-                servo.setPosition(current);
-                sleep(SLEEP_MS);
-            } else {
-                break;
-            }
-        }
+    public void moveVuForia() {
+        // TODO. Use Robot class to do this (somehow)
     }
 
     /**
@@ -217,11 +96,10 @@ public class Movement {
      * @param brPower Power to the back right wheel
      */
     public void move4x4(double flPower, double frPower, double blPower, double brPower) {
-        motorFL.setPower(flPower);
-        motorFR.setPower(frPower);
-        motorBL.setPower(blPower);
-        motorBR.setPower(brPower);
-        //if ((flPower > 0) && ()
+        motors[1].setPower(flPower);
+        motors[2].setPower(frPower);
+        motors[3].setPower(blPower);
+        motors[4].setPower(brPower);
     }
 
     /**
@@ -230,10 +108,10 @@ public class Movement {
      * @param rPower Power to the right side
      */
     public void move2x4(double lPower, double rPower) {
-        motorFL.setPower(lPower);
-        motorFR.setPower(rPower);
-        motorBL.setPower(lPower);
-        motorBR.setPower(rPower);
+        motors[1].setPower(lPower);
+        motors[2].setPower(rPower);
+        motors[3].setPower(lPower);
+        motors[4].setPower(rPower);
     }
 
     /**
@@ -242,37 +120,54 @@ public class Movement {
      * @param rPower Power sent to back right motor
      */
     public void move2x2(double lPower, double rPower) {
-        motorBL.setPower(lPower);
-        motorBR.setPower(rPower);
+        motors[3].setPower(lPower);
+        motors[4].setPower(rPower);
     }
 
     /**
-     * The speed of the arm intake. Use continuous rotation servos.
-     * @param speed The speed of the arm intake
-     */
-    public void armIntake(double speed) {
-        wheel.setPower(speed);
-
-    }
-
-    /**
-     * Moves the elevator up and down, depending on the power sent to the motor. Subject to threshold
-     * @param speed
+     * Moves the motors[0] up and down, depending on the power sent to the motor. Subject to threshold
+     * @param speed Speed of the elevator
      */
     public void moveElevator(double speed) {
-        elevator.setPower(speed*ELEVATOR_THRESH);
+        motors[0].setPower(speed*ELEVATOR_THRESH);
     }
 
-    //----------------------------------------------------------------------------------------------
-    // Formatting
-    //----------------------------------------------------------------------------------------------
+    /**
+     * Magic for using a dynamic set of motors. See the README for more information
+     */
+    public static class MovementBuilder {
+        private DcMotor[] motors;
+        private Servo[] servos;
+        private CRServo[] crservos;
 
-    private String formatAngle(AngleUnit angleUnit, double angle) {
-        return formatDegrees(AngleUnit.DEGREES.fromUnit(angleUnit, angle));
+        /**
+         * In this format:
+         * [       Elevator,
+         *  Front Left, Front Right,
+         *  Back Left,  Back Right]
+         *  So, Elevator is id 0
+         *  FL is 1
+         *  FR is 2
+         *  BL is 3
+         *  BR is 4
+         */
+        public MovementBuilder withMotors(DcMotor... m) {
+            this.motors = m;
+            return this;
+        }
+        
+        public MovementBuilder withServos(Servo... s) {
+            this.servos = s;
+            return this;
+        }
+        
+        public MovementBuilder withCRServos(CRServo... c) {
+            this.crservos = c;
+            return this;
+        }
+        
+        public Movement build() {
+            return new Movement(this);
+        }
     }
-
-    private String formatDegrees(double degrees) {
-        return String.format(Locale.getDefault(), "%.1f", AngleUnit.DEGREES.normalize(degrees));
-    }
-
 }

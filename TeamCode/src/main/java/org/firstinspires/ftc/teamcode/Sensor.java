@@ -16,7 +16,6 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import org.firstinspires.ftc.robotcontroller.external.samples.SensorREVColorDistance;
 import org.firstinspires.ftc.robotcore.external.Func;
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -25,9 +24,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -44,7 +40,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -64,6 +59,10 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 
+/*
+ TODO: Just a big issue we have here in this file is that we don't have enough documentation
+ */
+
 public class Sensor {
     // Potentiometer configuration
     public static int POT_MAX = 270; // Max range in degrees
@@ -74,20 +73,57 @@ public class Sensor {
     public static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
     public static final boolean PHONE_IS_PORTRAIT = true; // Set to true because our camera is rotated at 90 degrees
 
+    // Phone configuration
+    public float phoneXRotate    = 0;
+    public float phoneYRotate    = 0;
+    public float phoneZRotate    = 9.5f;
+
+    // Color sensor configuration
+    private static final double RED_THESH =   500;
+    private static final double GREEN_THESH = 700;
+    private static final double BLUE_THESH =  600;
+
+    // Light sensor configuration
+    private static final double LIGHT_THRESH = 20;
+
     /*
-     * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
-     * 'parameters.vuforiaLicenseKey' is initialized is for illustration only, and will not function.
-     * A Vuforia 'Development' license key, can be obtained free of charge from the Vuforia developer
-     * web site at https://developer.vuforia.com/license-manager.
-     *
-     * Vuforia license keys are always 380 characters long, and look as if they contain mostly
-     * random data. As an example, here is a example of a fragment of a valid key:
-     *      ... yIgIzTqZ4mWjk9wd3cZO9T1axEqzuhxoGlfOOI2dRzKS4T0hQ8kT ...
-     * Once you've obtained a license key, copy the string from the Vuforia web site
-     * and paste it in to your code on the next line, between the double quotes.
+        ######  #######    #     # ####### #######    ####### ######  ### #######
+        #     # #     #    ##    # #     #    #       #       #     #  #     #
+        #     # #     #    # #   # #     #    #       #       #     #  #     #
+        #     # #     #    #  #  # #     #    #       #####   #     #  #     #
+        #     # #     #    #   # # #     #    #       #       #     #  #     #
+        #     # #     #    #    ## #     #    #       #       #     #  #     #
+        ######  #######    #     # #######    #       ####### ######  ###    #
+
+        ######  ####### #       ####### #     #    ####### #     # ###  #####
+        #     # #       #       #     # #  #  #       #    #     #  #  #     #
+        #     # #       #       #     # #  #  #       #    #     #  #  #
+        ######  #####   #       #     # #  #  #       #    #######  #   #####
+        #     # #       #       #     # #  #  #       #    #     #  #        #
+        #     # #       #       #     # #  #  #       #    #     #  #  #     #
+        ######  ####### ####### #######  ## ##        #    #     # ###  #####
+
+        #       ### #     # #######
+        #        #  ##    # #
+        #        #  # #   # #
+        #        #  #  #  # #####
+        #        #  #   # # #
+        #        #  #    ## #
+        ####### ### #     # #######
+
+        (Unless you know what you are doing)
+
      */
-    private static final String VUFORIA_KEY =
-            "AQUg0xf/////AAABmTbs94SuI0GPk6A0YBqIE+8hHwtTCRFUM8sNre3UQeo2XYIAf8B/R7GKKa5ZOVDqdJ/d/iNqOdnyogtcaEAcx3jVDO/xBOJKMfAdykXqRBrNIzgjiI1myp/3yxUiKClEZe0njgUWW4sT0nV6JIl6bkzu2KpHX8Dq0/Z5Ab0y+Ej3XhDpE8YMYPbQPXMeT/OqsmYpE+Z4mQbRjrafuUjAMRfyv9DoWDrXXefKzM4L5hBBi5Pk85PN0ZdxtFMEceDxVMOoLqyDCelXtRmYwi37+PvGS6TAIbCA4CM8gSS9F7nKbwkNfyKdHqOYJD3KQfJ5x9ymQSSo5c0Jg3hfK3oyHgwczDaZTKawLcX1ogYNkqYi";
+
+    // VuForia global variables
+    // Class Members
+    public OpenGLMatrix lastLocation = null;
+    public VuforiaLocalizer vuforia = null;
+    public List<VuforiaTrackable> allTrackables;
+    public VuforiaTrackables targetsSkyStone;
+
+    // To get this to work, copy the file VuForiaKey.java.example to VuForiaKey.java and add your key in that file.
+    private static final String VUFORIA_KEY = new VuForiaKey().VUFORIAKEY;
 
     // Since ImageTarget trackables use mm to specifiy their dimensions, we must use mm for all the physical dimension.
     // We will define some constants and conversions here
@@ -108,17 +144,6 @@ public class Sensor {
     public static final float halfField = 72 * mmPerInch;
     public static final float quadField  = 36 * mmPerInch;
 
-    // Phone config
-    public float phoneXRotate    = 0;
-    public float phoneYRotate    = 0;
-    public float phoneZRotate    = 9.5f;
-
-    // VuForia global variables
-    // Class Members
-    public OpenGLMatrix lastLocation = null;
-    public VuforiaLocalizer vuforia = null;
-    public List<VuforiaTrackable> allTrackables;
-    public VuforiaTrackables targetsSkyStone;
 
     /**
      * This is the webcam we are to use. As with other hardware devices such as motors and
@@ -128,99 +153,97 @@ public class Sensor {
 
     public boolean targetVisible = false;
 
-    // Color sensor configuration
-    private static final double RED_THESH =   500;
-    private static final double GREEN_THESH = 700;
-    private static final double BLUE_THESH =  600;
-
-    // Light sensor configuration
-    private static final double LIGHT_THRESH = 20;
-
     // TODO: Initialize more sensors
-    BNO055IMU gyro; // Initializes gyroscope
-    AnalogInput pot; // Initializes potentiometer
-    DigitalChannel button; // Initializes button
-    ColorSensor cd_color; // Initializes color sensor
-    DistanceSensor cd_dist; // Initializes distance sensor
+    BNO055IMU[] gyro; // Initializes gyroscope
+    AnalogInput[] pot; // Initializes potentiometer
+    DigitalChannel[] button; // Initializes button
+    ColorSensor[] color; // Initializes color sensor
+    DistanceSensor[] distance; // Initializes distance sensor
 
-    // Put all sensor stuff in here.
-    // TODO: Constructor + JavaDoc
-    Sensor(BNO055IMU gyro) { // Constructor (to use in another file)
-        this.gyro = gyro;
-    }
-
-    Sensor(AnalogInput pot) { // Another constructor
-        this.pot = pot;
-    }
-    public double getPot() {
-        return (POT_MAX/(Vmax-Vmin))*(pot.getVoltage()-Vmin); // Converts voltage to angle (degrees)
+    Sensor(SensorBuilder b) {
+        this.gyro = b.gyro;
+        this.pot = b.pot;
+        this.button = b.button;
+        this.color = b.color;
+        this.distance = b.distance;
     }
 
-    Sensor(ColorSensor cd) {
-        this.cd_color = cd;
-    }
-    Sensor(DistanceSensor cd) {
-        this.cd_dist = cd;
-    }
-    Sensor(ColorSensor cd, DistanceSensor cd2) {
-        this.cd_color = cd;
-        this.cd_dist  = cd2;
+    public double getLight(int id) {
+        return (color[id].red() + color[id].blue() + color[id].green()) / 3.0;
     }
 
-    public double getLight() {
-        return (cd_color.red() + cd_color.blue() + cd_color.green()) / 3.0;
-    }
-
-    public boolean getDark() {
-        return (getLight() < LIGHT_THRESH);
+    public boolean getDark(int id) {
+        return (getLight(id) < LIGHT_THRESH);
     }
 
     /**
      * Gets the RGB value of the color sensor
      * @return 0 if red, 1 if green, 2 if blue, 3 if none
      */
-    public int getRGB() {
-        if ((cd_color.red()>cd_color.blue()) && (cd_color.red()>cd_color.green()) && cd_color.red()>RED_THESH) {
+    public int getRGB(int id) {
+        if ((color[id].red()>color[id].blue()) && (color[id].red()>color[id].green()) && color[id].red()>RED_THESH) {
             return 0;
-        } else if ((cd_color.green()>cd_color.red()) && (cd_color.green()>cd_color.blue()) && cd_color.red()>GREEN_THESH) {
+        } else if ((color[id].green()>color[id].red()) && (color[id].green()>color[id].blue()) && color[id].red()>GREEN_THESH) {
             return 1;
-        } else if ((cd_color.blue()>cd_color.red()) && (cd_color.blue()>cd_color.green()) && cd_color.red()>BLUE_THESH) {
+        } else if ((color[id].blue()>color[id].red()) && (color[id].blue()>color[id].green()) && color[id].red()>BLUE_THESH) {
             return 2;
         } else {
             return 3;
         }
     }
 
-    public int getRed() {
-        return cd_color.red();
+    /**
+     * Gets if a color sensor detects red
+     * @param id ID of the color sensor
+     * @return Boolean on if the sensor detects red or not
+     */
+    public int getRed(int id) {
+        return color[id].red();
     }
 
-    public int getGreen() {
-        return cd_color.green();
+    /**
+     * Gets if a color sensor detects green
+     * @param id ID of the color sensor
+     * @return Boolean on if the sensor detects green or not
+     */
+    public int getGreen(int id) {
+        return color[id].green();
     }
 
-    public int getBlue() {
-        return cd_color.blue();
+    /**
+     * Gets if a color sensor detects blue
+     * @param id ID of the color sensor
+     * @return Boolean on if the sensor detects blue or not
+     */
+    public int getBlue(int id) {
+        return color[id].blue();
     }
 
-    Sensor(DigitalChannel button) {
-        this.button = button;
-        button.setMode(DigitalChannel.Mode.INPUT);
+    /**
+     * Gets if a button is pressed
+     * @param id ID of the button
+     * @return Boolean of if the button is pressed or not
+     */
+    public boolean getButton(int id) {
+        return !(button[id].getState());
     }
 
-    public boolean isPressed() {
-        return !(button.getState() == true);
+    /**
+     * Gets the position (in degrees) of a potentiometer
+     * @param id ID of the potentiometer
+     * @return Degrees of the potentiometer
+     */
+    public double getPot(int id) {
+        return (POT_MAX/(Vmax-Vmin))*(pot[id].getVoltage()-Vmin); // Converts voltage to angle (degrees)
     }
 
-    public String track(VuforiaLocalizer vuforia, TFObjectDetector tfod) {
-        return null;
-    }
-
-    public void vuforiaInit(WebcamName wb, int cmvi) {
+    // TODO: Add Javadoc / other documentation
+    public void vuforiaInit(int cmvi) { // Probably needs to be called only once to
+        // initialize. Not really tested yet. It's gonna cause some issues, so we're gonna have to
+        // add some type of check step if to make sure it has not already been initialized.
         /*
          * Retrieve the camera we are to use.
          */
-        webcamName = wb;
 
         /*
          * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
@@ -474,5 +497,47 @@ public class Sensor {
 
     public void stopVuforia() {
         targetsSkyStone.deactivate();
+    }
+
+    /**
+     * Magic for using a dynamic set of motors. See the README for more information
+     */
+    public static class SensorBuilder {
+        BNO055IMU[] gyro; // Initializes gyroscope
+        AnalogInput[] pot; // Initializes potentiometer
+        DigitalChannel[] button; // Initializes button
+        ColorSensor[] color; // Initializes color sensor
+        DistanceSensor[] distance; // Initializes distance sensor
+
+        public SensorBuilder() {};
+
+        public SensorBuilder withButtons(DigitalChannel... c) {
+            this.button = c;
+            return this;
+        }
+
+        public SensorBuilder withPotentiometers(AnalogInput... a) {
+            this.pot = a;
+            return this;
+        }
+
+        public SensorBuilder withColorSensors(ColorSensor... c) {
+            this.color = c;
+            return this;
+        }
+
+        public SensorBuilder withGyros(BNO055IMU... g) {
+            this.gyro = g;
+            return this;
+        }
+
+        public SensorBuilder withDistanceSensors(DistanceSensor... d) {
+            this.distance = d;
+            return this;
+        }
+
+        public Sensor build() {
+            return new Sensor(this);
+        }
     }
 }

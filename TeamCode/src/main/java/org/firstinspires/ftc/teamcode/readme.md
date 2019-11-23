@@ -1,121 +1,55 @@
 ## TeamCode Module
 
-Welcome!
+Note: Everything here is copyrighted by FTC Team BotsBurgh 11792 under the MIT License. See the file LICENSE for more details.
 
-This module, TeamCode, is the place where you will write/paste the code for your team's
-robot controller App. This module is currently empty (a clean slate) but the
-process for adding OpModes is straightforward.
+### Welcome to our TeamCode Module!
 
-## Creating your own OpModes
+This is where the magic of our robot happens. If you are here, it means you want to gain a better understanding of our code. For the remainder of our code, you will see a comprehensive breakdown of our code so it can be easier for you to use.
 
-The easiest way to create your own OpMode is to copy a Sample OpMode and make it your own.
+As a quick breakdown, you will see the following files:
 
-Sample opmodes exist in the FtcRobotController module.
-To locate these samples, find the FtcRobotController module in the "Project/Android" tab.
+1. [Sensor.java](####sensor.java)
+1. [Movement.java](####movement.java)
+1. [Robot.java](####robot.java)
+1. [BasicMovement.java](####basicmovement.java)
+1. [AutonomousMain.java](####autonomousmain.java)
+1. [Miscellaneous Calibration Files](####miscellaneous-calibration-files)
+1. [Miscellaneous Test Files](####miscellaneous-test-files)
 
-Expand the following tree elements:
- FtcRobotController / java / org.firstinspires.ftc.robotcontroller / external / samples
+In each file we will go over what the file does and the individual functions in it. We will NOT be going over it line-by-line. The files are commented enough that you should be able to deduce what is going on.
 
-A range of different samples classes can be seen in this folder.
-The class names follow a naming convention which indicates the purpose of each class.
-The full description of this convention is found in the samples/sample_convention.md file.
+Foreword: Our code is written in a Modular approach. This means that you can copy over the "Big Three" files (more on that later) over to your folder and utilize the sheer power of a well-written API for your robot. These files are great for beginners and experts alike. Better yet, the "Big Three" can be used year after year (with some exceptions. We wrote it like this because a few years ago, we realized that it was difficult to change variables all across the code, such as when we wanted the robot to go slower during both Autonomous and TeleOp. From there, Nitesh and Myself (Sambhav) decided to centralize the most-used parts of our code, such as moving the robot around and moving the lift up and down. Because of this, the programmers have had to do less work every year, leading to a better robot.
 
-A brief synopsis of the naming convention is given here:
-The prefix of the name will be one of the following:
+Lets begin!
 
-* Basic:    This is a minimally functional OpMode used to illustrate the skeleton/structure
-            of a particular style of OpMode.  These are bare bones examples.
-* Sensor:   This is a Sample OpMode that shows how to use a specific sensor.
-            It is not intended as a functioning robot, it is simply showing the minimal code
-            required to read and display the sensor values.
-* Hardware: This is not an actual OpMode, but a helper class that is used to describe
-            one particular robot's hardware devices: eg: for a Pushbot.  Look at any
-            Pushbot sample to see how this can be used in an OpMode.
-            Teams can copy one of these to create their own robot definition.
-* Pushbot:  This is a Sample OpMode that uses the Pushbot robot structure as a base.
-* Concept:	This is a sample OpMode that illustrates performing a specific function or concept.
-            These may be complex, but their operation should be explained clearly in the comments,
-            or the header should reference an external doc, guide or tutorial.
-* Library:  This is a class, or set of classes used to implement some strategy.
-            These will typically NOT implement a full OpMode.  Instead they will be included
-            by an OpMode to provide some stand-alone capability.
+#### Sensor.java
 
-Once you are familiar with the range of samples available, you can choose one to be the
-basis for your own robot.  In all cases, the desired sample(s) needs to be copied into
-your TeamCode module to be used.
+This file is part of the "Big Three" of our robot, along with [Movement.java](####movement.java) and [Robot.java](####robot.java), as it is essential to moving around our robot.
 
-This is done inside Android Studio directly, using the following steps:
+Starting at the beginning of the file, we see a few static variables. These, you probably should change depending on your robot. As outlined in the [Miscellaneous Test Files](####miscellaneous-test-files) section, use the calibration OpModes to find the right values for the static variables. There are a few static variables:
 
- 1) Locate the desired sample class in the Project/Android tree.
+1. POT_MAX: This is the maximum range of the potentiometer (in degrees)
+1. Vmax: This is the maximum voltage of the potentiometer. See [Potentiometer Calibration](#####calibrationpotentiometer.java)
+1. Vmin
 
- 2) Right click on the sample class and select "Copy"
+#### Movement.java
 
- 3) Expand the  TeamCode / java folder
+#### Robot.java
 
- 4) Right click on the org.firstinspires.ftc.teamcode folder and select "Paste"
+#### BasicMovement.java
 
- 5) You will be prompted for a class name for the copy.
-    Choose something meaningful based on the purpose of this class.
-    Start with a capital letter, and remember that there may be more similar classes later.
+#### AutonomousMain.java
 
-Once your copy has been created, you should prepare it for use on your robot.
-This is done by adjusting the OpMode's name, and enabling it to be displayed on the
-Driver Station's OpMode list.
+#### Miscellaneous Calibration Files
 
-Each OpMode sample class begins with several lines of code like the ones shown below:
+These files are used for finding values of sensors. Useful to ensure if the sensors are working right, and to find suitable values for configuration. These files are all independent from the "Big Three".
 
-```
- @TeleOp(name="Template: Linear OpMode", group="Linear Opmode")
- @Disabled
-```
+##### CalibrationPotentiometer.java
 
-The name that will appear on the driver station's "opmode list" is defined by the code:
- ``name="Template: Linear OpMode"``
-You can change what appears between the quotes to better describe your opmode.
-The "group=" portion of the code can be used to help organize your list of OpModes.
+This is used to calibrate potentiometers. To use, run this OpMode. Turn the potentiometer all the way to one end, and note the number. Turn it to the other end and note down that number too. The smaller number (usually very close to zero) is `Vmin` in [Sensor.java](####sensor.java) and the higher number is `Vmax`. Along with this, you must also find the range of a potentiometer, usually 270°. The number should be on the spec sheet. This number is `POT_MAX`.
 
-As shown, the current OpMode will NOT appear on the driver station's OpMode list because of the
-  ``@Disabled`` annotation which has been included.
-This line can simply be deleted , or commented out, to make the OpMode visible.
+##### CalibrationColorSensor.java
 
+This is used to find suitable thresholds for the red, green, and blue detectors in [Sensor.java](####sensor.java). 
 
-
-## ADVANCED Multi-Team App management:  Cloning the TeamCode Module
-
-In some situations, you have multiple teams in your club and you want them to all share
-a common code organization, with each being able to *see* the others code but each having
-their own team module with their own code that they maintain themselves.
-
-In this situation, you might wish to clone the TeamCode module, once for each of these teams.
-Each of the clones would then appear along side each other in the Android Studio module list,
-together with the FtcRobotController module (and the original TeamCode module).
-
-Selective Team phones can then be programmed by selecting the desired Module from the pulldown list
-prior to clicking to the green Run arrow.
-
-Warning:  This is not for the inexperienced Software developer.
-You will need to be comfortable with File manipulations and managing Android Studio Modules.
-These changes are performed OUTSIDE of Android Studios, so close Android Studios before you do this.
- 
-Also.. Make a full project backup before you start this :)
-
-To clone TeamCode, do the following:
-
-Note: Some names start with "Team" and others start with "team".  This is intentional.
-
-1)  Using your operating system file management tools, copy the whole "TeamCode"
-    folder to a sibling folder with a corresponding new name, eg: "Team0417".
-
-2)  In the new Team0417 folder, delete the TeamCode.iml file.
-
-3)  the new Team0417 folder, rename the "src/main/java/org/firstinspires/ftc/teamcode" folder
-    to a matching name with a lowercase 'team' eg:  "team0417".
-
-4)  In the new Team0417/src/main folder, edit the "AndroidManifest.xml" file, change the line that contains
-         package="org.firstinspires.ftc.teamcode"
-    to be
-         package="org.firstinspires.ftc.team0417"
-
-5)  Add:    include ':Team0417' to the "/settings.gradle" file.
-    
-6)  Open up Android Studios and clean out any old files by using the menu to "Build/Clean Project""
+#### Miscellaneous Test Files

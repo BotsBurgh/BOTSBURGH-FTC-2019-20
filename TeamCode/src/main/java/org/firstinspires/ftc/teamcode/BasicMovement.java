@@ -26,16 +26,42 @@ import com.qualcomm.robotcore.util.Range;
 @TeleOp(name="Basic Movement")
 public class BasicMovement extends LinearOpMode {
 
-    public static final double DEADZONE = 0.05;
+    public static final double DEADZONE = 0.05; // Controls controller joystick deadzone
+
+    /*
+    ######  #######    #     # ####### #######    ####### ######  ### #######
+    #     # #     #    ##    # #     #    #       #       #     #  #     #
+    #     # #     #    # #   # #     #    #       #       #     #  #     #
+    #     # #     #    #  #  # #     #    #       #####   #     #  #     #
+    #     # #     #    #   # # #     #    #       #       #     #  #     #
+    #     # #     #    #    ## #     #    #       #       #     #  #     #
+    ######  #######    #     # #######    #       ####### ######  ###    #
+
+    ######  ####### #       ####### #     #    ####### #     # ###  #####
+    #     # #       #       #     # #  #  #       #    #     #  #  #     #
+    #     # #       #       #     # #  #  #       #    #     #  #  #
+    ######  #####   #       #     # #  #  #       #    #######  #   #####
+    #     # #       #       #     # #  #  #       #    #     #  #        #
+    #     # #       #       #     # #  #  #       #    #     #  #  #     #
+    ######  ####### ####### #######  ## ##        #    #     # ###  #####
+
+    #       ### #     # #######
+    #        #  ##    # #
+    #        #  # #   # #
+    #        #  #  #  # #####
+    #        #  #   # # #
+    #        #  #    ## #
+    ####### ### #     # #######
+    (Unless if you know what you are doing)
+     */
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor lf, lb, rf, rb;
+    private DcMotor lb, rb, sc;
     Movement base;
     // Declare variables
     private double elevatorSpeed;
-    private DcMotor scissorLift;
-    private Sensor scissorDownLimit, scissorUpLimit; // UpLimit prevents the scissor lift from going
+    private Sensor sensors; // UpLimit prevents the scissor lift from going
                                                      // up, and DownLimit is the opposite.
     private double sul, sud; // Sensor up limit and down limit. Stores color values from sensors
 
@@ -43,21 +69,26 @@ public class BasicMovement extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        // Initialize the hardware variables. Note that the strings used here as parameters
-        // to 'get' must correspond to the names assigned during the robot configuration
-        // step (using the FTC Robot Controller app on the phone).
-        lb = hardwareMap.get(DcMotor.class, "lb");
-        rb = hardwareMap.get(DcMotor.class, "rb");
-        scissorLift = hardwareMap.get(DcMotor.class, "scissorLift");
-
         // Setup a variable for each drive wheel to save power level for telemetry
         double leftPower;
         double rightPower;
 
         double mod;
 
-        //base = new Movement(lf, rf, lb, rb);
-        base = new Movement(lb, rb, scissorLift);
+        sc = hardwareMap.get(DcMotor.class, "scissorLift");
+        lb = hardwareMap.get(DcMotor.class, "lb");
+        rb = hardwareMap.get(DcMotor.class, "rb");
+
+        DcMotor[] motors = new DcMotor[] {
+                sc,
+                null, null, // Because we don't have front motors
+                lb, rb
+        };
+
+        base = new Movement
+                .MovementBuilder()
+                .withMotors(motors)
+                .build();
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -67,8 +98,17 @@ public class BasicMovement extends LinearOpMode {
         lb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        scissorDownLimit = new Sensor(hardwareMap.get(ColorSensor.class, "scissorDownLimit"));
-        scissorUpLimit   = new Sensor(hardwareMap.get(ColorSensor.class, "scissorUpLimit"));
+        ColorSensor[] colorSensors = new ColorSensor[] {
+                hardwareMap.get(ColorSensor.class, "scissorDownLimit"),
+                hardwareMap.get(ColorSensor.class, "scissorUpLimit")
+        };
+
+        sensors = new Sensor
+            .SensorBuilder()
+            .withColorSensors(colorSensors)
+            .build();
+
+        Robot robot = new Robot(sensors, base);
 
         elevatorSpeed = 0;
 
@@ -111,8 +151,8 @@ public class BasicMovement extends LinearOpMode {
             // rightPower = -gamepad1.right_stick_y ;
 
             if (count % 10 == 0) {
-                sul = scissorUpLimit.getRGB();
-                sud = scissorDownLimit.getRGB();
+                sul = robot.sensor.getRed(0);
+                sud = robot.sensor.getRed(1);
             }
 
             // Check if the limit switch is hit either way, and set the movable direction.
@@ -131,8 +171,8 @@ public class BasicMovement extends LinearOpMode {
             }
 
             // Send calculated power to wheels
-            base.move2x2(leftPower, rightPower);
-            base.moveElevator(elevatorSpeed);
+            robot.movement.move2x2(leftPower, rightPower);
+            robot.movement.moveElevator(elevatorSpeed);
 
             // Display the current value(s)
             telemetry.addData("Status", "Run Time: " + runtime.toString());
