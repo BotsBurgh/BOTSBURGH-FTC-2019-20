@@ -47,8 +47,8 @@ public class Movement {
     private double DRIVE_POWER = 0.6; // How fast to drive
     private int SLEEP_MS = 100; // For scanning the servo
 
-    // Arm configuration
-    final private static double ELEVATOR_THRESH = 0.75;
+    // Elevator configuration
+    final private static double ELEVATOR_THRESH = 0.80;
 
 
     private DcMotor motorFL, motorFR, motorBL, motorBR, elevator;

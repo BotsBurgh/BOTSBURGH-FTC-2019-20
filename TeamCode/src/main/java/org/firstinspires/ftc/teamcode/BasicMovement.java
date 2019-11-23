@@ -26,6 +26,8 @@ import com.qualcomm.robotcore.util.Range;
 @TeleOp(name="Basic Movement")
 public class BasicMovement extends LinearOpMode {
 
+    public static final double DEADZONE = 0.05;
+
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor lf, lb, rf, rb;
@@ -114,13 +116,13 @@ public class BasicMovement extends LinearOpMode {
             }
 
             // Check if the limit switch is hit either way, and set the movable direction.
-            if ((sul == 0) && (gamepad2.left_stick_y < 0.1)) {
+            if ((sul == 0) && (gamepad2.left_stick_y < DEADZONE)) {
                 // If we cannot go up, and the user tries to go up, we don't allow that to happen.
                 elevatorSpeed = 0;
-            } else if ((sud == 0) && (gamepad2.left_stick_y > 0.1)) {
+            } else if ((sud == 0) && (gamepad2.left_stick_y > DEADZONE)) {
                 // If we cannot go down, and the user tries to go down, we don't allow that to happen.
                 elevatorSpeed = 0;
-            } else if (Math.abs(gamepad2.left_stick_y) > 0.1){
+            } else if (Math.abs(gamepad2.left_stick_y) > DEADZONE) {
                 // If the user moves the stick more than 10%, and none of the other conditions are fulfilled, we allow the scissor lift to move
                 elevatorSpeed = gamepad2.left_stick_y;
             } else {

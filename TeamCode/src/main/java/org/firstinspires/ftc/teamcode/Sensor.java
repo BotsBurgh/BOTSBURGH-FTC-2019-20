@@ -129,9 +129,9 @@ public class Sensor {
     public boolean targetVisible = false;
 
     // Color sensor configuration
-    private static final double RED_THESH =   30;
-    private static final double GREEN_THESH = 50;
-    private static final double BLUE_THESH =  40;
+    private static final double RED_THESH =   500;
+    private static final double GREEN_THESH = 700;
+    private static final double BLUE_THESH =  600;
 
     // Light sensor configuration
     private static final double LIGHT_THRESH = 20;
