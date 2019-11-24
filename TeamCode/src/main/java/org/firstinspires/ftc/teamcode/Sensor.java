@@ -83,9 +83,6 @@ class Sensor {
     private static final double GREEN_THESH = 700;
     private static final double BLUE_THESH =  600;
 
-    // Light sensor configuration
-    private static final double LIGHT_THRESH = 20;
-
     /*
         ######  #######    #     # ####### #######    ####### ######  ### #######
         #     # #     #    ##    # #     #    #       #       #     #  #     #

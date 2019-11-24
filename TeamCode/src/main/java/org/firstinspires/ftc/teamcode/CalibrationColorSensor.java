@@ -28,24 +28,16 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 public class CalibrationColorSensor extends LinearOpMode {
     @Override
     public void runOpMode() {
-        ColorSensor[] colorSensors = new ColorSensor[] {
-                hardwareMap.get(ColorSensor.class, "scissorDownLimit"),
-                hardwareMap.get(ColorSensor.class, "scissorUpLimit")
-        };
-
-        Sensor sensors = new Sensor
-                .SensorBuilder()
-                .withColorSensors(colorSensors)
-                .build();
-
-        Robot robot = new Robot(sensors);
+        ColorSensor cl1 = hardwareMap.get(ColorSensor.class, "cl");
 
         waitForStart();
 
         while (opModeIsActive()) {
             // do stuff
-            telemetry.addData("Down limit: ", robot.sensor.getRed(0));
-            telemetry.addData("Up limit: ", robot.sensor.getRed(1));
+            telemetry.addData("Red", cl1.red());
+            telemetry.addData("Green", cl1.green());
+            telemetry.addData("Blue", cl1.blue());
+
             telemetry.update();
             sleep(50);
         }

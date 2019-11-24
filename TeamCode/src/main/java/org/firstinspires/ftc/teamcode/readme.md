@@ -30,7 +30,18 @@ Starting at the beginning of the file, we see a few static variables. These, you
 
 1. POT_MAX: This is the maximum range of the potentiometer (in degrees)
 1. Vmax: This is the maximum voltage of the potentiometer. See [Potentiometer Calibration](#####calibrationpotentiometer.java)
-1. Vmin
+1. Vmin: This is the minimum voltage of the potentiometer. See [Potentiometer Calibration](#####calibrationpotentiometer.java)
+1. CAMERA_CHOICE: This is the variable which stores what camera we are going to use for VuForia. It can be either `BACK` or `FRONT`. Because we are using an external webcam, then this must be `BACK`.
+1. PHONE_IS_PORTRAIT: This is the variable which stores if the camera is rotated or not. Because our (external) camera is at an angle, then this is true. 
+1. phoneXRotate: Phone X orientation. Don't use this, because it will be changed based on `PHONE_IS_PORTRAIT`.
+1. phoneYRotate: Same thing as phoneXRotate above.
+1. PhoneZRotate: This accounts for an upward tilt of the phone. Because our camera is at the bottom of the robot, then we had to tilt it up by 9.5 degrees. Set to zero if your phone is perfectly straight.
+1. RED_THESH: The threshold for detecting if something is red or not. Refer to the [Color Sensor Calibration](#####calibrationcolorsensor.java) section to find appropriate values.
+1. GREEN_THESH: The threshold for detecting if something is green or not. Refer to the [Color Sensor Calibration](#####calibrationcolorsensor.java) section to find appropriate values.
+1. BLUE_THESH: The threshold for detecting if something is blue or not. Refer to the [Color Sensor Calibration](#####calibrationcolorsensor.java) section to find appropriate values.
+
+Most rookie teams don't need to edit anything below this section, but they should in order to get a better understanding of what is going on. Below, we are going to look at three main things: First, we are going to understand some more static variables, then we are going to look at the functions, and lastly we are going to look at the SensorBuilder class.
+
 
 #### Movement.java
 
@@ -43,6 +54,10 @@ Starting at the beginning of the file, we see a few static variables. These, you
 #### Miscellaneous Calibration Files
 
 These files are used for finding values of sensors. Useful to ensure if the sensors are working right, and to find suitable values for configuration. These files are all independent from the "Big Three".
+
+##### CalibrationColorSensor.java
+
+TODO
 
 ##### CalibrationPotentiometer.java
 

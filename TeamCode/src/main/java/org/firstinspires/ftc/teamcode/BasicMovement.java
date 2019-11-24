@@ -20,6 +20,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -85,9 +86,11 @@ public class BasicMovement extends LinearOpMode {
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
+        sc.setDirection(DcMotor.Direction.FORWARD);
         lb.setDirection(DcMotor.Direction.REVERSE);
         rb.setDirection(DcMotor.Direction.FORWARD);
 
+        sc.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         lb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -144,8 +147,8 @@ public class BasicMovement extends LinearOpMode {
             // rightPower = -gamepad1.right_stick_y ;
 
             if (count % 10 == 0) {
-                sul = robot.sensor.getRed(0);
-                sud = robot.sensor.getRed(1);
+                sul = robot.sensor.getRGB(0);
+                sud = robot.sensor.getRGB(1);
             }
 
             // Check if the limit switch is hit either way, and set the movable direction.
@@ -157,7 +160,7 @@ public class BasicMovement extends LinearOpMode {
                 elevatorSpeed = 0;
             } else if (Math.abs(gamepad2.left_stick_y) > DEADZONE) {
                 // If the user moves the stick more than 10%, and none of the other conditions are fulfilled, we allow the scissor lift to move
-                elevatorSpeed = gamepad2.left_stick_y;
+                elevatorSpeed = -gamepad2.left_stick_y;
             } else {
                 // If the user is not doing anything, we don't allow the scissor lift to move
                 elevatorSpeed = 0;
