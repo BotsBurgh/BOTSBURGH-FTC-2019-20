@@ -24,8 +24,8 @@ package org.firstinspires.ftc.teamcode;
  * to our GitHub issues page at https://github.com/botsburgh/BOTSBURGH-FTC-2019-20/issues
  */
 public class Robot {
-    public Sensor sensor;
-    public Movement movement;
+    Sensor sensor;
+    Movement movement;
 
     /**
      * Initialize robot with both sensor and movement functionality

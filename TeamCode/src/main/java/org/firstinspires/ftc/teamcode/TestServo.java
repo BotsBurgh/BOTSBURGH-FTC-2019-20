@@ -27,17 +27,15 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name = "ServoTester")
-public class TestServo extends LinearOpMode {
-    private Servo s1, s2, s3, s4, s5, s6;
-
+class TestServo extends LinearOpMode {
     @Override
     public void runOpMode() {
-        s1 = hardwareMap.get(Servo.class, "s1");
-        s2 = hardwareMap.get(Servo.class, "s2");
-        s3 = hardwareMap.get(Servo.class, "s3");
-        s4 = hardwareMap.get(Servo.class, "s4");
-        s5 = hardwareMap.get(Servo.class, "s5");
-        s6 = hardwareMap.get(Servo.class, "s6");
+        Servo s1 = hardwareMap.get(Servo.class, "s1");
+        Servo s2 = hardwareMap.get(Servo.class, "s2");
+        Servo s3 = hardwareMap.get(Servo.class, "s3");
+        Servo s4 = hardwareMap.get(Servo.class, "s4");
+        Servo s5 = hardwareMap.get(Servo.class, "s5");
+        Servo s6 = hardwareMap.get(Servo.class, "s6");
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
