@@ -65,18 +65,18 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
 
 public class Sensor {
     // Potentiometer configuration
-    public static int POT_MAX = 270; // Max range in degrees
-    public static double Vmax = 0.004; // Minimum voltage
-    public static double Vmin = 3.304; // Maximum voltage
+    private static final int    POT_MAX = 270;   // Max range in degrees
+    private static final double Vmax    = 0.004; // Minimum voltage
+    private static final double Vmin    = 3.304; // Maximum voltage
 
     // VuForia configuration
-    public static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK;
-    public static final boolean PHONE_IS_PORTRAIT = true; // Set to true because our camera is rotated at 90 degrees
+    private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK; // Back camera or front
+    private static final boolean PHONE_IS_PORTRAIT = true; // Set to true because our camera is rotated at 90 degrees
 
     // Phone configuration
-    public float phoneXRotate    = 0;
-    public float phoneYRotate    = 0;
-    public float phoneZRotate    = 9.5f;
+    private static       float phoneXRotate    = 0;
+    private static       float phoneYRotate    = 0;
+    private static final float phoneZRotate    = 9.5f;
 
     // Color sensor configuration
     private static final double RED_THESH =   500;
@@ -117,32 +117,32 @@ public class Sensor {
 
     // VuForia global variables
     // Class Members
-    public OpenGLMatrix lastLocation = null;
-    public VuforiaLocalizer vuforia = null;
-    public List<VuforiaTrackable> allTrackables;
-    public VuforiaTrackables targetsSkyStone;
+    private OpenGLMatrix lastLocation = null;
+    private VuforiaLocalizer vuforia = null;
+    private List<VuforiaTrackable> allTrackables;
+    private VuforiaTrackables targetsSkyStone;
 
     // To get this to work, copy the file VuForiaKey.java.example to VuForiaKey.java and add your key in that file.
-    private static final String VUFORIA_KEY = new VuForiaKey().VUFORIAKEY;
+    private static final String VUFORIA_KEY = VuForiaKey.VUFORIAKEY;
 
-    // Since ImageTarget trackables use mm to specifiy their dimensions, we must use mm for all the physical dimension.
+    // Since ImageTarget trackables use mm to specify their dimensions, we must use mm for all the physical dimension.
     // We will define some constants and conversions here
-    public static final float mmPerInch        = 25.4f;
-    public static final float mmTargetHeight   = (6) * mmPerInch; // the height of the center of the target image above the floor
+    private static final float mmPerInch        = 25.4f;
+    private static final float mmTargetHeight   = (6) * mmPerInch; // the height of the center of the target image above the floor
 
     // Constant for Stone Target
-    public static final float stoneZ = 2.00f * mmPerInch;
+    private static final float stoneZ = 2.00f * mmPerInch;
 
     // Constants for the center support targets
-    public static final float bridgeZ = 6.42f * mmPerInch;
-    public static final float bridgeY = 23f   * mmPerInch;
-    public static final float bridgeX = 5.18f * mmPerInch;
-    public static final float bridgeRotY = 59; // Units are degrees
-    public static final float bridgeRotZ = 180;
+    private static final float bridgeZ = 6.42f * mmPerInch;
+    private static final float bridgeY = 23f   * mmPerInch;
+    private static final float bridgeX = 5.18f * mmPerInch;
+    private static final float bridgeRotY = 59; // Units are degrees
+    private static final float bridgeRotZ = 180;
 
     // Constants for perimeter targets
-    public static final float halfField = 72 * mmPerInch;
-    public static final float quadField  = 36 * mmPerInch;
+    private static final float halfField = 72 * mmPerInch;
+    private static final float quadField  = 36 * mmPerInch;
 
 
     /**
@@ -154,28 +154,20 @@ public class Sensor {
     public boolean targetVisible = false;
 
     // TODO: Initialize more sensors
-    BNO055IMU[] gyro; // Initializes gyroscope
-    AnalogInput[] pot; // Initializes potentiometer
-    DigitalChannel[] button; // Initializes button
-    ColorSensor[] color; // Initializes color sensor
-    DistanceSensor[] distance; // Initializes distance sensor
+    private BNO055IMU[] gyro; // Initializes gyroscope
+    private AnalogInput[] pot; // Initializes potentiometer
+    private DigitalChannel[] button; // Initializes button
+    private ColorSensor[] color; // Initializes color sensor
+    private DistanceSensor[] distance; // Initializes distance sensor
 
-    Sensor(SensorBuilder b) {
+    private Sensor(SensorBuilder b) {
         this.gyro = b.gyro;
         this.pot = b.pot;
         this.button = b.button;
         this.color = b.color;
         this.distance = b.distance;
     }
-
-    public double getLight(int id) {
-        return (color[id].red() + color[id].blue() + color[id].green()) / 3.0;
-    }
-
-    public boolean getDark(int id) {
-        return (getLight(id) < LIGHT_THRESH);
-    }
-
+    
     /**
      * Gets the RGB value of the color sensor
      * @return 0 if red, 1 if green, 2 if blue, 3 if none

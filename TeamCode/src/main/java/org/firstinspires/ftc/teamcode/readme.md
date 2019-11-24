@@ -50,6 +50,6 @@ This is used to calibrate potentiometers. To use, run this OpMode. Turn the pote
 
 ##### CalibrationColorSensor.java
 
-This is used to find suitable thresholds for the red, green, and blue detectors in [Sensor.java](####sensor.java). 
+This is used to find suitable thresholds for the red, green, and blue detectors in [Sensor.java](####sensor.java). Use the returned values to 
 
 #### Miscellaneous Test Files
