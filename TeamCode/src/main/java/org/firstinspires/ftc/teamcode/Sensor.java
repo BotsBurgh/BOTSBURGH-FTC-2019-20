@@ -500,7 +500,7 @@ public class Sensor {
         ColorSensor[] color; // Initializes color sensor
         DistanceSensor[] distance; // Initializes distance sensor
 
-        SensorBuilder() {};
+        SensorBuilder() {}
 
         SensorBuilder withButtons(DigitalChannel... c) {
             this.button = c;
