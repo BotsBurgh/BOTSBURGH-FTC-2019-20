@@ -41,6 +41,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefau
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.AnalogInput;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
@@ -151,7 +152,7 @@ class Sensor {
     private boolean targetVisible = false;
 
     // TODO: Initialize more sensors
-    private BNO055IMU[] gyro; // Initialize gyroscopes
+    private BNO055IMU[] gyros; // Initialize gyroscopes
     private AnalogInput[] pot; // Initialize potentiometers
     private DigitalChannel[] button; // Initialize buttons
     private ColorSensor[] color; // Initialize color sensors
@@ -159,7 +160,7 @@ class Sensor {
     private WebcamName[] webcams; // Initialize webcams
 
     private Sensor(SensorBuilder b) {
-        this.gyro = b.gyro;
+        this.gyros = b.gyros;
         this.pot = b.pot;
         this.button = b.button;
         this.color = b.color;
@@ -226,6 +227,10 @@ class Sensor {
      */
     double getPot(int id) {
         return (POT_MAX/(Vmax-Vmin))*(pot[id].getVoltage()-Vmin); // Converts voltage to angle (degrees)
+    }
+
+    BNO055IMU getGyro(int id) {
+        return gyros[id];
     }
 
     // TODO: Add Javadoc / other documentation
@@ -493,7 +498,7 @@ class Sensor {
      * Magic for using a dynamic set of motors. See the README for more information
      */
     static class SensorBuilder {
-        private BNO055IMU[] gyro; // Initialize gyroscopes
+        private BNO055IMU[] gyros; // Initialize gyroscopes
         private AnalogInput[] pot; // Initialize potentiometers
         private DigitalChannel[] button; // Initialize buttons
         private ColorSensor[] color; // Initialize color sensors
@@ -518,7 +523,7 @@ class Sensor {
         }
 
         SensorBuilder withGyros(BNO055IMU... g) {
-            this.gyro = g;
+            this.gyros = g;
             return this;
         }
 

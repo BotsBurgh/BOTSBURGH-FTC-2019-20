@@ -41,15 +41,21 @@ import static android.os.SystemClock.sleep;
  * The Movement class. Moves the robot around through multiple functions.
  */
 class Movement {
-    private double TURN_POWER  = 0.4; // How fast to turn
-    private double DRIVE_POWER = 0.6; // How fast to drive
+    // Motor configuration
+    static final double COUNTS_PER_MOTOR_REV    = 1440 ;    // eg: TETRIX Motor Encoder
+    static final double DRIVE_GEAR_REDUCTION    = 1.0 ;     // This is < 1.0 if geared UP
+    static final double WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
+
+    // Autonomous
+    public final static double TURN_POWER  = 0.4; // How fast to turn
+    public final static double DRIVE_POWER = 0.6; // How fast to drive
 
     // Elevator configuration
-    final private static double ELEVATOR_POWER = 1.00;
+    public final static double ELEVATOR_POWER = 1.00;
 
     // Servo configuration
-    final private static int SERVO_SLEEP = 10; // Milliseconds
-    final private static int SERVO_STEP  = 1;  // Degrees
+    public final static int SERVO_SLEEP = 10; // Milliseconds
+    public final static int SERVO_STEP  = 1;  // Degrees
 
     /**
      ######  #######    #     # ####### #######    ####### ######  ### #######
@@ -78,6 +84,8 @@ class Movement {
      (Unless if you know what you are doing)
      */
 
+    public static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415);
+
     private DcMotor[] motors;
     private Servo[] servos;
     private CRServo[] crServos;
@@ -86,10 +94,6 @@ class Movement {
         this.motors = b.motors;
         this.servos = b.servos;
         this.crServos = b.crServos;
-    }
-
-    void moveVuForia() {
-        // TODO. Use Robot class to do this (somehow)
     }
 
     /**
@@ -160,6 +164,56 @@ class Movement {
                 servos[id].setPosition(servos[id].getPosition() + SERVO_STEP);
             }
             sleep(SERVO_SLEEP);
+        }
+    }
+
+    public void moveEnc4x4(int inches) {
+        motors[1].setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motors[2].setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motors[3].setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motors[4].setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motors[1].setTargetPosition(inches);
+        motors[2].setTargetPosition(inches);
+        motors[3].setTargetPosition(inches);
+        motors[4].setTargetPosition(inches);
+        motors[1].setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motors[2].setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motors[3].setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motors[4].setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        if (inches < 0) {
+            motors[1].setPower(DRIVE_POWER);
+            motors[2].setPower(DRIVE_POWER);
+            motors[3].setPower(DRIVE_POWER);
+            motors[4].setPower(DRIVE_POWER);
+        } else if (inches > 0) {
+            motors[1].setPower(-DRIVE_POWER);
+            motors[2].setPower(-DRIVE_POWER);
+            motors[3].setPower(-DRIVE_POWER);
+            motors[4].setPower(-DRIVE_POWER);
+        } else {
+            motors[1].setPower(0);
+            motors[2].setPower(0);
+            motors[3].setPower(0);
+            motors[4].setPower(0);
+        }
+    }
+
+    public void moveEnc2x4(double inches) {
+        motors[3].setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motors[4].setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motors[3].setTargetPosition((int)(inches*COUNTS_PER_INCH));
+        motors[4].setTargetPosition((int)(inches*COUNTS_PER_INCH));
+        motors[3].setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        motors[4].setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        if (inches < 0) {
+            motors[3].setPower(DRIVE_POWER);
+            motors[4].setPower(DRIVE_POWER);
+        } else if (inches > 0) {
+            motors[3].setPower(-DRIVE_POWER);
+            motors[4].setPower(-DRIVE_POWER);
+        } else {
+            motors[3].setPower(0);
+            motors[4].setPower(0);
         }
     }
 
