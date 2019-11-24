@@ -45,7 +45,7 @@ class Movement {
     private double DRIVE_POWER = 0.6; // How fast to drive
 
     // Elevator configuration
-    final private static double ELEVATOR_THRESH = 0.80;
+    final private static double ELEVATOR_THRESH = 1.00;
 
     /**
      ######  #######    #     # ####### #######    ####### ######  ### #######
