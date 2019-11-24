@@ -63,7 +63,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
  TODO: Just a big issue we have here in this file is that we don't have enough documentation
  */
 
-public class Sensor {
+class Sensor {
     // Potentiometer configuration
     private static final int    POT_MAX = 270;   // Max range in degrees
     private static final double Vmax    = 0.004; // Minimum voltage

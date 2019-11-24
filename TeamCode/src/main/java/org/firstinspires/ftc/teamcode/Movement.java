@@ -40,7 +40,7 @@ import static android.os.SystemClock.sleep;
 /**
  * The Movement class. Moves the robot around through multiple functions.
  */
-public class Movement {
+class Movement {
     private double TURN_POWER  = 0.4; // How fast to turn
     private double DRIVE_POWER = 0.6; // How fast to drive
 
@@ -76,15 +76,15 @@ public class Movement {
 
     private DcMotor[] motors;
     private Servo[] servos;
-    private CRServo[] crservos;
+    private CRServo[] crServos;
     
-    public Movement(MovementBuilder b) {
+    private Movement(MovementBuilder b) {
         this.motors = b.motors;
         this.servos = b.servos;
-        this.crservos = b.crservos;
+        this.crServos = b.crServos;
     }
 
-    public void moveVuForia() {
+    void moveVuForia() {
         // TODO. Use Robot class to do this (somehow)
     }
 
@@ -95,7 +95,7 @@ public class Movement {
      * @param blPower Power to the back left wheel
      * @param brPower Power to the back right wheel
      */
-    public void move4x4(double flPower, double frPower, double blPower, double brPower) {
+    void move4x4(double flPower, double frPower, double blPower, double brPower) {
         motors[1].setPower(flPower);
         motors[2].setPower(frPower);
         motors[3].setPower(blPower);
@@ -107,7 +107,7 @@ public class Movement {
      * @param lPower Power to the left side
      * @param rPower Power to the right side
      */
-    public void move2x4(double lPower, double rPower) {
+    void move2x4(double lPower, double rPower) {
         motors[1].setPower(lPower);
         motors[2].setPower(rPower);
         motors[3].setPower(lPower);
@@ -119,7 +119,7 @@ public class Movement {
      * @param lPower Power sent to back left motor
      * @param rPower Power sent to back right motor
      */
-    public void move2x2(double lPower, double rPower) {
+    void move2x2(double lPower, double rPower) {
         motors[3].setPower(lPower);
         motors[4].setPower(rPower);
     }
@@ -128,17 +128,17 @@ public class Movement {
      * Moves the motors[0] up and down, depending on the power sent to the motor. Subject to threshold
      * @param speed Speed of the elevator
      */
-    public void moveElevator(double speed) {
+    void moveElevator(double speed) {
         motors[0].setPower(speed*ELEVATOR_THRESH);
     }
 
     /**
      * Magic for using a dynamic set of motors. See the README for more information
      */
-    public static class MovementBuilder {
+    static class MovementBuilder {
         private DcMotor[] motors;
         private Servo[] servos;
-        private CRServo[] crservos;
+        private CRServo[] crServos;
 
         /**
          * In this format:
@@ -151,22 +151,22 @@ public class Movement {
          *  BL is 3
          *  BR is 4
          */
-        public MovementBuilder withMotors(DcMotor... m) {
+        MovementBuilder withMotors(DcMotor... m) {
             this.motors = m;
             return this;
         }
         
-        public MovementBuilder withServos(Servo... s) {
+        MovementBuilder withServos(Servo... s) {
             this.servos = s;
             return this;
         }
         
-        public MovementBuilder withCRServos(CRServo... c) {
-            this.crservos = c;
+        MovementBuilder withCRServos(CRServo... c) {
+            this.crServos = c;
             return this;
         }
         
-        public Movement build() {
+        Movement build() {
             return new Movement(this);
         }
     }
