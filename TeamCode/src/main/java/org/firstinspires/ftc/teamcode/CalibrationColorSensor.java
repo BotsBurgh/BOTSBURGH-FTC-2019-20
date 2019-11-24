@@ -21,26 +21,24 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 
 @TeleOp(name="Color Sensor Calibration")
-/**
+/*
  * The main purpose of this is to calibrate our color sensors. We found that ambient red was causing
  * issues, so we made this file to get proper values for our Sensor class.
  */
 public class CalibrationColorSensor extends LinearOpMode {
-    Sensor sensors;
-    Robot robot;
     @Override
     public void runOpMode() {
-        ColorSensor[] colorsensors = new ColorSensor[] {
+        ColorSensor[] colorSensors = new ColorSensor[] {
                 hardwareMap.get(ColorSensor.class, "scissorDownLimit"),
                 hardwareMap.get(ColorSensor.class, "scissorUpLimit")
         };
 
-        sensors = new Sensor
+        Sensor sensors = new Sensor
                 .SensorBuilder()
-                .withColorSensors(colorsensors)
+                .withColorSensors(colorSensors)
                 .build();
 
-        robot = new Robot(sensors);
+        Robot robot = new Robot(sensors);
 
         waitForStart();
 

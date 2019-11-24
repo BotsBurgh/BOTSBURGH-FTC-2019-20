@@ -28,11 +28,12 @@ import com.qualcomm.robotcore.util.Range;
 public class AutonomousMain extends LinearOpMode {
     // Declare OpMode Members
     private ElapsedTime runtime = new ElapsedTime();
-    Sensor vuforia;
-    Movement base;
 
     @Override
     public void runOpMode() {
+        Sensor vuforia;
+        Movement base;
+
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 

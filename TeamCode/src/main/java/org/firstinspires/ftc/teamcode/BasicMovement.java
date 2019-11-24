@@ -24,9 +24,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name="Basic Movement")
-public class BasicMovement extends LinearOpMode {
+class BasicMovement extends LinearOpMode {
 
-    public static final double DEADZONE = 0.05; // Controls controller joystick deadzone
+    private static final double DEADZONE = 0.05; // Controls controller joystick deadzone
 
     /*
     ######  #######    #     # ####### #######    ####### ######  ### #######
@@ -57,13 +57,6 @@ public class BasicMovement extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor lb, rb, sc;
-    Movement base;
-    // Declare variables
-    private double elevatorSpeed;
-    private Sensor sensors; // UpLimit prevents the scissor lift from going
-                                                     // up, and DownLimit is the opposite.
-    private double sul, sud; // Sensor up limit and down limit. Stores color values from sensors
 
     private long count = 0;
 
@@ -75,9 +68,9 @@ public class BasicMovement extends LinearOpMode {
 
         double mod;
 
-        sc = hardwareMap.get(DcMotor.class, "scissorLift");
-        lb = hardwareMap.get(DcMotor.class, "lb");
-        rb = hardwareMap.get(DcMotor.class, "rb");
+        DcMotor sc = hardwareMap.get(DcMotor.class, "scissorLift");
+        DcMotor lb = hardwareMap.get(DcMotor.class, "lb");
+        DcMotor rb = hardwareMap.get(DcMotor.class, "rb");
 
         DcMotor[] motors = new DcMotor[] {
                 sc,
@@ -85,7 +78,7 @@ public class BasicMovement extends LinearOpMode {
                 lb, rb
         };
 
-        base = new Movement
+        Movement base = new Movement
                 .MovementBuilder()
                 .withMotors(motors)
                 .build();
@@ -103,17 +96,17 @@ public class BasicMovement extends LinearOpMode {
                 hardwareMap.get(ColorSensor.class, "scissorUpLimit")
         };
 
-        sensors = new Sensor
+        Sensor sensors = new Sensor
             .SensorBuilder()
             .withColorSensors(colorSensors)
             .build();
 
         Robot robot = new Robot(sensors, base);
 
-        elevatorSpeed = 0;
+        double elevatorSpeed;
 
-        sul = 3;
-        sud = 3;
+        double sul = 3;
+        double sud = 3;
 
         //lf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
