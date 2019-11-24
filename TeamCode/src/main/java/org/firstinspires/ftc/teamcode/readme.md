@@ -18,7 +18,9 @@ As a quick breakdown, you will see the following files:
 
 In each file we will go over what the file does and the individual functions in it. We will NOT be going over it line-by-line. The files are commented enough that you should be able to deduce what is going on.
 
-Foreword: Our code is written in a Modular approach. This means that you can copy over the "Big Three" files (Sensor, Movement, and Robot) over to your folder and utilize the sheer power of a well-written API for your robot. These files are great for beginners and experts alike. Better yet, the "Big Three" can be used year after year (with some exceptions. We wrote it like this because a few years ago, we realized that it was difficult to change variables all across the code, such as when we wanted the robot to go slower during both Autonomous and TeleOp. From there, Nitesh and Myself (Sambhav) decided to centralize the most-used parts of our code, such as moving the robot around and moving the lift up and down. Because of this, the programmers have had to do less work every year, leading to a better robot.
+### Foreword
+
+Our code is written in a Modular approach. This means that you can copy over the "Big Three" files (Sensor, Movement, and Robot) over to your folder and utilize the sheer power of a well-written API for your robot. These files are great for beginners and experts alike. Better yet, the "Big Three" can be used year after year (with some exceptions. We wrote it like this because a few years ago, we realized that it was difficult to change variables all across the code, such as when we wanted the robot to go slower during both Autonomous and TeleOp. From there, Nitesh and Myself (Sambhav) decided to centralize the most-used parts of our code, such as moving the robot around and moving the lift up and down. Because of this, the programmers have had to do less work every year, leading to a better robot.
 
 Lets begin!
 
@@ -234,9 +236,77 @@ We set the motors to use their own variables so we could change some settings of
 
 ## Robot.java
 
+We are not yet done with this file.
+
 ## BasicMovement.java
 
+This file is our primary TeleOp program. In this, we integrate the "Big Three" classes to run our robot. This file is a great example of what can be done with the API. In this file, we are doing a few things: First, we are moving around the robot, and second, we are moving the elevator up and down with respect to the color sensors detecting if the elevator is overstepping.
+
+### Basic Movement Static Variables
+
+1. DEADZONE: The controller deadzone to prevent accidental nudges to a joystick.
+
+### Moving Around
+
+The majority of the code for controlling user input is taken from the examples with some modifications.
+
+```java
+// Adjust speed based on the bumpers. Idea from Robotic Doges
+if (gamepad1.left_bumper) {
+    mod = 1;
+} else if (gamepad1.right_bumper) {
+    mod = 0.33;
+} else {
+    mod = 0.66;
+}
+
+// POV Mode uses left stick to go forward, and right stick to turn.
+// - This uses basic math to combine motions and is easier to drive straight.
+double drive = -gamepad1.left_stick_y;
+double turn  =  gamepad1.right_stick_x;
+leftPower    = Range.clip(drive + turn, -mod, mod);
+rightPower   = Range.clip(drive - turn, -mod, mod);
+
+robot.movement.move2x2(leftPower, rightPower);
+```
+
+As it is seen above, the bumpers on the gamepad control the robot's speed (defaults to 66% speed), so it is easier to make precise movements with the robot. Using the [Robot.java](##robot.java) class, we are able to move the robot around.
+
+### Moving the Elevator
+
+On our robot, we utilize a scissor lift as an elevator to move game items up and down. However, to prevent the scissor lift from breaking due to physical limits, we placed two color sensors on our robot with some red tape on the scissor lift. Then, in the programming, we added some code to use gamepad input and the sensors to prevent the robot from breaking.
+
+```java
+if (count % 10 == 0) {
+    sul = robot.sensor.getRGB(0);
+    sud = robot.sensor.getRGB(1);
+}
+
+// Check if the limit switch is hit either way, and set the movable direction.
+if ((sul == 0) && (gamepad2.left_stick_y < DEADZONE)) {
+    // If we cannot go up, and the user tries to go up, we don't allow that to happen.
+    elevatorSpeed = 0;
+} else if ((sud == 0) && (gamepad2.left_stick_y > DEADZONE)) {
+    // If we cannot go down, and the user tries to go down, we don't allow that to happen.
+    elevatorSpeed = 0;
+} else if (Math.abs(gamepad2.left_stick_y) > DEADZONE) {
+    // If the user moves the stick more than 10%, and none of the other conditions are fulfilled, we allow the scissor lift to move
+    elevatorSpeed = -gamepad2.left_stick_y;
+} else {
+    // If the user is not doing anything, we don't allow the scissor lift to move
+    elevatorSpeed = 0;
+}
+
+robot.movement.moveElevator(elevatorSpeed);
+
+count++;
+```
+
+When creating this file, we ran into a few issues. The first one being that there was a lot of lag between pressing a button and the robot reacting. After some debugging, we found the root cause of the issue were the color sensors. Polling the color sensors took too much time in between, so we set it to poll every tenth loop. This led to much less activation time. Another issue we had was that the joysticks were accidentally being hit by the drivers, so we added a deadzone to make sure the presses on the joysticks were intentional. Again, we see that the [Robot.java](##robot.java) class is used for moving the elevator.
+
 ## AutonomousMain.java
+
+We are not yet done with this file.
 
 ## Miscellaneous Calibration Files
 
@@ -252,6 +322,12 @@ This is used to calibrate potentiometers. To use, run this OpMode. Turn the pote
 
 ## Miscellaneous Test Files
 
+These files are used for testing hardware, such as motors and servos. Useful for identifying the servo type and discarding broken hardware.
+
 ### TestMotor.java
 
+Simple program to run all motors at 50% power when the user presses X on the gamepad. Used primarily for identifying broken motors.
+
 ### TestServo.java
+
+Simple program to set all servos to a position when the user presses X on the gamepad. Used for identifying broken servos and distinguishing between continuous rotation servos and normal servos. The continuous rotation servos would spin in only one direction and the normal servos would go to a 90°, then move back to 0°.

@@ -131,21 +131,14 @@ public class BasicMovement extends LinearOpMode {
                 mod = 0.66;
             }
 
-            // Choose to drive using either Tank Mode, or POV Mode
-            // Comment out the method that's not used.  The default below is POV.
-
             // POV Mode uses left stick to go forward, and right stick to turn.
             // - This uses basic math to combine motions and is easier to drive straight.
             double drive = -gamepad1.left_stick_y;
             double turn  =  gamepad1.right_stick_x;
-            leftPower    = Range.clip(drive + turn, -mod, mod) ;
-            rightPower   = Range.clip(drive - turn, -mod, mod) ;
+            leftPower    = Range.clip(drive + turn, -mod, mod);
+            rightPower   = Range.clip(drive - turn, -mod, mod);
 
-            // Tank Mode uses one stick to control each wheel.
-            // - This requires no math, but it is hard to drive forward slowly and keep straight.
-            // leftPower  = -gamepad1.left_stick_y ;
-            // rightPower = -gamepad1.right_stick_y ;
-
+            // Every tenth loop, check the elevator status.
             if (count % 10 == 0) {
                 sul = robot.sensor.getRGB(0);
                 sud = robot.sensor.getRGB(1);
