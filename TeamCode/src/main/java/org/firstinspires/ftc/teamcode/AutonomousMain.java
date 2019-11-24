@@ -34,9 +34,9 @@ public class AutonomousMain extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        DcMotor sc = hardwareMap.get(DcMotor.class, "scissorLift");
-        DcMotor lb = hardwareMap.get(DcMotor.class, "lb");
-        DcMotor rb = hardwareMap.get(DcMotor.class, "rb");
+        DcMotor sc = hardwareMap.get(DcMotor.class, "scissorLift"); // Scissor lift
+        DcMotor lb = hardwareMap.get(DcMotor.class, "lb"); // Left back motor
+        DcMotor rb = hardwareMap.get(DcMotor.class, "rb"); // Right back motor
 
         lb.setDirection(DcMotor.Direction.REVERSE);
         rb.setDirection(DcMotor.Direction.FORWARD);
