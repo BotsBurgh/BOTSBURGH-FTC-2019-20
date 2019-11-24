@@ -154,11 +154,12 @@ class Sensor {
     private boolean targetVisible = false;
 
     // TODO: Initialize more sensors
-    private BNO055IMU[] gyro; // Initializes gyroscope
-    private AnalogInput[] pot; // Initializes potentiometer
-    private DigitalChannel[] button; // Initializes button
-    private ColorSensor[] color; // Initializes color sensor
-    private DistanceSensor[] distance; // Initializes distance sensor
+    private BNO055IMU[] gyro; // Initialize gyroscopes
+    private AnalogInput[] pot; // Initialize potentiometers
+    private DigitalChannel[] button; // Initialize buttons
+    private ColorSensor[] color; // Initialize color sensors
+    private DistanceSensor[] distance; // Initialize distance sensors
+    private WebcamName[] webcams; // Initialize webcams
 
     private Sensor(SensorBuilder b) {
         this.gyro = b.gyro;
@@ -166,6 +167,7 @@ class Sensor {
         this.button = b.button;
         this.color = b.color;
         this.distance = b.distance;
+        this.webcams = b.webcams;
     }
 
     /**
@@ -494,11 +496,12 @@ class Sensor {
      * Magic for using a dynamic set of motors. See the README for more information
      */
     static class SensorBuilder {
-        BNO055IMU[] gyro; // Initializes gyroscope
-        AnalogInput[] pot; // Initializes potentiometer
-        DigitalChannel[] button; // Initializes button
-        ColorSensor[] color; // Initializes color sensor
-        DistanceSensor[] distance; // Initializes distance sensor
+        private BNO055IMU[] gyro; // Initialize gyroscopes
+        private AnalogInput[] pot; // Initialize potentiometers
+        private DigitalChannel[] button; // Initialize buttons
+        private ColorSensor[] color; // Initialize color sensors
+        private DistanceSensor[] distance; // Initialize distance sensors
+        private WebcamName[] webcams; // Initialize webcams
 
         SensorBuilder() {}
 
@@ -524,6 +527,11 @@ class Sensor {
 
         SensorBuilder withDistanceSensors(DistanceSensor... d) {
             this.distance = d;
+            return this;
+        }
+
+        SensorBuilder withWebcams(WebcamName... c) {
+            this.webcams = c;
             return this;
         }
 
