@@ -53,19 +53,19 @@ Most rookie teams don't need to edit anything below this section, but they shoul
 1. bridgeZ: The Z-position of the bridge
 1. bridgeRotY: The Y-rotation of the bridge
 1. bridgeRotZ: The Z-rotation of the bridge
-1. halfField: The 
-1. quadField: 
+1. halfField: The size of the half field
+1. quadField: The size of the half of half field
 
 ### Functions
 
-1. getRGB: 
-1. getRed: 
-1. getGreen: 
-1. getBlue: 
-1. getButton: 
-1. vuforiaInit: 
-1. getVuforiaPosition: 
-1. getVuforiaRotation: 
+1. getRGB: Returns an integer whether the color detected by the sensor is red, green, or blue based on the thresholds outlined earlier. 0 for red, 1 for green, 2 for blue, 3 for grey.
+1. getRed: Returns raw red value
+1. getGreen: Returns raw green value
+1. getBlue: Returns raw blue
+1. getButton: Returns true or false based on whether a button is pressed or not
+1. vuforiaInit: Initializes VuForia. Only really needs to be called once.
+1. getVuforiaPosition: Returns a Vector of the position of the robot based on VuForia
+1. getVuforiaRotation: Returns an Orientation of the rotation of the robot based on VuForia.
 
 ### SensorBuilder
 
