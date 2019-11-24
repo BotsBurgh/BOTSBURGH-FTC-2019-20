@@ -21,7 +21,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name="Motor Testing", group="Test")
+@TeleOp(name="Motor Testing", group="20-Test")
 public class TestMotors extends LinearOpMode {
     // Declare OpMode Members
     private static final double MOTOR_TEST_POWER = 1.0; // Power to test motors with

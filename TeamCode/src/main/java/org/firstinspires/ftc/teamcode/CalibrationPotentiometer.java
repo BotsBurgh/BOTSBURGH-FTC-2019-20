@@ -21,7 +21,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name="Potentiometer Calibration", group="Calibration")
+@TeleOp(name="Potentiometer Calibration", group="10-Calibration")
 public class CalibrationPotentiometer extends LinearOpMode {
     // Declare OpMode Members
     private ElapsedTime runtime = new ElapsedTime();

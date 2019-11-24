@@ -26,7 +26,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name="ServoTester", group="Test")
+@TeleOp(name="ServoTester", group="20-Test")
 public class TestServo extends LinearOpMode {
     @Override
     public void runOpMode() {

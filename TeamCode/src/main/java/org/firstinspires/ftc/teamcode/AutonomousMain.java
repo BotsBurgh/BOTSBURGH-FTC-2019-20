@@ -111,7 +111,7 @@ public class AutonomousMain extends LinearOpMode {
             * Robot rotates itself and foundation until gro detects 360º
             * Robot moves to (-5, -1)
             */
-            
+
             telemetry.addData("Status", "Run Time: " + runtime.toString());
         }
     }

@@ -24,7 +24,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name="Basic Movement", group="TeleOp")
+@TeleOp(name="Basic Movement", group="00-TeleOp")
 public class BasicMovement extends LinearOpMode {
 
     private static final double DEADZONE = 0.05; // Controls controller joystick deadzone

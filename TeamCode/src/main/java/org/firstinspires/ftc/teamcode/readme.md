@@ -149,8 +149,11 @@ Movement.java fulfills similar requirements that Sensor.java does: centralize th
 1. ELEVATOR_POWER: The maximum power sent to the elevator / scissor lift.
 1. SERVO_STEP: The degrees the servo should scan by.
 1. SERVO_SLEEP: The time (in milliseconds) we should wait before scanning the next step in a servo. The total time it will take to scan a servo can be represented by multiplying SERVO_SLEEP by degrees, then dividing by SERVO_STEP.
+1. COUNTS_PER_MOTOR_REV: Usually found on the motor spec sheet (used for encoders)
+1. DRIVE_GEAR_REDUCTION: The gear reduction or increase (used for encoders)
+1. WHEEL_DIAMETER_INCHES: The diameter of the wheel (used for encoders)
 
-Unlike [Sensor.java](##sensor.java), there is not really much more to this than the configuration variable listed above. Most rookie teams don't need to edit anything below this section, but they should in order to get a better understanding of what is going on. Below, we are going to look at two main things: First, we are going to look at the functions, and lastly we are going to look at the MovementBuilder class.
+Unlike [Sensor.java](##sensor.java), there is not really much more to this than the configuration variable listed above other than a static variable used for combining `COUNTS_PER_MOTOR_REV`, `DRIVE_GEAR_REDUCTION`, and `WHEEL_DIAMETER_INCHES` into `COUNTS_PER_INCH`. Most rookie teams don't need to edit anything below this section, but they should in order to get a better understanding of what is going on. Below, we are going to look at two main things: First, we are going to look at the functions, and lastly we are going to look at the MovementBuilder class.
 
 ### Movement Functions
 
@@ -160,6 +163,8 @@ Unlike [Sensor.java](##sensor.java), there is not really much more to this than 
 1. moveElevator: Moves the elevator up and down with respect to the elevator speed cap outlined in the [Static Variables](###static-variables) section.
 1. setServo: Sets a servo to a specific position. Useful for a grabber.
 1. scanServo: Scans a servo (moves the servo to a position slowly). Useful for something requiring less speed.
+1. moveEnc1x4: Moves the robot forward using the encoder and four motors with one variable (inches). Note that encoders are unreliable.
+1. moveEnc1x2: Moves the robot forward using the encoder and two motors with one variable (inches). Note that encoders are unreliable.
 
 ### MovementBuilder
 
@@ -236,7 +241,36 @@ We set the motors to use their own variables so we could change some settings of
 
 ## Robot.java
 
-We are not yet done with this file.
+This file is the epitome of our code, as it integrates [Sensor.java](##sensor.java) and [Movement.java](##movement.java) into one class. This allows us to create functions combining both [Sensor.java](##sensor.java) and [Movement.java](##movement.java), such as those which need to move based on VuForia. In this class, we have a few functions doing just that:
+
+1. gyroTurn: This turns the robot based on the internal gyroscope. Simple code, integrates gyroscope functionality from [Sensor.java](##sensor.java) and the `move2x2` function from [Movement.java](##movement.java). Useful for autonomous in conditions where VuForia is unavailable or unreliable. However, as VuForia is more accurate, you *should* use that instead. See the functions below for instructions on how to do that.
+1. gyroDrive: WIP
+1. vuForiaTurn: This function uses the VuForia orientation function from [Sensor.java](##sensor.java) to determine the angle of the robot, then, using the [Movement.java](##movement.java) class, it will turn the robot until it meets the target angle. Best suited for autonomous.
+1. vuForiaDrive: This function uses the VuForia position function from [Sensor.java](##sensor.java) and some trigonometry to determine how far the robot must turn (using the vuForiaTurn function above), then drive forward (using the [Movement.java](##movement.java) class). Best suited for autonomous.
+
+The code in here is mostly simple, with the exception of the math parts. In this class, we used two main math equations: the distance formula and the inverse tangent formula. Using the built-in `Math` library, these functions were not too complex.
+
+To figure out how much we have to turn:
+
+```java
+double degrees = Math.atan(
+        (Math.abs((targetPos.get(1) -
+                startingPos.get(1))))/
+            (Math.abs((targetPos.get(0) -
+                    startingPos.get(0))))
+); // The formula: degrees = atan((y2-y1)/(x2-x1))
+```
+
+And to figure out how much we have to drive:
+
+```java
+double distance = Math.sqrt(
+        Math.pow(Math.abs(targetPos.get(1) - Math.abs(startingPos.get(1))), 2) + 
+                Math.pow(Math.abs(targetPos.get(0) - Math.abs(startingPos.get(0))), 2)
+); // The formula: distance = sqrt((y2-y1)^2 + (x2-x1)^2)
+```
+
+This file serves the purpose of bridging the gap between the two modular files, [Sensor.java](##sensor.java) and [Movement.java](##movement.java). Because the design of our code is meant to be modular, the bridge between them needs some tweaking to get it to work everywhere. In this file, you may have to modify some functions to suit your robot, such as replacing the `move2x2` function with `move4x4`, or something else, based on your robot's design.
 
 ## BasicMovement.java
 
@@ -331,3 +365,7 @@ Simple program to run all motors at 50% power when the user presses X on the gam
 ### TestServo.java
 
 Simple program to set all servos to a position when the user presses X on the gamepad. Used for identifying broken servos and distinguishing between continuous rotation servos and normal servos. The continuous rotation servos would spin in only one direction and the normal servos would go to a 90°, then move back to 0°.
+
+## Conclusion
+
+This README serves the purpose of educating those who wish to use our API in their robot. Because our code is modular and can be dropped into any other team's code folder and be used easily. The "Big Three" files [Sensor.java](##sensor.java), [Movement.java](##movement.java), and [Robot.java](##robot.java) are strong interfaces with the back-lying code. These files can be used to speed the development of the robot's software, and making switching to Android Studio easier.

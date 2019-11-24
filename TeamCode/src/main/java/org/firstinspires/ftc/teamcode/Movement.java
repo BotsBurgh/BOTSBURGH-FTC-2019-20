@@ -167,7 +167,7 @@ class Movement {
         }
     }
 
-    public void moveEnc4x4(int inches) {
+    public void moveEnc1x4(int inches) {
         motors[1].setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motors[2].setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motors[3].setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -198,7 +198,7 @@ class Movement {
         }
     }
 
-    public void moveEnc2x4(double inches) {
+    public void moveEnc1x2(double inches) {
         motors[3].setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motors[4].setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         motors[3].setTargetPosition((int)(inches*COUNTS_PER_INCH));

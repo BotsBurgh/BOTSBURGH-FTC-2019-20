@@ -22,7 +22,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
 /**
- * Integrates Sensor class and Movement class. Mostly for making code look nice.
+ * Integrates Sensor class and Movement class so we can use VuForia and motors in one function.
  * Use like so: Robot robot = new Robot(new Sensor(whatever), new Movement(whatever));
  * Refer to Movement and Sensor classes for more information on what those classes do.
  * NOTE: You really should not have to edit this file. If you find an error occurring here, add it
@@ -114,12 +114,12 @@ public class Robot {
             Orientation startingOri = sensor.getVuforiaRotation();
 
             // Do some trig to find out the angle we have to turn to in order to go to the target pos.
-            double degrees = Math.tanh(
+            double degrees = Math.atan(
                     (Math.abs((targetPos.get(1) -
                             startingPos.get(1))))/
                         (Math.abs((targetPos.get(0) -
                                 startingPos.get(0))))
-            ); // The formula: degrees = tanh((y2-y1)/(x2-x1))
+            ); // The formula: degrees = atan((y2-y1)/(x2-x1))
 
             Orientation targetOri = new Orientation();
             targetOri.firstAngle = startingOri.firstAngle;
@@ -134,7 +134,10 @@ public class Robot {
             startingPos = sensor.getVuforiaPosition(); // We may have moved a little bit when we turned
 
             // Get distance via distance formula
-            double distance = Math.sqrt((Math.abs(targetPos.get(1) - Math.abs(startingPos.get(1)))) + (Math.abs(targetPos.get(0) - Math.abs(startingPos.get(0)))));
+            double distance = Math.sqrt(
+                    Math.pow(Math.abs(targetPos.get(1) - Math.abs(startingPos.get(1))), 2) +
+                            Math.pow(Math.abs(targetPos.get(0) - Math.abs(startingPos.get(0))), 2)
+            ); // The formula: distance = sqrt((y2-y1)^2 + (x2-x1)^2)
             double distanceSoFar = 0;
             VectorF currentPos;
 
