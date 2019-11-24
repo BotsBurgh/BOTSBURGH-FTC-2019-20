@@ -93,14 +93,20 @@ public class AutonomousMain extends LinearOpMode {
 
             /*
             * Robot faces the track
-            * Robot moves forward about 4 feet
-            * Using the scissor lift mechanism, it'll grab the black block
-            * Robot backs up by about 1 feet
+            * Using vuforia, robot approaches black box
+            * Using the scissor lift mechanism, it'll grab the black box
+            * Robot backs up by about 1.5 feet
             * Robot rotates until gyro detects 90º
-            * Robot approaches 1 feet from red line using color sensor detection
-            * Robot turns back until gyro detects 45º
-            * 
-            *
+            * Robot approaches (3, -1)
+            * Robot turns back until gyro detects 0º
+            * Robot approaches (-4. -1)
+            * Robot turns until gyro detects 135º
+            * Robot approaches (-1, 3)
+            * Robot drops black box on foundation
+            * Robot rotates until gyro detects 150º and pushes foundation along
+            * Robot pushes foundation to triangle slot
+            * Robot rotates itself and foundation until gro detects 360º
+            * Robot moves to (-5, -1)
             */
             telemetry.addData("Status", "Run Time: " + runtime.toString());
         }
