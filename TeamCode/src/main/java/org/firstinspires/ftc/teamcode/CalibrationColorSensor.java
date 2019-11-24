@@ -20,7 +20,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 
-@TeleOp(name="Color Sensor Calibration")
+@TeleOp(name="Color Sensor Calibration", group="Calibration")
 /*
  * The main purpose of this is to calibrate our color sensors. We found that ambient red was causing
  * issues, so we made this file to get proper values for our Sensor class.
