@@ -2,19 +2,19 @@
 
 Note: Everything here is copyrighted by FTC Team BotsBurgh 11792 under the MIT License. See the file LICENSE for more details.
 
-## Welcome to our TeamCode Module!
+## Welcome to our TeamCode Module
 
 This is where the magic of our robot happens. If you are here, it means you want to gain a better understanding of our code. For the remainder of our code, you will see a comprehensive breakdown of our code so it can be easier for you to use.
 
 As a quick breakdown, you will see the following files:
 
-1. [Sensor.java](####sensor.java)
-1. [Movement.java](####movement.java)
-1. [Robot.java](####robot.java)
-1. [BasicMovement.java](####basicmovement.java)
-1. [AutonomousMain.java](####autonomousmain.java)
-1. [Miscellaneous Calibration Files](####miscellaneous-calibration-files)
-1. [Miscellaneous Test Files](####miscellaneous-test-files)
+1. [Sensor.java](##sensor.java)
+1. [Movement.java](##movement.java)
+1. [Robot.java](##robot.java)
+1. [BasicMovement.java](##basicmovement.java)
+1. [AutonomousMain.java](##autonomousmain.java)
+1. [Miscellaneous Calibration Files](##miscellaneous-calibration-files)
+1. [Miscellaneous Test Files](##miscellaneous-test-files)
 
 In each file we will go over what the file does and the individual functions in it. We will NOT be going over it line-by-line. The files are commented enough that you should be able to deduce what is going on.
 
@@ -24,21 +24,21 @@ Lets begin!
 
 ## Sensor.java
 
-This file is part of the "Big Three" of our robot, along with [Movement.java](####movement.java) and [Robot.java](####robot.java), as it is essential to moving around our robot.
+This file is part of the "Big Three" of our robot, along with [Movement.java](##movement.java) and [Robot.java](##robot.java), as it is essential to moving around our robot.
 
-Starting at the beginning of the file, we see a few static variables. These, you probably should change depending on your robot. As outlined in the [Miscellaneous Test Files](####miscellaneous-test-files) section, use the calibration OpModes to find the right values for the static variables. There are a few static variables:
+Starting at the beginning of the file, we see a few static variables. These, you probably should change depending on your robot. As outlined in the [Miscellaneous Test Files](##miscellaneous-test-files) section, use the calibration OpModes to find the right values for the static variables. There are a few static variables:
 
 1. POT_MAX: This is the maximum range of the potentiometer (in degrees)
-1. Vmax: This is the maximum voltage of the potentiometer. See [Potentiometer Calibration](#####calibrationpotentiometer.java)
-1. Vmin: This is the minimum voltage of the potentiometer. See [Potentiometer Calibration](#####calibrationpotentiometer.java)
+1. Vmax: This is the maximum voltage of the potentiometer. See [Potentiometer Calibration](###calibrationpotentiometer.java)
+1. Vmin: This is the minimum voltage of the potentiometer. See [Potentiometer Calibration](###calibrationpotentiometer.java)
 1. CAMERA_CHOICE: This is the variable which stores what camera we are going to use for VuForia. It can be either `BACK` or `FRONT`. Because we are using an external webcam, then this must be `BACK`.
-1. PHONE_IS_PORTRAIT: This is the variable which stores if the camera is rotated or not. Because our (external) camera is at an angle, then this is true. 
+1. PHONE_IS_PORTRAIT: This is the variable which stores if the camera is rotated or not. Because our (external) camera is at an angle, then this is true.
 1. phoneXRotate: Phone X orientation. Don't use this, because it will be changed based on `PHONE_IS_PORTRAIT`.
 1. phoneYRotate: Same thing as phoneXRotate above.
 1. PhoneZRotate: This accounts for an upward tilt of the phone. Because our camera is at the bottom of the robot, then we had to tilt it up by 9.5 degrees. Set to zero if your phone is perfectly straight.
-1. RED_THESH: The threshold for detecting if something is red or not. Refer to the [Color Sensor Calibration](#####calibrationcolorsensor.java) section to find appropriate values.
-1. GREEN_THESH: The threshold for detecting if something is green or not. Refer to the [Color Sensor Calibration](#####calibrationcolorsensor.java) section to find appropriate values.
-1. BLUE_THESH: The threshold for detecting if something is blue or not. Refer to the [Color Sensor Calibration](#####calibrationcolorsensor.java) section to find appropriate values.
+1. RED_THESH: The threshold for detecting if something is red or not. Refer to the [Color Sensor Calibration](###calibrationcolorsensor.java) section to find appropriate values.
+1. GREEN_THESH: The threshold for detecting if something is green or not. Refer to the [Color Sensor Calibration](###calibrationcolorsensor.java) section to find appropriate values.
+1. BLUE_THESH: The threshold for detecting if something is blue or not. Refer to the [Color Sensor Calibration](###calibrationcolorsensor.java) section to find appropriate values.
 
 Most rookie teams don't need to edit anything below this section, but they should in order to get a better understanding of what is going on. Below, we are going to look at three main things: First, we are going to understand some more static variables, then we are going to look at the functions, and lastly we are going to look at the SensorBuilder class.
 
@@ -56,7 +56,7 @@ Most rookie teams don't need to edit anything below this section, but they shoul
 1. halfField: The size of the half field
 1. quadField: The size of the half of half field
 
-### Functions
+### Sensor Functions
 
 1. getRGB: Returns an integer whether the color detected by the sensor is red, green, or blue based on the thresholds outlined earlier. 0 for red, 1 for green, 2 for blue, 3 for grey.
 1. getRed: Returns raw red value
@@ -72,7 +72,8 @@ Most rookie teams don't need to edit anything below this section, but they shoul
 As we built on our Sensor class, we kept on adding constructors based on every single use case we had for the class. We had a constructor for every single configuration we had, and this quickly became bloated and difficult to read. After some quick internet searching, we found a few solutions. First, we had the option to overload each class (a constructor for each use case), which we already were using (and kinda sucked). Next, we had the option to use static factory methods (in which we have prebuilt constructors). While simple to implement and understand, this approach also does not scale well with a large number of optional parameters, which we had. The next solution, a builder pattern, was perfect for our use case. We start by defining our class with a private constructor but then introduce a static nested class to function as a builder. The builder class exposes methods for setting parameters and for building the instance. The first issue (after we got past the syntax) was that we had multiple sensors, and any number of it. This is where the next solution comes in: Varargs. Varargs provide a way of to declare that a method accepts 0 or more arguments of a specified type. We essentially passed an array of sensors to the SensorBuilder split up by sensor type. This allowed us to have multiple sensors and with much less code. Along with it being easy to program, it is easy to extend to adapt to more sensors.
 
 Here is an example of our SensorBuilder class:
-```
+
+```java
 static class SensorBuilder {
     private BNO055IMU[] gyro; // Initialize gyroscopes
     private AnalogInput[] pot; // Initialize potentiometers
@@ -121,7 +122,7 @@ static class SensorBuilder {
 
 It is very simple to use. We would pass a list of, say, color sensors to the builder like so:
 
-```
+```java
 ColorSensor[] colorSensors = new ColorSensor[] {
     hardwareMap.get(ColorSensor.class, "scissorDownLimit"),
     hardwareMap.get(ColorSensor.class, "scissorUpLimit")
@@ -133,9 +134,103 @@ Sensor sensors = new Sensor
     .build();
 ```
 
-The main sources we used were: https://stackify.com/optional-parameters-java/ and https://www.baeldung.com/creational-design-patterns#builder. 
+The main sources we used were: <https://stackify.com/optional-parameters-java/> and <https://www.baeldung.com/creational-design-patterns#builder>.
 
 ## Movement.java
+
+Movement.java fulfills similar requirements that Sensor.java does: centralize the robot's movement functions into one file. This is somewhat easier to write than the Sensor class, but comes with its own issues we have to fix. First, we will go over some static variables that the users probably should change (but usually are fine without changing them), then we will move on to the functions, and lastly to the builder.
+
+### Static Variables
+
+1. TURN_POWER: How much power to send to the motors when we are turning in Autonomous
+1. DRIVE_POWER: How much power to send to the motors when we are moving straight forward in autonomous
+1. ELEVATOR_POWER: The maximum power sent to the elevator / scissor lift.
+1. SERVO_STEP: The degrees the servo should scan by.
+1. SERVO_SLEEP: The time (in milliseconds) we should wait before scanning the next step in a servo. The total time it will take to scan a servo can be represented by multiplying SERVO_SLEEP by degrees, then dividing by SERVO_STEP.
+
+Unlike [Sensor.java](##sensor.java), there is not really much more to this than the configuration variable listed above. Most rookie teams don't need to edit anything below this section, but they should in order to get a better understanding of what is going on. Below, we are going to look at two main things: First, we are going to look at the functions, and lastly we are going to look at the MovementBuilder class.
+
+### Movement Functions
+
+1. move4x4: Uses four motors and four variables, moves each wheel independently from the others. This is useful for a mecanum drive.
+1. move2x4: Uses four motors and two variables, moves each side independently from the other. This is useful for a traditional drivetrain.
+1. move2x2: Uses two motors and two variables, moves each wheel independently from the other. This is useful for a back-wheel drive.
+1. moveElevator: Moves the elevator up and down with respect to the elevator speed cap outlined in the [Static Variables](###static-variables) section.
+1. setServo: Sets a servo to a specific position. Useful for a grabber.
+1. scanServo: Scans a servo (moves the servo to a position slowly). Useful for something requiring less speed.
+
+### MovementBuilder
+
+Similarly to [Sensor.java](##sensor.java), we also are using a builder class to replace our constructors. It is written similarly to [Sensor.java](##sensor.java). Here is an example:
+
+```java
+static class MovementBuilder {
+    private DcMotor[] motors;
+    private Servo[] servos;
+    private CRServo[] crServos;
+
+    /**
+     * In this format:
+     * [ Elevator,
+     *   Front Left, Front Right,
+     *   Back Left,  Back Right ]
+     *  So, Elevator is id 0
+     *  FL is 1
+     *  FR is 2
+     *  BL is 3
+     *  BR is 4
+     */
+    MovementBuilder withMotors(DcMotor... m) {
+        this.motors = m;
+        return this;
+    }
+
+    MovementBuilder withServos(Servo... s) {
+        this.servos = s;
+        return this;
+    }
+
+    MovementBuilder withCRServos(CRServo... c) {
+        this.crServos = c;
+        return this;
+    }
+
+    Movement build() {
+        return new Movement(this);
+    }
+}
+```
+
+You can see that the builder classes are very similar between [Sensor.java](##sensor.java) and [Movement.java](##movement.java). You should be able to infer that the initialization would be very similar too, and you would be right.
+
+```java
+DcMotor sc = hardwareMap.get(DcMotor.class, "scissorLift");
+DcMotor lb = hardwareMap.get(DcMotor.class, "lb");
+DcMotor rb = hardwareMap.get(DcMotor.class, "rb");
+
+DcMotor[] motors = new DcMotor[] {
+        sc,
+        null, null, // Because we don't have front motors
+        lb, rb
+};
+
+Movement base = new Movement
+        .MovementBuilder()
+        .withMotors(motors)
+        .build();
+
+// Most robots need the motor on one side to be reversed to drive forward
+// Reverse the motor that runs backwards when connected directly to the battery
+sc.setDirection(DcMotor.Direction.FORWARD);
+lb.setDirection(DcMotor.Direction.REVERSE);
+rb.setDirection(DcMotor.Direction.FORWARD);
+
+sc.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+lb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+rb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+```
+
+We set the motors to use their own variables so we could change some settings of the motors later, such as the zero-power behavior and the direction the motors spin in.
 
 ## Robot.java
 
@@ -149,11 +244,11 @@ These files are used for finding values of sensors. Useful to ensure if the sens
 
 ### CalibrationColorSensor.java
 
-This is used to find suitable thresholds for the red, green, and blue detectors in [Sensor.java](####sensor.java). Use the returned values to find suitable thresholds for the sensor class.
+This is used to find suitable thresholds for the red, green, and blue detectors in [Sensor.java](##sensor.java). Use the returned values to find suitable thresholds for the sensor class.
 
 ### CalibrationPotentiometer.java
 
-This is used to calibrate potentiometers. To use, run this OpMode. Turn the potentiometer all the way to one end, and note the number. Turn it to the other end and note down that number too. The smaller number (usually very close to zero) is `Vmin` in [Sensor.java](####sensor.java) and the higher number is `Vmax`. Along with this, you must also find the range of a potentiometer, usually 270°. The number should be on the spec sheet. This number is `POT_MAX`.
+This is used to calibrate potentiometers. To use, run this OpMode. Turn the potentiometer all the way to one end, and note the number. Turn it to the other end and note down that number too. The smaller number (usually very close to zero) is `Vmin` in [Sensor.java](##sensor.java) and the higher number is `Vmax`. Along with this, you must also find the range of a potentiometer, usually 270°. The number should be on the spec sheet. This number is `POT_MAX`.
 
 ## Miscellaneous Test Files
 

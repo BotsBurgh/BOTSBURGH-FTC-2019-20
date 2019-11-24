@@ -45,7 +45,11 @@ class Movement {
     private double DRIVE_POWER = 0.6; // How fast to drive
 
     // Elevator configuration
-    final private static double ELEVATOR_THRESH = 1.00;
+    final private static double ELEVATOR_POWER = 1.00;
+
+    // Servo configuration
+    final private static int SERVO_SLEEP = 10; // Milliseconds
+    final private static int SERVO_STEP  = 1;  // Degrees
 
     /**
      ######  #######    #     # ####### #######    ####### ######  ### #######
@@ -129,7 +133,34 @@ class Movement {
      * @param speed Speed of the elevator
      */
     void moveElevator(double speed) {
-        motors[0].setPower(speed*ELEVATOR_THRESH);
+        motors[0].setPower(speed*ELEVATOR_POWER);
+    }
+
+    /**
+     * Sets the servo to a specific position. Useful if we do not want to slowly scan the servo to a position
+     * @param id ID of the servo
+     * @param degrees Position (in degrees) to set the servo to.
+     */
+    void setServo(int id, double degrees) {
+        servos[id].setPosition(degrees);
+    }
+
+    /**
+     * Scan the servo (move the servo slowly) to a position.
+     * @param id ID of servo
+     * @param degrees Position (in degrees) to scan the servo to.
+     */
+    void scanServo(int id, double degrees) {
+        while (servos[id].getPosition() != degrees) {
+            if (servos[id].getPosition() > degrees) {
+                // Scan down
+                servos[id].setPosition(servos[id].getPosition() - SERVO_STEP);
+            } else if (servos[id].getPosition() < degrees) {
+                // Scan up
+                servos[id].setPosition(servos[id].getPosition() + SERVO_STEP);
+            }
+            sleep(SERVO_SLEEP);
+        }
     }
 
     /**
