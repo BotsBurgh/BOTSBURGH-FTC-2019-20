@@ -38,38 +38,46 @@ public class AutonomousMain extends LinearOpMode {
         DcMotor lb = hardwareMap.get(DcMotor.class, "lb"); // Left back motor
         DcMotor rb = hardwareMap.get(DcMotor.class, "rb"); // Right back motor
 
-        lb.setDirection(DcMotor.Direction.REVERSE);
-        rb.setDirection(DcMotor.Direction.FORWARD);
+        // Because motors are in opposite directions, we have to reverse one motor.
+        lb.setDirection(DcMotor.Direction.REVERSE); // Left motor is set to move in the reverse direction
+        rb.setDirection(DcMotor.Direction.FORWARD); // Right motor is set to move in the forward direction
 
-        lb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        // We want both motors to shut off power, so we can completely stop the robot when we command the robot to stop.
+        lb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE); // Power to left motor will be reset to zero
+        rb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE); // Power to right motor will be reset to zero
 
+        // Initialize color sensors
         ColorSensor[] colorSensors = new ColorSensor[] {
                 hardwareMap.get(ColorSensor.class, "scissorDownLimit"),
                 hardwareMap.get(ColorSensor.class, "sensorUpLimit")
         };
 
+        // Initialize Web Cam
         WebcamName[] webcams = new WebcamName[] {
                 hardwareMap.get(WebcamName.class, "webcam1")
         };
 
+        // Initializes the scissor lift mechanism, left back motor, and right back motor
         DcMotor[] motors = new DcMotor[] {
                 sc,
                 null, null, // Because we don't have front motors
                 lb, rb
         };
 
+        // Initialize sensor class
         Sensor sensor = new Sensor
                 .SensorBuilder()
                 .withColorSensors(colorSensors)
                 .withWebcams(webcams)
                 .build();
 
+        // Initializes movement class
         Movement movement = new Movement
                 .MovementBuilder()
                 .withMotors(motors)
                 .build();
 
+        // Initializes the robot object
         Robot robot = new Robot(sensor, movement);
 
         telemetry.addData("Status", "Initialized");
@@ -83,6 +91,17 @@ public class AutonomousMain extends LinearOpMode {
         while (opModeIsActive()) {
             // Here goes.
 
+            /*
+            * Robot faces the track
+            * Robot moves forward about 4 feet
+            * Using the scissor lift mechanism, it'll grab the black block
+            * Robot backs up by about 1 feet
+            * Robot rotates until gyro detects 90º
+            * Robot approaches 1 feet from red line using color sensor detection
+            * Robot turns back until gyro detects 45º
+            * 
+            *
+            */
             telemetry.addData("Status", "Run Time: " + runtime.toString());
         }
     }
