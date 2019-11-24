@@ -149,9 +149,9 @@ public class Sensor {
      * This is the webcam we are to use. As with other hardware devices such as motors and
      * servos, this device is identified using the robot configuration tool in the FTC application.
      */
-    WebcamName webcamName = null;
+    private WebcamName webcamName = null;
 
-    public boolean targetVisible = false;
+    private boolean targetVisible = false;
 
     // TODO: Initialize more sensors
     private BNO055IMU[] gyro; // Initializes gyroscope
@@ -167,7 +167,7 @@ public class Sensor {
         this.color = b.color;
         this.distance = b.distance;
     }
-    
+
     /**
      * Gets the RGB value of the color sensor
      * @return 0 if red, 1 if green, 2 if blue, 3 if none
@@ -189,7 +189,7 @@ public class Sensor {
      * @param id ID of the color sensor
      * @return Boolean on if the sensor detects red or not
      */
-    public int getRed(int id) {
+    int getRed(int id) {
         return color[id].red();
     }
 
@@ -198,7 +198,7 @@ public class Sensor {
      * @param id ID of the color sensor
      * @return Boolean on if the sensor detects green or not
      */
-    public int getGreen(int id) {
+    int getGreen(int id) {
         return color[id].green();
     }
 
@@ -207,7 +207,7 @@ public class Sensor {
      * @param id ID of the color sensor
      * @return Boolean on if the sensor detects blue or not
      */
-    public int getBlue(int id) {
+    int getBlue(int id) {
         return color[id].blue();
     }
 
@@ -216,7 +216,7 @@ public class Sensor {
      * @param id ID of the button
      * @return Boolean of if the button is pressed or not
      */
-    public boolean getButton(int id) {
+    boolean getButton(int id) {
         return !(button[id].getState());
     }
 
@@ -225,12 +225,12 @@ public class Sensor {
      * @param id ID of the potentiometer
      * @return Degrees of the potentiometer
      */
-    public double getPot(int id) {
+    double getPot(int id) {
         return (POT_MAX/(Vmax-Vmin))*(pot[id].getVoltage()-Vmin); // Converts voltage to angle (degrees)
     }
 
     // TODO: Add Javadoc / other documentation
-    public void vuforiaInit(int cmvi) { // Probably needs to be called only once to
+    void vuforiaInit(int cameraMonitorViewId) { // Probably needs to be called only once to
         // initialize. Not really tested yet. It's gonna cause some issues, so we're gonna have to
         // add some type of check step if to make sure it has not already been initialized.
         /*
@@ -242,14 +242,13 @@ public class Sensor {
          * We can pass Vuforia the handle to a camera preview resource (on the RC phone);
          * If no camera monitor is desired, use the parameter-less constructor instead (commented out below).
          */
-        int cameraMonitorViewId = cmvi;
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
 
         // VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
 
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
 
-        /**
+        /*
          * We also indicate which camera on the RC we wish to use.
          */
         parameters.cameraName = webcamName;
@@ -289,10 +288,10 @@ public class Sensor {
         rear2.setName("Rear Perimeter 2");
 
         // For convenience, gather together all the trackable objects in one easily-iterable collection */
-        allTrackables = new ArrayList<VuforiaTrackable>();
+        allTrackables = new ArrayList<>();
         allTrackables.addAll(targetsSkyStone);
 
-        /**
+        /*
          * In order for localization to work, we need to tell the system where each target is on the field, and
          * where the phone resides on the robot.  These specifications are in the form of <em>transformation matrices.</em>
          * Transformation matrices are a central, important concept in the math here involved in localization.
@@ -404,7 +403,7 @@ public class Sensor {
                 .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES, phoneYRotate, phoneZRotate, phoneXRotate));
 
-        /**  Let all the trackable listeners know where the phone is.  */
+        //  Let all the trackable listeners know where the phone is.
         for (VuforiaTrackable trackable : allTrackables) {
             ((VuforiaTrackableDefaultListener) trackable.getListener()).setPhoneInformation(robotFromCamera, parameters.cameraDirection);
         }
@@ -413,7 +412,7 @@ public class Sensor {
         // In this sample, we do not wait for PLAY to be pressed.  Target Tracking is started immediately when INIT is pressed.
         // This sequence is used to enable the new remote DS Camera Preview feature to be used with this sample.
         // CONSEQUENTLY do not put any driving commands in this loop.
-        // To restore the normal opmode structure, just un-comment the following line:
+        // To restore the normal OpMode structure, just un-comment the following line:
 
         // waitForStart();
 
@@ -424,7 +423,7 @@ public class Sensor {
         targetsSkyStone.activate();
     }
 
-    public VectorF getVuforiaPosition() {
+    VectorF getVuforiaPosition() {
         VectorF translation;
         Orientation rotation;
         targetVisible = false;
@@ -455,7 +454,7 @@ public class Sensor {
         return translation;
     }
 
-    public Orientation getVuforiaRotation() {
+    Orientation getVuforiaRotation() {
         VectorF translation;
         Orientation rotation;
         targetVisible = false;
@@ -487,48 +486,48 @@ public class Sensor {
         return rotation;
     }
 
-    public void stopVuforia() {
+    void stopVuforia() {
         targetsSkyStone.deactivate();
     }
 
     /**
      * Magic for using a dynamic set of motors. See the README for more information
      */
-    public static class SensorBuilder {
+    static class SensorBuilder {
         BNO055IMU[] gyro; // Initializes gyroscope
         AnalogInput[] pot; // Initializes potentiometer
         DigitalChannel[] button; // Initializes button
         ColorSensor[] color; // Initializes color sensor
         DistanceSensor[] distance; // Initializes distance sensor
 
-        public SensorBuilder() {};
+        SensorBuilder() {};
 
-        public SensorBuilder withButtons(DigitalChannel... c) {
+        SensorBuilder withButtons(DigitalChannel... c) {
             this.button = c;
             return this;
         }
 
-        public SensorBuilder withPotentiometers(AnalogInput... a) {
+        SensorBuilder withPotentiometers(AnalogInput... a) {
             this.pot = a;
             return this;
         }
 
-        public SensorBuilder withColorSensors(ColorSensor... c) {
+        SensorBuilder withColorSensors(ColorSensor... c) {
             this.color = c;
             return this;
         }
 
-        public SensorBuilder withGyros(BNO055IMU... g) {
+        SensorBuilder withGyros(BNO055IMU... g) {
             this.gyro = g;
             return this;
         }
 
-        public SensorBuilder withDistanceSensors(DistanceSensor... d) {
+        SensorBuilder withDistanceSensors(DistanceSensor... d) {
             this.distance = d;
             return this;
         }
 
-        public Sensor build() {
+        Sensor build() {
             return new Sensor(this);
         }
     }
