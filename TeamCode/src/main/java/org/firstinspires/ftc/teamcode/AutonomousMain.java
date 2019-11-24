@@ -27,7 +27,7 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 
 
-@Autonomous(name="Autonomous Test 1")
+@Autonomous(name="Autonomous Test 1", group="Autonomous")
 public class AutonomousMain extends LinearOpMode {
     // Declare OpMode Members
     private ElapsedTime runtime = new ElapsedTime();
