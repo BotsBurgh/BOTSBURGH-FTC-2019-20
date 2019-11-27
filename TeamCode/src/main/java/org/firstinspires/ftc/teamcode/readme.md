@@ -265,7 +265,7 @@ And to figure out how much we have to drive:
 
 ```java
 double distance = Math.sqrt(
-        Math.pow(Math.abs(targetPos.get(1) - Math.abs(startingPos.get(1))), 2) + 
+        Math.pow(Math.abs(targetPos.get(1) - Math.abs(startingPos.get(1))), 2) +
                 Math.pow(Math.abs(targetPos.get(0) - Math.abs(startingPos.get(0))), 2)
 ); // The formula: distance = sqrt((y2-y1)^2 + (x2-x1)^2)
 ```
