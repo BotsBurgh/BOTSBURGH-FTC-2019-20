@@ -8,13 +8,13 @@ This is where the magic of our robot happens. If you are here, it means you want
 
 As a quick breakdown, you will see the following files:
 
-1. [Sensor.java](#sensor.java)
-1. [Movement.java](#movement.java)
-1. [Robot.java](#robot.java)
-1. [BasicMovement.java](#basicmovement.java)
-1. [AutonomousMain.java](#autonomousmain.java)
-1. [Miscellaneous Calibration Files](#miscellaneous-calibration-files)
-1. [Miscellaneous Test Files](#miscellaneous-test-files)
+1. [Sensor.java](#Sensor.java)
+1. [Movement.java](#Movement.java)
+1. [Robot.java](#Robot.java)
+1. [BasicMovement.java](#BasicMovement.java)
+1. [AutonomousMain.java](#AutonomousMain.java)
+1. [Miscellaneous Calibration Files](#Miscellaneous-Calibration-Files)
+1. [Miscellaneous Test Files](#Miscellaneous-Test-Files)
 
 In each file we will go over what the file does and the individual functions in it. We will NOT be going over it line-by-line. The files are commented enough that you should be able to deduce what is going on.
 
