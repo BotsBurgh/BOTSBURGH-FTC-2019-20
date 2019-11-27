@@ -117,24 +117,23 @@ public class AutonomousMain extends LinearOpMode {
             * Robot moves to (-5, -1)
             */
 
+            target = new VectorF(4, 4); // This is the desired coordinate robot must move to: (4, 4)
+            robot.vuForiaGoto(target); // Robot moves to the ideal spot where it can detect the black box
             // TODO - Detecting the black box to approach it
             // TODO - Grabbing the black box
             // TODO - Backing off about 1.5 feet to rotate itself 90º
-            robot.gyroTurn(90);
-            target = new VectorF(3, -1);
-            robot.vuForiaGoto(target);
-            robot.gyroTurn(0);
-            target = new VectorF(-4, -1);
-            robot.vuForiaGoto(target);
-            robot.gyroTurn(135);
-            target = new VectorF(-1, 3);
-            robot.vuForiaGoto(target);
+            robot.gyroTurn(90); // Robot turns 90º
+            target = new VectorF(3, -1); // This is the desired coordinate robot moves to: (3, -1)
+            robot.vuForiaGoto(target); // Robot nears the opponent team's bridge
+            target = new VectorF(-4, -1); // This is the desired coordinate robot moves to: (-4, -1)
+            robot.vuForiaGoto(target); // Robot nears our team's bridge
+            target = new VectorF(-3, 3); // This is the desired coordinate robot moves to: (-3, 3)
+            robot.vuForiaGoto(target); // Robot approaches the foundation, crossing under the bridge
             // TODO - Dropping black box on to the foundation
-            robot.gyroTurn(150);
-            // TODO - Pushing foundation to the triangle
-            robot.gyroTurn(360);
-            target = new VectorF(-5, -1);
+            target = new VectorF(-5, 5);
             robot.vuForiaGoto(target);
+            target = new VectorF(-5, 0); // This is the desired coordinate: (-5, -1)
+            robot.vuForiaGoto(target); // Robot crossed under the bridge once again
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
         }
