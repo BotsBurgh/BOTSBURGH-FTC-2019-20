@@ -16,6 +16,8 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import android.graphics.drawable.VectorDrawable;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -23,6 +25,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 
@@ -80,6 +83,8 @@ public class AutonomousMain extends LinearOpMode {
         // Initializes the robot object
         Robot robot = new Robot(sensor, movement);
 
+        VectorF target;
+
         // Initialize VuForia
         robot.sensor.vuforiaInit(0);
 
@@ -111,6 +116,25 @@ public class AutonomousMain extends LinearOpMode {
             * Robot rotates itself and foundation until gro detects 360º
             * Robot moves to (-5, -1)
             */
+
+            // TODO - Detecting the black box to approach it
+            // TODO - Grabbing the black box
+            // TODO - Backing off about 1.5 feet to rotate itself 90º
+            robot.gyroTurn(90);
+            target = new VectorF(3, -1);
+            robot.vuForiaGoto(target);
+            robot.gyroTurn(0);
+            target = new VectorF(-4, -1);
+            robot.vuForiaGoto(target);
+            robot.gyroTurn(135);
+            target = new VectorF(-1, 3);
+            robot.vuForiaGoto(target);
+            // TODO - Dropping black box on to the foundation
+            robot.gyroTurn(150);
+            // TODO - Pushing foundation to the triangle
+            robot.gyroTurn(360);
+            target = new VectorF(-5, -1);
+            robot.vuForiaGoto(target);
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
         }
