@@ -8,13 +8,13 @@ This is where the magic of our robot happens. If you are here, it means you want
 
 As a quick breakdown, you will see the following files:
 
-1. [Sensor.java](##sensor.java)
-1. [Movement.java](##movement.java)
-1. [Robot.java](##robot.java)
-1. [BasicMovement.java](##basicmovement.java)
-1. [AutonomousMain.java](##autonomousmain.java)
-1. [Miscellaneous Calibration Files](##miscellaneous-calibration-files)
-1. [Miscellaneous Test Files](##miscellaneous-test-files)
+1. [Sensor.java](#sensorjava)
+1. [Movement.java](#movementjava)
+1. [Robot.java](#robotjava)
+1. [BasicMovement.java](#BasicMovementjava)
+1. [AutonomousMain.java](#AutonomousMainjava)
+1. [Miscellaneous Calibration Files](#Miscellaneous-Calibration-Files)
+1. [Miscellaneous Test Files](#Miscellaneous-Test-Files)
 
 In each file we will go over what the file does and the individual functions in it. We will NOT be going over it line-by-line. The files are commented enough that you should be able to deduce what is going on.
 
@@ -26,21 +26,21 @@ Lets begin!
 
 ## Sensor.java
 
-This file is part of the "Big Three" of our robot, along with [Movement.java](##movement.java) and [Robot.java](##robot.java), as it is essential to moving around our robot.
+This file is part of the "Big Three" of our robot, along with [Movement.java](#movementjava) and [Robot.java](#robotjava), as it is essential to moving around our robot.
 
-Starting at the beginning of the file, we see a few static variables. These, you probably should change depending on your robot. As outlined in the [Miscellaneous Test Files](##miscellaneous-test-files) section, use the calibration OpModes to find the right values for the static variables. There are a few static variables:
+Starting at the beginning of the file, we see a few static variables. These, you probably should change depending on your robot. As outlined in the [Miscellaneous Test Files](#miscellaneous-test-files) section, use the calibration OpModes to find the right values for the static variables. There are a few static variables:
 
 1. POT_MAX: This is the maximum range of the potentiometer (in degrees)
-1. Vmax: This is the maximum voltage of the potentiometer. See [Potentiometer Calibration](###calibrationpotentiometer.java)
-1. Vmin: This is the minimum voltage of the potentiometer. See [Potentiometer Calibration](###calibrationpotentiometer.java)
+1. Vmax: This is the maximum voltage of the potentiometer. See [Potentiometer Calibration](#calibrationpotentiometerjava)
+1. Vmin: This is the minimum voltage of the potentiometer. See [Potentiometer Calibration](#calibrationpotentiometerjava)
 1. CAMERA_CHOICE: This is the variable which stores what camera we are going to use for VuForia. It can be either `BACK` or `FRONT`. Because we are using an external webcam, then this must be `BACK`.
 1. PHONE_IS_PORTRAIT: This is the variable which stores if the camera is rotated or not. Because our (external) camera is at an angle, then this is true.
 1. phoneXRotate: Phone X orientation. Don't use this, because it will be changed based on `PHONE_IS_PORTRAIT`.
 1. phoneYRotate: Same thing as phoneXRotate above.
 1. PhoneZRotate: This accounts for an upward tilt of the phone. Because our camera is at the bottom of the robot, then we had to tilt it up by 9.5 degrees. Set to zero if your phone is perfectly straight.
-1. RED_THESH: The threshold for detecting if something is red or not. Refer to the [Color Sensor Calibration](###calibrationcolorsensor.java) section to find appropriate values.
-1. GREEN_THESH: The threshold for detecting if something is green or not. Refer to the [Color Sensor Calibration](###calibrationcolorsensor.java) section to find appropriate values.
-1. BLUE_THESH: The threshold for detecting if something is blue or not. Refer to the [Color Sensor Calibration](###calibrationcolorsensor.java) section to find appropriate values.
+1. RED_THESH: The threshold for detecting if something is red or not. Refer to the [Color Sensor Calibration](#calibrationcolorsensorjava) section to find appropriate values.
+1. GREEN_THESH: The threshold for detecting if something is green or not. Refer to the [Color Sensor Calibration](#calibrationcolorsensorjava) section to find appropriate values.
+1. BLUE_THESH: The threshold for detecting if something is blue or not. Refer to the [Color Sensor Calibration](#calibrationcolorsensorjava) section to find appropriate values.
 
 Most rookie teams don't need to edit anything below this section, but they should in order to get a better understanding of what is going on. Below, we are going to look at three main things: First, we are going to understand some more static variables, then we are going to look at the functions, and lastly we are going to look at the SensorBuilder class.
 
@@ -153,14 +153,14 @@ Movement.java fulfills similar requirements that Sensor.java does: centralize th
 1. DRIVE_GEAR_REDUCTION: The gear reduction or increase (used for encoders)
 1. WHEEL_DIAMETER_INCHES: The diameter of the wheel (used for encoders)
 
-Unlike [Sensor.java](##sensor.java), there is not really much more to this than the configuration variable listed above other than a static variable used for combining `COUNTS_PER_MOTOR_REV`, `DRIVE_GEAR_REDUCTION`, and `WHEEL_DIAMETER_INCHES` into `COUNTS_PER_INCH`. Most rookie teams don't need to edit anything below this section, but they should in order to get a better understanding of what is going on. Below, we are going to look at two main things: First, we are going to look at the functions, and lastly we are going to look at the MovementBuilder class.
+Unlike [Sensor.java](#sensorjava), there is not really much more to this than the configuration variable listed above other than a static variable used for combining `COUNTS_PER_MOTOR_REV`, `DRIVE_GEAR_REDUCTION`, and `WHEEL_DIAMETER_INCHES` into `COUNTS_PER_INCH`. Most rookie teams don't need to edit anything below this section, but they should in order to get a better understanding of what is going on. Below, we are going to look at two main things: First, we are going to look at the functions, and lastly we are going to look at the MovementBuilder class.
 
 ### Movement Functions
 
 1. move4x4: Uses four motors and four variables, moves each wheel independently from the others. This is useful for a mecanum drive.
 1. move2x4: Uses four motors and two variables, moves each side independently from the other. This is useful for a traditional drivetrain.
 1. move2x2: Uses two motors and two variables, moves each wheel independently from the other. This is useful for a back-wheel drive.
-1. moveElevator: Moves the elevator up and down with respect to the elevator speed cap outlined in the [Static Variables](###static-variables) section.
+1. moveElevator: Moves the elevator up and down with respect to the elevator speed cap outlined in the [Static Variables](#static-variables) section.
 1. setServo: Sets a servo to a specific position. Useful for a grabber.
 1. scanServo: Scans a servo (moves the servo to a position slowly). Useful for something requiring less speed.
 1. moveEnc1x4: Moves the robot forward using the encoder and four motors with one variable (inches). Note that encoders are unreliable.
@@ -168,7 +168,7 @@ Unlike [Sensor.java](##sensor.java), there is not really much more to this than 
 
 ### MovementBuilder
 
-Similarly to [Sensor.java](##sensor.java), we also are using a builder class to replace our constructors. It is written similarly to [Sensor.java](##sensor.java). Here is an example:
+Similarly to [Sensor.java](#sensorjava), we also are using a builder class to replace our constructors. It is written similarly to [Sensor.java](#sensorjava). Here is an example:
 
 ```java
 static class MovementBuilder {
@@ -208,7 +208,7 @@ static class MovementBuilder {
 }
 ```
 
-You can see that the builder classes are very similar between [Sensor.java](##sensor.java) and [Movement.java](##movement.java). You should be able to infer that the initialization would be very similar too, and you would be right.
+You can see that the builder classes are very similar between [Sensor.java](#sensorjava) and [Movement.java](#movementjava). You should be able to infer that the initialization would be very similar too, and you would be right.
 
 ```java
 DcMotor sc = hardwareMap.get(DcMotor.class, "scissorLift");
@@ -241,12 +241,12 @@ We set the motors to use their own variables so we could change some settings of
 
 ## Robot.java
 
-This file is the epitome of our code, as it integrates [Sensor.java](##sensor.java) and [Movement.java](##movement.java) into one class. This allows us to create functions combining both [Sensor.java](##sensor.java) and [Movement.java](##movement.java), such as those which need to move based on VuForia. In this class, we have a few functions doing just that:
+This file is the epitome of our code, as it integrates [Sensor.java](#sensorjava) and [Movement.java](#movementjava) into one class. This allows us to create functions combining both [Sensor.java](#sensorjava) and [Movement.java](#movementjava), such as those which need to move based on VuForia. In this class, we have a few functions doing just that:
 
-1. gyroTurn: This turns the robot based on the internal gyroscope. Simple code, integrates gyroscope functionality from [Sensor.java](##sensor.java) and the `move2x2` function from [Movement.java](##movement.java). Useful for autonomous in conditions where VuForia is unavailable or unreliable. However, as VuForia is more accurate, you *should* use that instead. See the functions below for instructions on how to do that.
+1. gyroTurn: This turns the robot based on the internal gyroscope. Simple code, integrates gyroscope functionality from [Sensor.java](#sensorjava) and the `move2x2` function from [Movement.java](#movementjava). Useful for autonomous in conditions where VuForia is unavailable or unreliable. However, as VuForia is more accurate, you *should* use that instead. See the functions below for instructions on how to do that.
 1. gyroDrive: WIP
-1. vuForiaTurn: This function uses the VuForia orientation function from [Sensor.java](##sensor.java) to determine the angle of the robot, then, using the [Movement.java](##movement.java) class, it will turn the robot until it meets the target angle. Best suited for autonomous.
-1. vuForiaDrive: This function uses the VuForia position function from [Sensor.java](##sensor.java) and some trigonometry to determine how far the robot must turn (using the vuForiaTurn function above), then drive forward (using the [Movement.java](##movement.java) class). Best suited for autonomous.
+1. vuForiaTurn: This function uses the VuForia orientation function from [Sensor.java](#sensorjava) to determine the angle of the robot, then, using the [Movement.java](#movementjava) class, it will turn the robot until it meets the target angle. Best suited for autonomous.
+1. vuForiaDrive: This function uses the VuForia position function from [Sensor.java](#sensorjava) and some trigonometry to determine how far the robot must turn (using the vuForiaTurn function above), then drive forward (using the [Movement.java](#movementjava) class). Best suited for autonomous.
 
 The code in here is mostly simple, with the exception of the math parts. In this class, we used two main math equations: the distance formula and the inverse tangent formula. Using the built-in `Math` library, these functions were not too complex.
 
@@ -265,12 +265,12 @@ And to figure out how much we have to drive:
 
 ```java
 double distance = Math.sqrt(
-        Math.pow(Math.abs(targetPos.get(1) - Math.abs(startingPos.get(1))), 2) + 
+        Math.pow(Math.abs(targetPos.get(1) - Math.abs(startingPos.get(1))), 2) +
                 Math.pow(Math.abs(targetPos.get(0) - Math.abs(startingPos.get(0))), 2)
 ); // The formula: distance = sqrt((y2-y1)^2 + (x2-x1)^2)
 ```
 
-This file serves the purpose of bridging the gap between the two modular files, [Sensor.java](##sensor.java) and [Movement.java](##movement.java). Because the design of our code is meant to be modular, the bridge between them needs some tweaking to get it to work everywhere. In this file, you may have to modify some functions to suit your robot, such as replacing the `move2x2` function with `move4x4`, or something else, based on your robot's design.
+This file serves the purpose of bridging the gap between the two modular files, [Sensor.java](#sensorjava) and [Movement.java](#movementjava). Because the design of our code is meant to be modular, the bridge between them needs some tweaking to get it to work everywhere. In this file, you may have to modify some functions to suit your robot, such as replacing the `move2x2` function with `move4x4`, or something else, based on your robot's design.
 
 ## BasicMovement.java
 
@@ -304,7 +304,7 @@ rightPower   = Range.clip(drive - turn, -mod, mod);
 robot.movement.move2x2(leftPower, rightPower);
 ```
 
-As it is seen above, the bumpers on the gamepad control the robot's speed (defaults to 66% speed), so it is easier to make precise movements with the robot. Using the [Robot.java](##robot.java) class, we are able to move the robot around.
+As it is seen above, the bumpers on the gamepad control the robot's speed (defaults to 66% speed), so it is easier to make precise movements with the robot. Using the [Robot.java](#robotjava) class, we are able to move the robot around.
 
 ### Moving the Elevator
 
@@ -336,7 +336,7 @@ robot.movement.moveElevator(elevatorSpeed);
 count++;
 ```
 
-When creating this file, we ran into a few issues. The first one being that there was a lot of lag between pressing a button and the robot reacting. After some debugging, we found the root cause of the issue were the color sensors. Polling the color sensors took too much time in between, so we set it to poll every tenth loop. This led to much less activation time. Another issue we had was that the joysticks were accidentally being hit by the drivers, so we added a deadzone to make sure the presses on the joysticks were intentional. Again, we see that the [Robot.java](##robot.java) class is used for moving the elevator.
+When creating this file, we ran into a few issues. The first one being that there was a lot of lag between pressing a button and the robot reacting. After some debugging, we found the root cause of the issue were the color sensors. Polling the color sensors took too much time in between, so we set it to poll every tenth loop. This led to much less activation time. Another issue we had was that the joysticks were accidentally being hit by the drivers, so we added a deadzone to make sure the presses on the joysticks were intentional. Again, we see that the [Robot.java](#robotjava) class is used for moving the elevator.
 
 ## AutonomousMain.java
 
@@ -348,11 +348,11 @@ These files are used for finding values of sensors. Useful to ensure if the sens
 
 ### CalibrationColorSensor.java
 
-This is used to find suitable thresholds for the red, green, and blue detectors in [Sensor.java](##sensor.java). Use the returned values to find suitable thresholds for the sensor class.
+This is used to find suitable thresholds for the red, green, and blue detectors in [Sensor.java](#sensorjava). Use the returned values to find suitable thresholds for the sensor class.
 
 ### CalibrationPotentiometer.java
 
-This is used to calibrate potentiometers. To use, run this OpMode. Turn the potentiometer all the way to one end, and note the number. Turn it to the other end and note down that number too. The smaller number (usually very close to zero) is `Vmin` in [Sensor.java](##sensor.java) and the higher number is `Vmax`. Along with this, you must also find the range of a potentiometer, usually 270°. The number should be on the spec sheet. This number is `POT_MAX`.
+This is used to calibrate potentiometers. To use, run this OpMode. Turn the potentiometer all the way to one end, and note the number. Turn it to the other end and note down that number too. The smaller number (usually very close to zero) is `Vmin` in [Sensor.java](#sensorjava) and the higher number is `Vmax`. Along with this, you must also find the range of a potentiometer, usually 270°. The number should be on the spec sheet. This number is `POT_MAX`.
 
 ## Miscellaneous Test Files
 
@@ -368,4 +368,4 @@ Simple program to set all servos to a position when the user presses X on the ga
 
 ## Conclusion
 
-This README serves the purpose of educating those who wish to use our API in their robot. Because our code is modular and can be dropped into any other team's code folder and be used easily. The "Big Three" files [Sensor.java](##sensor.java), [Movement.java](##movement.java), and [Robot.java](##robot.java) are strong interfaces with the back-lying code. These files can be used to speed the development of the robot's software, and making switching to Android Studio easier.
+This README serves the purpose of educating those who wish to use our API in their robot. Because our code is modular and can be dropped into any other team's code folder and be used easily. The "Big Three" files [Sensor.java](#sensorjava), [Movement.java](#movementjava), and [Robot.java](#robotjava) are strong interfaces with the back-lying code. These files can be used to speed the development of the robot's software, and making switching to Android Studio easier.
