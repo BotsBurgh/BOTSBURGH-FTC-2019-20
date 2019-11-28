@@ -237,8 +237,6 @@ class Sensor {
          */
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
 
-        // VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
-
         parameters.vuforiaLicenseKey = VUFORIA_KEY;
 
         /*
@@ -374,6 +372,7 @@ class Sensor {
         // The two examples below assume that the camera is facing forward out the front of the robot.
 
         // We need to rotate the camera around it's long axis to bring the correct camera forward.
+        // This is why we moved the phoneYRotate variable right above. It doesn't matter what it is
         if (CAMERA_CHOICE == BACK) {
             phoneYRotate = -90;
         } else {
