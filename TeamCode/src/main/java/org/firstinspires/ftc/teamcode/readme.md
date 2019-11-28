@@ -65,9 +65,13 @@ Most rookie teams don't need to edit anything below this section, but they shoul
 1. getGreen: Returns raw green value
 1. getBlue: Returns raw blue
 1. getButton: Returns true or false based on whether a button is pressed or not
-1. vuforiaInit: Initializes VuForia. Only really needs to be called once.
+1. initVuforia: Initializes VuForia. Only really needs to be called once.
 1. getVuforiaPosition: Returns a Vector of the position of the robot based on VuForia
 1. getVuforiaRotation: Returns an Orientation of the rotation of the robot based on VuForia.
+1. initTfod: Initializes TensorFlow object detection.
+1. activateTfod: Starts TFOD functionality.
+1. getTfod: Gets the skystones detected with VuForia and TensorFlow.
+1. deactivateVuforia: Turns off VuForia.
 
 ### SensorBuilder
 

@@ -62,7 +62,7 @@ public class Robot {
      * Turns the robot with the gyroscope
      * @param degrees Turns the robot with an Orientation object
      */
-    public void gyroTurn(double degrees) {
+    void gyroTurn(double degrees) {
         sensor.getGyro(0).startAccelerationIntegration(new Position(), new Velocity(), 500);
         Orientation current = sensor.getGyro(0).getAngularOrientation();
         if (current.firstAngle > degrees) {
@@ -78,13 +78,13 @@ public class Robot {
         }
     }
 
-    public void gyroDrive(double inches) {
+    void gyroDrive(double inches) {
         sensor.getGyro(0).startAccelerationIntegration(new Position(), new Velocity(), 500);
         Orientation current = sensor.getGyro(0).getAngularOrientation();
         // TODO
     }
 
-    public void vuForiaTurn(double degrees) {
+    void vuForiaTurn(double degrees) {
         Orientation startingOri = sensor.getVuforiaRotation();
         double startingDegrees = startingOri.thirdAngle;
         double currentDegrees = sensor.getVuforiaRotation().thirdAngle;
@@ -108,7 +108,7 @@ public class Robot {
 
     }
 
-    public void vuForiaGoto(VectorF targetPos) {
+    void vuForiaGoto(VectorF targetPos) {
         VectorF startingPos = sensor.getVuforiaPosition();
         Orientation startingOri = sensor.getVuforiaRotation();
 
@@ -143,10 +143,10 @@ public class Robot {
         // While we are not there yet, get there.
         while (distanceSoFar < distance) {
             movement.move2x2(movement.DRIVE_POWER, movement.DRIVE_POWER);
+            // TODO: Add functionality to ensure straight driving
             currentPos = sensor.getVuforiaPosition(); // We may have moved a little bit when we turned
             distanceSoFar = distance - (Math.sqrt((Math.abs(targetPos.get(1) - Math.abs(currentPos.get(1)))) + (Math.abs(targetPos.get(0) - Math.abs(currentPos.get(0))))));
         }
         // Done! This has NOT been tested yet
-
     }
 }

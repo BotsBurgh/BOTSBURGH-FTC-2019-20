@@ -16,40 +16,23 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import org.firstinspires.ftc.robotcore.external.Func;
-import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.robotcore.external.navigation.Position;
-import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
-import org.firstinspires.ftc.robotcore.external.navigation.VuMarkInstanceId;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.AnalogInput;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
-import com.qualcomm.robotcore.hardware.LightSensor;
-
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -115,10 +98,11 @@ class Sensor {
 
     // VuForia global variables
     // Class Members
-    private OpenGLMatrix lastLocation = null;
-    private VuforiaLocalizer vuforia = null;
+    private OpenGLMatrix lastLocation;
+    private VuforiaLocalizer vuforia;
     private List<VuforiaTrackable> allTrackables;
     private VuforiaTrackables targetsSkyStone;
+    private TFObjectDetector tfod;
 
     // To get this to work, copy the file VuForiaKey.java.example to VuForiaKey.java and add your key in that file.
     private static final String VUFORIA_KEY = VuForiaKey.VUFORIAKEY;
@@ -142,6 +126,10 @@ class Sensor {
     private static final float halfField = 72 * mmPerInch;
     private static final float quadField  = 36 * mmPerInch;
 
+    // VuForia object detection
+    private static final String TFOD_MODEL_ASSET = "Skystone.tflite";
+    private static final String LABEL_FIRST_ELEMENT = "Stone";
+    private static final String LABEL_SECOND_ELEMENT = "Skystone";
 
     /**
      * This is the webcam we are to use. As with other hardware devices such as motors and
@@ -172,7 +160,7 @@ class Sensor {
      * Gets the RGB value of the color sensor
      * @return 0 if red, 1 if green, 2 if blue, 3 if none
      */
-    public int getRGB(int id) {
+    int getRGB(int id) {
         if ((color[id].red()>color[id].blue()) && (color[id].red()>color[id].green()) && color[id].red()>RED_THESH) {
             return 0;
         } else if ((color[id].green()>color[id].red()) && (color[id].green()>color[id].blue()) && color[id].red()>GREEN_THESH) {
@@ -234,7 +222,7 @@ class Sensor {
     }
 
     // TODO: Add Javadoc / other documentation
-    void vuforiaInit(int cameraMonitorViewId) { // Probably needs to be called only once to
+    void initVuforia(int cameraMonitorViewId) { // Probably needs to be called only once to
         // initialize. Not really tested yet. It's gonna cause some issues, so we're gonna have to
         // add some type of check step if to make sure it has not already been initialized.
         /*
@@ -429,7 +417,6 @@ class Sensor {
 
     VectorF getVuforiaPosition() {
         VectorF translation;
-        Orientation rotation;
         targetVisible = false;
         for (VuforiaTrackable trackable : allTrackables) {
             if (((VuforiaTrackableDefaultListener) trackable.getListener()).isVisible()) {
@@ -449,9 +436,6 @@ class Sensor {
         if (targetVisible) {
             // express position (translation) of robot in inches.
             translation = lastLocation.getTranslation();
-
-            // express the rotation of the robot in degrees.
-            rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
         } else {
             translation = null;
         }
@@ -459,7 +443,6 @@ class Sensor {
     }
 
     Orientation getVuforiaRotation() {
-        VectorF translation;
         Orientation rotation;
         targetVisible = false;
         for (VuforiaTrackable trackable : allTrackables) {
@@ -478,20 +461,67 @@ class Sensor {
 
         // Provide feedback as to where the robot is located (if we know).
         if (targetVisible) {
-            // express position (translation) of robot in inches.
-            translation = lastLocation.getTranslation();
-
             // express the rotation of the robot in degrees.
             rotation = Orientation.getOrientation(lastLocation, EXTRINSIC, XYZ, DEGREES);
         } else {
-            translation = null;
             rotation = null;
         }
         return rotation;
     }
 
-    void stopVuforia() {
+    /**
+     * Gets the locations of the sky stones with VuForia and TensorFlow.
+     * @return An array of positions. 0 is top, 1 is left, 2 is right, 3 is bottom
+     */
+    ArrayList<ArrayList<Float>> getTfod() {
+        ArrayList<ArrayList<Float>> output = new ArrayList<>();
+        Float top, left, right, bottom;
+        if (tfod != null) {
+            // getUpdatedRecognitions() will return null if no new information is available since
+            // the last time that call was made.
+            List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+            if (updatedRecognitions != null) {
+                //telemetry.addData("# Object Detected", updatedRecognitions.size());
+                // step through the list of recognitions and display boundary info.
+                for (int i = 0; i<updatedRecognitions.size(); i++) {
+                    if (output.size() < i) {
+                        for (int n = output.size(); n<i; n++)
+                        output.add((new ArrayList<Float>()));
+                    }
+                    top = updatedRecognitions.get(i).getTop();
+                    left = updatedRecognitions.get(i).getLeft();
+                    right = updatedRecognitions.get(i).getRight();
+                    bottom = updatedRecognitions.get(i).getBottom();
+
+                    output.get(i).add(top);
+                    output.get(i).add(left);
+                    output.get(i).add(right);
+                    output.get(i).add(bottom);
+                }
+            }
+        }
+        return output;
+    }
+
+    /**
+     * Initialize the TensorFlow Object Detection engine.
+     */
+    void initTfod(int tfodMonitorViewId) {
+        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
+        tfodParameters.minimumConfidence = 0.8;
+        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
+        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
+
+        // Activate TFOD
+        tfod.activate();
+    }
+
+    void deactivateVuforia() {
         targetsSkyStone.deactivate();
+    }
+
+    void deactivateTfod() {
+        tfod.deactivate();
     }
 
     /**

@@ -16,16 +16,13 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import android.graphics.drawable.VectorDrawable;
-
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 
@@ -86,7 +83,18 @@ public class AutonomousMain extends LinearOpMode {
         VectorF target;
 
         // Initialize VuForia
-        robot.sensor.vuforiaInit(0);
+        robot.sensor.initVuforia(hardwareMap.appContext.getResources().getIdentifier(
+                "cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName())
+        );
+
+        // Check if we can use TFOD. If we can, initialize it.
+        if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
+            robot.sensor.initTfod(hardwareMap.appContext.getResources().getIdentifier(
+                    "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName())
+            );
+        } else {
+            telemetry.addData("Sorry!", "This device is not compatible with TFOD");
+        }
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();

@@ -16,25 +16,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 
 package org.firstinspires.ftc.teamcode;
 
-import android.text.method.MovementMethod;
-
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
-
-import org.firstinspires.ftc.robotcore.external.Func;
-import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.robotcore.external.navigation.Position;
-import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
-import org.firstinspires.ftc.robotcore.internal.android.dex.util.Unsigned;
-
-import java.util.Locale;
-
 import static android.os.SystemClock.sleep;
 
 /**
@@ -42,20 +26,20 @@ import static android.os.SystemClock.sleep;
  */
 class Movement {
     // Motor configuration
-    static final double COUNTS_PER_MOTOR_REV    = 1440 ;    // eg: TETRIX Motor Encoder
-    static final double DRIVE_GEAR_REDUCTION    = 1.0 ;     // This is < 1.0 if geared UP
-    static final double WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
+    private static final double COUNTS_PER_MOTOR_REV    = 1440 ;
+    private static final double DRIVE_GEAR_REDUCTION    = 1.0 ; // This is < 1.0 if geared UP
+    private static final double WHEEL_DIAMETER_INCHES   = 4.0 ; // For calculating circumference
 
     // Autonomous
-    public final static double TURN_POWER  = 0.4; // How fast to turn
-    public final static double DRIVE_POWER = 0.6; // How fast to drive
+    final double TURN_POWER  = 0.4; // How fast to turn
+    final double DRIVE_POWER = 0.6; // How fast to drive
 
     // Elevator configuration
-    public final static double ELEVATOR_POWER = 1.00;
+    private final static double ELEVATOR_POWER = 1.00;
 
     // Servo configuration
-    public final static int SERVO_SLEEP = 10; // Milliseconds
-    public final static int SERVO_STEP  = 1;  // Degrees
+    private final static int SERVO_SLEEP = 10; // Milliseconds
+    private final static int SERVO_STEP  = 1;  // Degrees
 
     /**
      ######  #######    #     # ####### #######    ####### ######  ### #######
@@ -84,7 +68,7 @@ class Movement {
      (Unless if you know what you are doing)
      */
 
-    public static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415);
+    private static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415);
 
     private DcMotor[] motors;
     private Servo[] servos;
@@ -97,7 +81,7 @@ class Movement {
     }
 
     /**
-     * Moves each of the four motors individually. Best for Mecanum drives.
+     * Moves each of the four motors individually. Best for mecanum drives.
      * @param flPower Power to the front left wheel
      * @param frPower Power to the front right wheel
      * @param blPower Power to the back left wheel
@@ -165,6 +149,15 @@ class Movement {
             }
             sleep(SERVO_SLEEP);
         }
+    }
+
+    /**
+     * Set the speed of a continuous rotation servo
+     * @param id ID of CRServo
+     * @param power Power (and subsequently speed) sent to CRServo
+     */
+    void setServoSpeed(int id, double power) {
+        crServos[id].setPower(power);
     }
 
     public void moveEnc1x4(int inches) {
