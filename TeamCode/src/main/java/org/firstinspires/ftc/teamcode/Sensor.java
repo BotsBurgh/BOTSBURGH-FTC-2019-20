@@ -59,7 +59,6 @@ class Sensor {
 
     // Phone configuration
     private static       float phoneXRotate    = 0;
-    private static       float phoneYRotate    = 0;
     private static final float phoneZRotate    = 9.5f;
 
     // Color sensor configuration
@@ -225,6 +224,8 @@ class Sensor {
     void initVuforia(int cameraMonitorViewId) { // Probably needs to be called only once to
         // initialize. Not really tested yet. It's gonna cause some issues, so we're gonna have to
         // add some type of check step if to make sure it has not already been initialized.
+
+        float phoneYRotate;
         /*
          * Retrieve the camera we are to use.
          */
