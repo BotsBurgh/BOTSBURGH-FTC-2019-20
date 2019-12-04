@@ -62,9 +62,9 @@ public class Robot {
      * Turns the robot with the gyroscope
      * @param degrees Turns the robot with an Orientation object
      */
-    void gyroTurn(double degrees) {
-        sensor.getGyro(0).startAccelerationIntegration(new Position(), new Velocity(), 500);
-        Orientation current = sensor.getGyro(0).getAngularOrientation();
+    void gyroTurn(int gyroId, double degrees) {
+        sensor.getGyro(gyroId).startAccelerationIntegration(new Position(), new Velocity(), 500);
+        Orientation current = sensor.getGyro(gyroId).getAngularOrientation();
         if (current.firstAngle > degrees) {
             while (Math.abs(current.firstAngle - degrees) > 5) {
                 movement.move2x2(movement.TURN_POWER, -movement.TURN_POWER);

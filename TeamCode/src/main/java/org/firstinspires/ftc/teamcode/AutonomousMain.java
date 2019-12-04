@@ -49,12 +49,12 @@ public class AutonomousMain extends LinearOpMode {
         // Initialize color sensors
         ColorSensor[] colorSensors = new ColorSensor[] {
                 hardwareMap.get(ColorSensor.class, "scissorDownLimit"),
-                hardwareMap.get(ColorSensor.class, "sensorUpLimit")
+                hardwareMap.get(ColorSensor.class, "scissorUpLimit")
         };
 
         // Initialize Web Cam
         WebcamName[] webcams = new WebcamName[] {
-                hardwareMap.get(WebcamName.class, "webcam1")
+                hardwareMap.get(WebcamName.class, "Webcam 1")
         };
 
         // Initializes the scissor lift mechanism, left back motor, and right back motor
@@ -84,7 +84,7 @@ public class AutonomousMain extends LinearOpMode {
 
         // Initialize VuForia
         robot.sensor.initVuforia(hardwareMap.appContext.getResources().getIdentifier(
-                "cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName())
+                "cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName()), 0
         );
 
         // Check if we can use TFOD. If we can, initialize it.
@@ -130,7 +130,7 @@ public class AutonomousMain extends LinearOpMode {
             // TODO - Detecting the black box to approach it
             // TODO - Grabbing the black box
             // TODO - Backing off about 1.5 feet to rotate itself 90º
-            robot.gyroTurn(90); // Robot turns 90º
+            robot.gyroTurn(1,90.0); // Robot turns 90º
             target = new VectorF(3, -1); // This is the desired coordinate robot moves to: (3, -1)
             robot.vuForiaGoto(target); // Robot nears the opponent team's bridge
             target = new VectorF(-4, -1); // This is the desired coordinate robot moves to: (-4, -1)

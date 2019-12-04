@@ -221,7 +221,7 @@ class Sensor {
     }
 
     // TODO: Add Javadoc / other documentation
-    void initVuforia(int cameraMonitorViewId) { // Probably needs to be called only once to
+    void initVuforia(int cameraMonitorViewId, int webcamId) { // Probably needs to be called only once to
         // initialize. Not really tested yet. It's gonna cause some issues, so we're gonna have to
         // add some type of check step if to make sure it has not already been initialized.
 
@@ -242,7 +242,7 @@ class Sensor {
         /*
          * We also indicate which camera on the RC we wish to use.
          */
-        parameters.cameraName = webcamName;
+        parameters.cameraName = webcams[webcamId];
 
         //  Instantiate the Vuforia engine
         vuforia = ClassFactory.getInstance().createVuforia(parameters);
