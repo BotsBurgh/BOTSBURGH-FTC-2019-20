@@ -358,6 +358,10 @@ This is used to find suitable thresholds for the red, green, and blue detectors 
 
 This is used to calibrate potentiometers. To use, run this OpMode. Turn the potentiometer all the way to one end, and note the number. Turn it to the other end and note down that number too. The smaller number (usually very close to zero) is `Vmin` in [Sensor.java](#sensorjava) and the higher number is `Vmax`. Along with this, you must also find the range of a potentiometer, usually 270°. The number should be on the spec sheet. This number is `POT_MAX`.
 
+### CalibrationBNO055IMU.java
+
+This is used to calibrate the internal IMU (gyroscope) in the REV hub. It is required to run this file and generate the calibration file for this to ensure the gyroscope remains accurate. To use this, you must have the IMU configured as `imu` on the REV hubs. Press "a" on the gamepad to configure the IMU.
+
 ## Miscellaneous Test Files
 
 These files are used for testing hardware, such as motors and servos. Useful for identifying the servo type and discarding broken hardware.
