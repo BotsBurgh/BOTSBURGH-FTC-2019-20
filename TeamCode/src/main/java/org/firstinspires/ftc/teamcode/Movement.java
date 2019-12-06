@@ -151,6 +151,10 @@ class Movement {
         }
     }
 
+    DcMotor getMotor(int id) {
+        return motors[id];
+    }
+
     /**
      * Set the speed of a continuous rotation servo
      * @param id ID of CRServo

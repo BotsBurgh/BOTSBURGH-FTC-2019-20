@@ -1,17 +1,20 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 
-@TeleOp(name="Gyroscope Test", group="20-Test")
-public class TestGyro extends LinearOpMode {
+@Autonomous(name="Gyroscope Turning Test")
+public class TestGyroTurn extends LinearOpMode {
     // Declare OpMode Members
     private ElapsedTime runtime = new ElapsedTime();
+
+    private Robot robot;
 
     @Override
     public void runOpMode() {
@@ -66,9 +69,11 @@ public class TestGyro extends LinearOpMode {
                 .build();
 
         // Initializes the robot object
-        Robot robot = new Robot(sensor, movement);
+        robot = new Robot(sensor, movement);
 
-        // Initialize Gyroscope
+        // Initialize gyros
+        robot.sensor.calibrateGyro(0);
+        robot.sensor.calibrateGyro(1);
         robot.sensor.initGyro(0);
         robot.sensor.initGyro(1);
 
@@ -81,11 +86,14 @@ public class TestGyro extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            // Do stuff here
-            telemetry.addData("Gyroscope 1", robot.sensor.getGyro(0).getAngularOrientation().firstAngle);
-            telemetry.addData("Gyroscope 2", robot.sensor.getGyro(0).getAngularOrientation().secondAngle);
-            telemetry.addData("Gyroscope 3", robot.sensor.getGyro(0).getAngularOrientation().thirdAngle);
-            telemetry.update();
+            robot.gyroTurn(1, 0.5, 0);
+            sleep(5000);
+            robot.gyroTurn(1, 0.5, 90);
+            sleep(5000);
+            robot.gyroTurn(1, 0.5, 180);
+            sleep(5000);
+            robot.gyroTurn(1, 0.5, 270);
+            sleep(5000);
         }
     }
 }

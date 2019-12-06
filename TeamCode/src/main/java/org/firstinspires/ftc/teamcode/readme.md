@@ -348,7 +348,7 @@ We are not yet done with this file.
 
 ## Miscellaneous Calibration Files
 
-These files are used for finding values of sensors. Useful to ensure if the sensors are working right, and to find suitable values for configuration. These files are all independent from the "Big Three".
+These files are used for finding values of sensors. Useful to ensure if the sensors are working right, and to find suitable values for configuration. With the exception of CalibrationPotentiometer.java, these files are all independent from the "Big Three".
 
 ### CalibrationColorSensor.java
 
@@ -369,6 +369,14 @@ These files are used for testing hardware, such as motors and servos. Useful for
 ### TestMotor.java
 
 Simple program to run all motors at 50% power when the user presses X on the gamepad. Used primarily for identifying broken motors.
+
+### TestGyro.java
+
+Checks the angles of the specified gyroscope.
+
+### TestGyroTurn.java
+
+This file contains an opmode to check if the gyroscope functionality is functioning properly by checking if the robot turns exactly 90 degrees based on the gyroscope.
 
 ### TestServo.java
 

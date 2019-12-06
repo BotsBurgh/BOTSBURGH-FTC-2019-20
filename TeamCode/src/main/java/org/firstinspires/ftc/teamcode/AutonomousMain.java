@@ -130,7 +130,7 @@ public class AutonomousMain extends LinearOpMode {
             // TODO - Detecting the black box to approach it
             // TODO - Grabbing the black box
             // TODO - Backing off about 1.5 feet to rotate itself 90º
-            robot.gyroTurn(1,90.0); // Robot turns 90º
+            robot.gyroTurn(1,0.5, 90.0); // Robot turns 90º
             target = new VectorF(3, -1); // This is the desired coordinate robot moves to: (3, -1)
             robot.vuForiaGoto(target); // Robot nears the opponent team's bridge
             target = new VectorF(-4, -1); // This is the desired coordinate robot moves to: (-4, -1)

@@ -16,10 +16,14 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.Range;
+
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.robotcore.external.navigation.Position;
-import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 
 /**
  * Integrates Sensor class and Movement class so we can use VuForia and motors in one function.
@@ -32,6 +36,15 @@ public class Robot {
     Sensor sensor;
     Movement movement;
 
+    static final double     COUNTS_PER_MOTOR_REV    = 1440 ;    // eg: TETRIX Motor Encoder
+    static final double     DRIVE_GEAR_REDUCTION    = 2.0 ;     // This is < 1.0 if geared UP
+    static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
+    static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+            (WHEEL_DIAMETER_INCHES * 3.1415);
+
+    private static final double HEADING_THRESHOLD = 2;      // As tight as we can make it with an integer gyro
+    private static final double P_TURN_COEFF      = 0.1;    // Larger is more responsive, but also less stable
+    static final double     P_DRIVE_COEFF         = 0.15;     // Larger is more responsive, but also less stable
     /**
      * Initialize robot with both sensor and movement functionality
      * @param s Sensor class
@@ -58,30 +71,149 @@ public class Robot {
         movement = m;
     }
 
-    /**
-     * Turns the robot with the gyroscope
-     * @param degrees Turns the robot with an Orientation object
-     */
-    void gyroTurn(int gyroId, double degrees) {
-        sensor.getGyro(gyroId).startAccelerationIntegration(new Position(), new Velocity(), 500);
-        Orientation current = sensor.getGyro(gyroId).getAngularOrientation();
-        if (current.firstAngle > degrees) {
-            while (Math.abs(current.firstAngle - degrees) > 5) {
-                movement.move2x2(movement.TURN_POWER, -movement.TURN_POWER);
-            }
-        } else if (current.firstAngle < degrees) {
-            while (Math.abs(current.firstAngle - degrees) > 5) {
-                movement.move2x2(-movement.TURN_POWER, movement.TURN_POWER);
-            }
-        } else {
-            movement.move2x2(0,0);
+    void gyroTurn(int id, double speed, double angle) {
+        while (!onHeading(id, speed, angle, P_TURN_COEFF)) {
+            // Do nothing
         }
     }
 
-    void gyroDrive(double inches) {
-        sensor.getGyro(0).startAccelerationIntegration(new Position(), new Velocity(), 500);
-        Orientation current = sensor.getGyro(0).getAngularOrientation();
-        // TODO
+    private boolean onHeading(int id, double speed, double angle, double PCoeff) {
+        double  error = getError(id, angle);
+        double steer;
+        boolean onTarget = false;
+        double  leftSpeed;
+        double  rightSpeed;
+
+        if (Math.abs(error) <= HEADING_THRESHOLD) {
+            steer      = 0.0;
+            leftSpeed  = 0.0;
+            rightSpeed = 0.0;
+            onTarget   = true;
+        } else {
+            steer      = getSteer(error, PCoeff);
+            rightSpeed = speed * steer;
+            leftSpeed  = -rightSpeed;
+        }
+
+        // Send desired speeds to motors.
+        movement.move2x2(leftSpeed, rightSpeed);
+
+        return onTarget;
+    }
+
+    /**
+     * getError determines the error between the target angle and the robot's current heading
+     * @param   targetAngle  Desired angle (relative to global reference established at last Gyro Reset).
+     * @return  error angle: Degrees in the range +/- 180. Centered on the robot's frame of reference
+     *          +ve error means the robot should turn LEFT (CCW) to reduce error.
+     */
+    private double getError(int id, double targetAngle) {
+        // calculate error in -179 to +180 range
+        double error = targetAngle - sensor.getGyro(id).getAngularOrientation(
+                AxesReference.INTRINSIC,
+                AxesOrder.ZYX,
+                AngleUnit.DEGREES
+        ).firstAngle;
+
+        while (error > 180) {
+            error -= 360;
+        }
+
+        while (error <= -180) {
+            error += 360;
+        }
+
+        return error;
+    }
+
+    /**
+     *  Method to drive on a fixed compass bearing (angle), based on encoder counts.
+     *  Move will stop if either of these conditions occur:
+     *  1) Move gets to the desired position
+     *  2) Driver stops the opmode running.
+     *
+     * @param speed      Target speed for forward motion.  Should allow for _/- variance for adjusting heading
+     * @param distance   Distance (in inches) to move from current position.  Negative distance means move backwards.
+     * @param angle      Absolute Angle (in Degrees) relative to last gyro reset.
+     *                   0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
+     *                   If a relative angle is required, add/subtract from current heading.
+     */
+    public void gyroDrive ( int id, double speed,
+                            double distance,
+                            double angle) {
+
+        int     newLeftTarget;
+        int     newRightTarget;
+        int     moveCounts;
+        double  max;
+        double  error;
+        double  steer;
+        double  leftSpeed;
+        double  rightSpeed;
+        DcMotor leftDrive, rightDrive;
+
+        leftDrive  = movement.getMotor(3);
+        rightDrive = movement.getMotor(4);
+
+        // Determine new target position, and pass to motor controller
+        moveCounts = (int)(distance * COUNTS_PER_INCH);
+        newLeftTarget = movement.getMotor(4).getCurrentPosition() + moveCounts;
+        newRightTarget = rightDrive.getCurrentPosition() + moveCounts;
+
+        // Set Target and Turn On RUN_TO_POSITION
+        movement.getMotor(3).setTargetPosition(newLeftTarget);
+        movement.getMotor(4).setTargetPosition(newRightTarget);
+
+        leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        // start motion.
+        speed = Range.clip(Math.abs(speed), 0.0, 1.0);
+        leftDrive.setPower(speed);
+        rightDrive.setPower(speed);
+
+        // keep looping while we are still active, and BOTH motors are running.
+        while ((leftDrive.isBusy() && rightDrive.isBusy())) {
+
+            // adjust relative speed based on heading error.
+            error = getError(id, angle);
+            steer = getSteer(error, P_DRIVE_COEFF);
+
+            // if driving in reverse, the motor correction also needs to be reversed
+            if (distance < 0)
+                steer *= -1.0;
+
+            leftSpeed = speed - steer;
+            rightSpeed = speed + steer;
+
+            // Normalize speeds if either one exceeds +/- 1.0;
+            max = Math.max(Math.abs(leftSpeed), Math.abs(rightSpeed));
+            if (max > 1.0)
+            {
+                leftSpeed /= max;
+                rightSpeed /= max;
+            }
+
+            movement.move2x2(leftSpeed, rightSpeed);
+        }
+
+        // Stop all motion;
+        movement.move2x2(0,0);
+
+        // Turn off RUN_TO_POSITION
+        leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+    }
+
+    /**
+     * returns desired steering force.  +/- 1 range.  +ve = steer left
+     * @param error   Error angle in robot relative degrees
+     * @param PCoeff  Proportional Gain Coefficient
+     * @return
+     */
+    private double getSteer(double error, double PCoeff) {
+        return Range.clip(error * PCoeff, -1, 1);
     }
 
     void vuForiaTurn(double degrees) {
