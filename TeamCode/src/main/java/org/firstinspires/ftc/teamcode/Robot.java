@@ -44,7 +44,7 @@ public class Robot {
 
     private static final double HEADING_THRESHOLD = 2;      // As tight as we can make it with an integer gyro
     private static final double P_TURN_COEFF      = 0.1;    // Larger is more responsive, but also less stable
-    static final double     P_DRIVE_COEFF         = 0.15;     // Larger is more responsive, but also less stable
+    private static final double P_DRIVE_COEFF     = 0.15;     // Larger is more responsive, but also less stable
     /**
      * Initialize robot with both sensor and movement functionality
      * @param s Sensor class
@@ -138,10 +138,7 @@ public class Robot {
      *                   0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
      *                   If a relative angle is required, add/subtract from current heading.
      */
-    public void gyroDrive ( int id, double speed,
-                            double distance,
-                            double angle) {
-
+    public void gyroDrive(int id, double speed, double distance, double angle) {
         int     newLeftTarget;
         int     newRightTarget;
         int     moveCounts;
@@ -174,22 +171,21 @@ public class Robot {
 
         // keep looping while we are still active, and BOTH motors are running.
         while ((leftDrive.isBusy() && rightDrive.isBusy())) {
-
             // adjust relative speed based on heading error.
             error = getError(id, angle);
             steer = getSteer(error, P_DRIVE_COEFF);
 
             // if driving in reverse, the motor correction also needs to be reversed
-            if (distance < 0)
+            if (distance < 0) {
                 steer *= -1.0;
+            }
 
             leftSpeed = speed - steer;
             rightSpeed = speed + steer;
 
             // Normalize speeds if either one exceeds +/- 1.0;
             max = Math.max(Math.abs(leftSpeed), Math.abs(rightSpeed));
-            if (max > 1.0)
-            {
+            if (max > 1.0) {
                 leftSpeed /= max;
                 rightSpeed /= max;
             }
@@ -210,7 +206,7 @@ public class Robot {
      * returns desired steering force.  +/- 1 range.  +ve = steer left
      * @param error   Error angle in robot relative degrees
      * @param PCoeff  Proportional Gain Coefficient
-     * @return
+     * @return Desired steering force
      */
     private double getSteer(double error, double PCoeff) {
         return Range.clip(error * PCoeff, -1, 1);
