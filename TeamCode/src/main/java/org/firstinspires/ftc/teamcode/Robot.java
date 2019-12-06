@@ -16,6 +16,8 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
@@ -29,22 +31,31 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  * Integrates Sensor class and Movement class so we can use VuForia and motors in one function.
  * Use like so: Robot robot = new Robot(new Sensor(whatever), new Movement(whatever));
  * Refer to Movement and Sensor classes for more information on what those classes do.
- * NOTE: You really should not have to edit this file. If you find an error occurring here, add it
- * to our GitHub issues page at https://github.com/botsburgh/BOTSBURGH-FTC-2019-20/issues
+ * NOTE: You really should edit this file to suit your robot. If you find an error occurring here,
+ * add it to our GitHub issues page at https://github.com/botsburgh/BOTSBURGH-FTC-2019-20/issues
  */
 public class Robot {
     Sensor sensor;
     Movement movement;
 
-    static final double     COUNTS_PER_MOTOR_REV    = 1440 ;    // eg: TETRIX Motor Encoder
-    static final double     DRIVE_GEAR_REDUCTION    = 2.0 ;     // This is < 1.0 if geared UP
-    static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
-    static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+    private static final double COUNTS_PER_MOTOR_REV  = 1440; // eg: TETRIX Motor Encoder
+    private static final double DRIVE_GEAR_REDUCTION  = 2.0;  // This is < 1.0 if geared UP
+    private static final double WHEEL_DIAMETER_INCHES = 4.0;  // For figuring circumference
+    private static final double COUNTS_PER_INCH       = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
 
-    private static final double HEADING_THRESHOLD = 2;      // As tight as we can make it with an integer gyro
-    private static final double P_TURN_COEFF      = 0.1;    // Larger is more responsive, but also less stable
-    private static final double P_DRIVE_COEFF     = 0.15;     // Larger is more responsive, but also less stable
+    private static final double HEADING_THRESHOLD = 2.0;  // Any less and our robot acts up
+    private static final double P_TURN_COEFF      = 0.1;  // Larger is more responsive, but also less stable
+    private static final double P_DRIVE_COEFF     = 0.15; // Larger is more responsive, but also less stable
+
+    // Quick and dirty hack to prevent issues with stopping the robot
+    private LinearOpMode linearOpMode = new LinearOpMode() {
+        @Override
+        public void runOpMode() {
+            // Do nothing
+        }
+    };
+
     /**
      * Initialize robot with both sensor and movement functionality
      * @param s Sensor class
@@ -72,7 +83,7 @@ public class Robot {
     }
 
     void gyroTurn(int id, double speed, double angle) {
-        while (!onHeading(id, speed, angle, P_TURN_COEFF)) {
+        while (!onHeading(id, speed, angle, P_TURN_COEFF) && (linearOpMode.opModeIsActive())) {
             // Do nothing
         }
     }
@@ -132,6 +143,7 @@ public class Robot {
      *  1) Move gets to the desired position
      *  2) Driver stops the opmode running.
      *
+     * @param id         ID of the gyroscope to be used
      * @param speed      Target speed for forward motion.  Should allow for _/- variance for adjusting heading
      * @param distance   Distance (in inches) to move from current position.  Negative distance means move backwards.
      * @param angle      Absolute Angle (in Degrees) relative to last gyro reset.
@@ -170,7 +182,7 @@ public class Robot {
         rightDrive.setPower(speed);
 
         // keep looping while we are still active, and BOTH motors are running.
-        while ((leftDrive.isBusy() && rightDrive.isBusy())) {
+        while (linearOpMode.opModeIsActive() && (leftDrive.isBusy() && rightDrive.isBusy())) {
             // adjust relative speed based on heading error.
             error = getError(id, angle);
             steer = getSteer(error, P_DRIVE_COEFF);
@@ -199,7 +211,6 @@ public class Robot {
         // Turn off RUN_TO_POSITION
         leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
     }
 
     /**
@@ -219,13 +230,13 @@ public class Robot {
         // Find out if we have to turn right or left.
         if (degrees < startingDegrees) {
             // Turn left
-            while (degrees < currentDegrees) {
+            while ((degrees < currentDegrees) && linearOpMode.opModeIsActive()) {
                 movement.move2x2(-movement.TURN_POWER, movement.TURN_POWER);
                 currentDegrees = sensor.getVuforiaRotation().thirdAngle;
             }
         } else if (degrees > startingDegrees) {
             // Turn right
-            while (degrees > currentDegrees) {
+            while ((degrees > currentDegrees) && linearOpMode.opModeIsActive()) {
                 movement.move2x2(movement.TURN_POWER, -movement.TURN_POWER);
                 currentDegrees = sensor.getVuforiaRotation().thirdAngle;
             }
@@ -233,7 +244,6 @@ public class Robot {
             // Don't turn
             movement.move2x2(0,0);
         }
-
     }
 
     void vuForiaGoto(VectorF targetPos) {
@@ -269,11 +279,13 @@ public class Robot {
         VectorF currentPos;
 
         // While we are not there yet, get there.
-        while (distanceSoFar < distance) {
+        while ((distanceSoFar < distance) && linearOpMode.opModeIsActive()) {
             movement.move2x2(movement.DRIVE_POWER, movement.DRIVE_POWER);
             // TODO: Add functionality to ensure straight driving
             currentPos = sensor.getVuforiaPosition(); // We may have moved a little bit when we turned
-            distanceSoFar = distance - (Math.sqrt((Math.abs(targetPos.get(1) - Math.abs(currentPos.get(1)))) + (Math.abs(targetPos.get(0) - Math.abs(currentPos.get(0))))));
+            distanceSoFar = distance - (Math.sqrt((Math.abs(targetPos.get(1) -
+                    Math.abs(currentPos.get(1)))) + (Math.abs(targetPos.get(0) -
+                    Math.abs(currentPos.get(0))))));
         }
         // Done! This has NOT been tested yet
     }

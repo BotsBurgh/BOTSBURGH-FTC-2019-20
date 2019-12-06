@@ -20,7 +20,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -79,9 +79,18 @@ public class BasicMovement extends LinearOpMode {
                 lb, rb
         };
 
+        Servo armSwivel = hardwareMap.get(Servo.class, "armSwivel");
+        Servo grabber = hardwareMap.get(Servo.class, "grabber");
+
+
+        Servo[] servos = new Servo[] {
+                armSwivel, grabber
+        };
+
         Movement base = new Movement
                 .MovementBuilder()
                 .withMotors(motors)
+                .withServos(servos)
                 .build();
 
         // Most robots need the motor on one side to be reversed to drive forward
@@ -112,6 +121,9 @@ public class BasicMovement extends LinearOpMode {
         double sud = 3;
 
         //lf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+
+        robot.movement.setServo(0, 0);
+        robot.movement.setServo(1, 0);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -159,15 +171,15 @@ public class BasicMovement extends LinearOpMode {
                 elevatorSpeed = 0;
             }
 
-            if (Math.abs(gamepad2.right_stick_x) > DEADZONE) {
-                robot.movement.setServo(0, robot.movement.getServo(0).getPosition() + gamepad2.right_stick_x);
+            if (gamepad2.x) {
+                robot.movement.setServo(0, 180);
+            } else if (gamepad2.y) {
+                robot.movement.setServo(0, 0);
             }
 
             if (gamepad2.a) {
                 robot.movement.setServo(1, 10);
-            }
-
-            if (gamepad2.b) {
+            } else if (gamepad2.b) {
                 robot.movement.setServo(1, 0);
             }
 
@@ -180,6 +192,8 @@ public class BasicMovement extends LinearOpMode {
             telemetry.addData("Motor Power", "%5.2f", elevatorSpeed);
             telemetry.addData("Up Limit", sul);
             telemetry.addData("Down Limit", sud);
+            telemetry.addData("Arm Position", robot.movement.getServo(0).getPosition());
+            telemetry.addData("Grabber Position", robot.movement.getServo(1).getPosition());
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
