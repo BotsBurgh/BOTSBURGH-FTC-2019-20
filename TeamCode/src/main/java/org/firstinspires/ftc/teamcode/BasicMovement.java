@@ -159,6 +159,18 @@ public class BasicMovement extends LinearOpMode {
                 elevatorSpeed = 0;
             }
 
+            if (Math.abs(gamepad2.right_stick_x) > DEADZONE) {
+                robot.movement.setServo(0, robot.movement.getServo(0).getPosition() + gamepad2.right_stick_x);
+            }
+
+            if (gamepad2.a) {
+                robot.movement.setServo(1, 10);
+            }
+
+            if (gamepad2.b) {
+                robot.movement.setServo(1, 0);
+            }
+
             // Send calculated power to wheels
             robot.movement.move2x2(leftPower, rightPower);
             robot.movement.moveElevator(elevatorSpeed);

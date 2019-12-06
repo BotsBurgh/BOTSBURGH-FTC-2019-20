@@ -133,6 +133,10 @@ class Movement {
         servos[id].setPosition(degrees);
     }
 
+    Servo getServo(int id) {
+        return servos[id];
+    }
+
     /**
      * Scan the servo (move the servo slowly) to a position.
      * @param id ID of servo
