@@ -22,6 +22,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -35,7 +36,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  * NOTE: You really should edit this file to suit your robot. If you find an error occurring here,
  * add it to our GitHub issues page at https://github.com/botsburgh/BOTSBURGH-FTC-2019-20/issues
  */
+//@RequiredArgsConstructor
+//@AllArgsConstructor
 public class Robot {
+    //@Getter
     Sensor sensor;
     Movement movement;
 
@@ -60,6 +64,8 @@ public class Robot {
         }
     };
 
+    private Telemetry telemetry;
+
     /**
      * Initialize robot with both sensor and movement functionality
      * @param s Sensor class
@@ -68,6 +74,17 @@ public class Robot {
     Robot(Sensor s, Movement m) {
         sensor = s;
         movement = m;
+    }
+
+    /**
+     * Initialize robot with both sensor and movement functionality
+     * @param s Sensor class
+     * @param m Movement class
+     */
+    Robot(Sensor s, Movement m, Telemetry t) {
+        sensor = s;
+        movement = m;
+        telemetry = t;
     }
 
     /**
@@ -87,11 +104,17 @@ public class Robot {
     }
 
     void gyroTurn(int id, double speed, double angle) {
-        ElapsedTime runningtime = new ElapsedTime();
-        runningtime.reset();
-        while (!onHeading(id, speed, angle, P_TURN_COEFF) && (linearOpMode.opModeIsActive()) &&
-                (runningtime.seconds() <= TURN_TIMEOUT)) {
-            // Do nothing
+        double offset = sensor.getGyro(id).getAngularOrientation(
+                AxesReference.INTRINSIC,
+                AxesOrder.ZYX,
+                AngleUnit.DEGREES
+        ).firstAngle;
+
+        ElapsedTime runtime = new ElapsedTime();
+        runtime.reset();
+        while (!onHeading(id, speed, angle + offset, P_TURN_COEFF) && (linearOpMode.opModeIsActive()) &&
+                (runtime.seconds() <= TURN_TIMEOUT)) {
+            telemetry.update();
         }
     }
 
@@ -112,6 +135,10 @@ public class Robot {
             rightSpeed = speed * steer;
             leftSpeed  = -rightSpeed;
         }
+
+        // Display drive status for the driver.
+        telemetry.addData("Err/St",  "%5.1f/%5.1f",  error, steer);
+        telemetry.addData("Speed",   "%5.2f:%5.2f",  leftSpeed, rightSpeed);
 
         // Send desired speeds to motors.
         movement.move2x2(leftSpeed, rightSpeed);
@@ -144,6 +171,10 @@ public class Robot {
         return error;
     }
 
+    void gyroDrive(int id, double speed, double distance, double angle) {
+        gyroDrive(id, speed, distance, angle, false);
+    }
+
     /**
      *  Method to drive on a fixed compass bearing (angle), based on encoder counts.
      *  Move will stop if either of these conditions occur:
@@ -157,7 +188,7 @@ public class Robot {
      *                   0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
      *                   If a relative angle is required, add/subtract from current heading.
      */
-    void gyroDrive(int id, double speed, double distance, double angle) {
+    void gyroDrive(int id, double speed, double distance, double angle, boolean debug) {
         int     newLeftTarget;
         int     newRightTarget;
         int     moveCounts;
@@ -168,8 +199,8 @@ public class Robot {
         double  rightSpeed;
         DcMotor leftDrive, rightDrive;
 
-        ElapsedTime runningtime = new ElapsedTime();
-        runningtime.reset();
+        ElapsedTime runtime = new ElapsedTime();
+        runtime.reset();
 
         leftDrive  = movement.getMotor(3);
         rightDrive = movement.getMotor(4);
@@ -177,12 +208,12 @@ public class Robot {
         if (linearOpMode.opModeIsActive()) {
             // Determine new target position, and pass to motor controller
             moveCounts = (int)(distance * COUNTS_PER_INCH);
-            newLeftTarget = movement.getMotor(4).getCurrentPosition() + moveCounts;
+            newLeftTarget = leftDrive.getCurrentPosition() + moveCounts;
             newRightTarget = rightDrive.getCurrentPosition() + moveCounts;
 
             // Set Target and Turn On RUN_TO_POSITION
-            movement.getMotor(3).setTargetPosition(newLeftTarget);
-            movement.getMotor(4).setTargetPosition(newRightTarget);
+            leftDrive.setTargetPosition(newLeftTarget);
+            rightDrive.setTargetPosition(newRightTarget);
 
             leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -194,7 +225,7 @@ public class Robot {
 
             // keep looping while we are still active, and BOTH motors are running.
             while (linearOpMode.opModeIsActive() && (leftDrive.isBusy() && rightDrive.isBusy()) &&
-                    (runningtime.seconds()<=DRIVE_TIMEOUT)) {
+                    (runtime.seconds()<=DRIVE_TIMEOUT)) {
                 // adjust relative speed based on heading error.
                 error = getError(id, angle);
                 steer = getSteer(error, P_DRIVE_COEFF);
@@ -215,6 +246,15 @@ public class Robot {
                 }
 
                 movement.move2x2(leftSpeed, rightSpeed);
+
+                if (debug) {
+                    // Display drive status for the driver.
+                    telemetry.addData("Err/St",  "%5.1f/%5.1f",  error, steer);
+                    telemetry.addData("Target",  "%7d:%7d",      newLeftTarget,  newRightTarget);
+                    telemetry.addData("Actual",  "%7d:%7d",      leftDrive.getCurrentPosition(),
+                            rightDrive.getCurrentPosition());
+                    telemetry.addData("Speed",   "%5.2f:%5.2f",  leftSpeed, rightSpeed);
+                }
             }
         }
 
@@ -301,5 +341,13 @@ public class Robot {
                     Math.abs(currentPos.get(0))))));
         }
         // Done! This has NOT been tested yet
+    }
+
+    public void telemetry(Telemetry telemetry, String caption, String data) {
+        telemetry.addData(caption, data);
+    }
+
+    Sensor getSensor(){
+        return sensor;
     }
 }

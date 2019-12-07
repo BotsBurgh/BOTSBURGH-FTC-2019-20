@@ -16,6 +16,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -70,10 +71,17 @@ public class AutonomousBlue extends LinearOpMode {
                 lb, rb
         };
 
+        // Initialize Gyros
+        BNO055IMU[] gyros = new BNO055IMU[] {
+                hardwareMap.get(BNO055IMU.class, "imu"),
+                hardwareMap.get(BNO055IMU.class, "imu 1")
+        };
+
         // Initialize sensor class
         Sensor sensor = new Sensor
                 .SensorBuilder()
                 .withColorSensors(colorSensors)
+                .withGyros(gyros)
                 .withWebcams(webcams)
                 .build();
 
@@ -88,6 +96,7 @@ public class AutonomousBlue extends LinearOpMode {
 
         VectorF target;
 
+        /*
         // Initialize VuForia
         robot.sensor.initVuforia(hardwareMap.appContext.getResources().getIdentifier(
                 "cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName()), 0
@@ -101,6 +110,11 @@ public class AutonomousBlue extends LinearOpMode {
         } else {
             telemetry.addData("Sorry!", "This device is not compatible with TFOD");
         }
+
+         */
+
+        robot.sensor.initGyro(0);
+        robot.sensor.initGyro(1);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -131,6 +145,7 @@ public class AutonomousBlue extends LinearOpMode {
             * Robot moves to (-5, -1)
             */
 
+            /*
             robot.gyroDrive(0, DRIVE_SPEED, 24, robot.sensor.getGyro(0).getAngularOrientation().firstAngle);
             ArrayList<ArrayList<Float>> pos = new ArrayList<>();
             pos = robot.sensor.getTfod();
@@ -150,6 +165,11 @@ public class AutonomousBlue extends LinearOpMode {
             robot.gyroDrive(0, DRIVE_SPEED, 87, robot.sensor.getGyro(0).getAngularOrientation().firstAngle);
             robot.gyroTurn(0,TURN_SPEED, -145);
             robot.gyroDrive(0, DRIVE_SPEED, 70, robot.sensor.getGyro(0).getAngularOrientation().firstAngle);
+             */
+
+            robot.gyroDrive(0, DRIVE_SPEED, 96, robot.sensor.getGyro(0).getAngularOrientation().firstAngle); // Robot goes across the field
+            robot.gyroTurn(0, TURN_SPEED, 90); // Turn 90 degrees so we are facing the
+            robot.gyroDrive(0, DRIVE_SPEED, 24, robot.sensor.getGyro(0).getAngularOrientation().firstAngle);
 
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());

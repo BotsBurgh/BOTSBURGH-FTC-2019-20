@@ -568,6 +568,7 @@ class Sensor {
     /**
      * Magic for using a dynamic set of motors. See the README for more information
      */
+    // lombok @Builder
     static class SensorBuilder {
         private BNO055IMU[] gyros; // Initialize gyroscopes
         private AnalogInput[] pot; // Initialize potentiometers

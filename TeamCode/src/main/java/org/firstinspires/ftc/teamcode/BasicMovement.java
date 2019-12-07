@@ -136,9 +136,9 @@ public class BasicMovement extends LinearOpMode {
         while (opModeIsActive()) {
             // Adjust speed based on the bumpers. Idea from Robotic Doges
             if (gamepad1.left_bumper) {
-                mod = 1;
-            } else if (gamepad1.right_bumper) {
                 mod = 0.33;
+            } else if (gamepad1.right_bumper) {
+                mod = 1;
             } else {
                 mod = 0.66;
             }
@@ -179,7 +179,7 @@ public class BasicMovement extends LinearOpMode {
             }
 
             if (gamepad2.a) {
-                robot.movement.setServo(1, 0.5);
+                robot.movement.setServo(1, 0.3);
             }
             if (gamepad2.b) {
                 robot.movement.setServo(1, 0.63);
@@ -197,7 +197,6 @@ public class BasicMovement extends LinearOpMode {
             telemetry.addData("Arm Position", robot.movement.getServo(0).getPosition());
             telemetry.addData("Grabber Position", robot.movement.getServo(1).getPosition());
             // Show the elapsed game time and wheel power.
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
             telemetry.update();
             count++;
