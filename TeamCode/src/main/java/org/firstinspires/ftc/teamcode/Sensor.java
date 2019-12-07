@@ -508,6 +508,12 @@ class Sensor {
      * @return An array of positions. 0 is top, 1 is left, 2 is right, 3 is bottom
      */
     ArrayList<ArrayList<Float>> getTfod() {
+        /*
+        {
+            { distance from top of the first skystone, left, right, bottom }
+            { distance from top of the second skystone, left, right, bottom }
+        }
+         */
         ArrayList<ArrayList<Float>> output = new ArrayList<>();
         Float top, left, right, bottom;
         if (tfod != null) {

@@ -26,11 +26,17 @@ import org.firstinspires.ftc.robotcore.external.ClassFactory;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
-@Autonomous(name="Autonomous Test 1", group="Autonomous")
-public class AutonomousMain extends LinearOpMode {
+
+@Autonomous(name="Autonomous Blue", group="Autonomous")
+public class AutonomousBlue extends LinearOpMode {
     // Declare OpMode Members
     private ElapsedTime runtime = new ElapsedTime();
+
+    private static final double DRIVE_SPEED = 0.7;
+    private static final double TURN_SPEED = 0.5;
 
     @Override
     public void runOpMode() {
@@ -125,23 +131,26 @@ public class AutonomousMain extends LinearOpMode {
             * Robot moves to (-5, -1)
             */
 
-            target = new VectorF(4, 4); // This is the desired coordinate robot must move to: (4, 4)
-            robot.vuForiaGoto(target); // Robot moves to the ideal spot where it can detect the black box
-            // TODO - Detecting the black box to approach it
+            robot.gyroDrive(0, DRIVE_SPEED, 24, robot.sensor.getGyro(0).getAngularOrientation().firstAngle);
+            ArrayList<ArrayList<Float>> pos = new ArrayList<>();
+            pos = robot.sensor.getTfod();
+            double distance = ((pos.get(0).get(0))+(pos.get(0).get(3)))/2;
+            double turn = Math.acos(3.5/distance);
+            robot.gyroTurn(0, TURN_SPEED, turn);
+            robot.gyroDrive(0, DRIVE_SPEED, distance, robot.sensor.getGyro(0).getAngularOrientation().firstAngle);
             // TODO - Grabbing the black box
-            // TODO - Backing off about 1.5 feet to rotate itself 90º
-            robot.gyroTurn(1,0.5, 90.0); // Robot turns 90º
-            target = new VectorF(3, -1); // This is the desired coordinate robot moves to: (3, -1)
-            robot.vuForiaGoto(target); // Robot nears the opponent team's bridge
-            target = new VectorF(-4, -1); // This is the desired coordinate robot moves to: (-4, -1)
-            robot.vuForiaGoto(target); // Robot nears our team's bridge
-            target = new VectorF(-3, 3); // This is the desired coordinate robot moves to: (-3, 3)
-            robot.vuForiaGoto(target); // Robot approaches the foundation, crossing under the bridge
+            robot.gyroTurn(0, TURN_SPEED, 90-turn);
+            robot.gyroDrive(0, DRIVE_SPEED, 18, robot.sensor.getGyro(0).getAngularOrientation().firstAngle);
+            robot.gyroTurn(0, TURN_SPEED, 135); // Robot turns to 135º
+            robot.gyroDrive(0, DRIVE_SPEED, 68, robot.sensor.getGyro(0).getAngularOrientation().firstAngle); // Robot nears the opponent team's bridge
+            robot.gyroTurn(0, TURN_SPEED, 69);
+            robot.gyroDrive(0, DRIVE_SPEED, 87, robot.sensor.getGyro(0).getAngularOrientation().firstAngle);
             // TODO - Dropping black box on to the foundation
-            target = new VectorF(-5, 5);
-            robot.vuForiaGoto(target);
-            target = new VectorF(-5, 0); // This is the desired coordinate: (-5, -1)
-            robot.vuForiaGoto(target); // Robot crossed under the bridge once again
+            robot.gyroTurn(0, TURN_SPEED, 145);
+            robot.gyroDrive(0, DRIVE_SPEED, 87, robot.sensor.getGyro(0).getAngularOrientation().firstAngle);
+            robot.gyroTurn(0,TURN_SPEED, -145);
+            robot.gyroDrive(0, DRIVE_SPEED, 70, robot.sensor.getGyro(0).getAngularOrientation().firstAngle);
+
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
         }
