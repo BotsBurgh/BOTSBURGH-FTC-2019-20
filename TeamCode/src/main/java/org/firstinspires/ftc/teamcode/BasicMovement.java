@@ -172,15 +172,17 @@ public class BasicMovement extends LinearOpMode {
             }
 
             if (gamepad2.x) {
-                robot.movement.setServo(0, 180);
-            } else if (gamepad2.y) {
-                robot.movement.setServo(0, 0);
+                robot.movement.setServo(0, 0.81);
+            }
+            if (gamepad2.y) {
+                robot.movement.setServo(0, 0.05);
             }
 
             if (gamepad2.a) {
-                robot.movement.setServo(1, 10);
-            } else if (gamepad2.b) {
-                robot.movement.setServo(1, 0);
+                robot.movement.setServo(1, 0.5);
+            }
+            if (gamepad2.b) {
+                robot.movement.setServo(1, 0.63);
             }
 
             // Send calculated power to wheels
