@@ -1,6 +1,6 @@
 # TeamCode Module
 
-Note: Everything here is copyrighted by FTC Team BotsBurgh 11792 under the MIT License. See the file LICENSE for more details.
+Note: Everything here is copyrighted by FTC Team BotsBurgh 11792 under the MIT License unless specified otherwise. See the file LICENSE for more details.
 
 ## Welcome to our TeamCode Module
 
@@ -248,9 +248,11 @@ We set the motors to use their own variables so we could change some settings of
 This file is the epitome of our code, as it integrates [Sensor.java](#sensorjava) and [Movement.java](#movementjava) into one class. This allows us to create functions combining both [Sensor.java](#sensorjava) and [Movement.java](#movementjava), such as those which need to move based on VuForia. In this class, we have a few functions doing just that:
 
 1. gyroTurn: This turns the robot based on the internal gyroscope. Simple code, integrates gyroscope functionality from [Sensor.java](#sensorjava) and the `move2x2` function from [Movement.java](#movementjava). Useful for autonomous in conditions where VuForia is unavailable or unreliable. However, as VuForia is more accurate, you *should* use that instead. See the functions below for instructions on how to do that.
-1. gyroDrive: WIP
+1. gyroDrive: This moves the robot forward based on encoders, and corrects for drift based on gyroscopes. When possible, use vuForiaGoto to move the robot, as it is more accurate. However, this is good for situations where VuForia functionality is unreliable. Best suited for autonomous.
 1. vuForiaTurn: This function uses the VuForia orientation function from [Sensor.java](#sensorjava) to determine the angle of the robot, then, using the [Movement.java](#movementjava) class, it will turn the robot until it meets the target angle. Best suited for autonomous.
-1. vuForiaDrive: This function uses the VuForia position function from [Sensor.java](#sensorjava) and some trigonometry to determine how far the robot must turn (using the vuForiaTurn function above), then drive forward (using the [Movement.java](#movementjava) class). Best suited for autonomous.
+1. vuForiaGoto: This function uses the VuForia position function from [Sensor.java](#sensorjava) and some trigonometry to determine how far the robot must turn (using the vuForiaTurn function above), then drive forward (using the [Movement.java](#movementjava) class). Best suited for autonomous.
+
+WARNING: As both the `vuForiaTurn` and `vuForiaGoto` functions are not tested yet (because we don't have a field to test it in), don't use it unless you can find out if it works or not.
 
 The code in here is mostly simple, with the exception of the math parts. In this class, we used two main math equations: the distance formula and the inverse tangent formula. Using the built-in `Math` library, these functions were not too complex.
 
@@ -350,6 +352,10 @@ We are not yet done with this file.
 
 These files are used for finding values of sensors. Useful to ensure if the sensors are working right, and to find suitable values for configuration. With the exception of CalibrationPotentiometer.java, these files are all independent from the "Big Three".
 
+### CalibrationBNO055IMU.java
+
+This is used to calibrate the internal IMU (gyroscope) in the REV hub. It is required to run this file and generate the calibration file for this to ensure the gyroscope remains accurate. To use this, you must have the IMU configured as `imu` on the REV hubs. Press "a" on the gamepad to configure the IMU.
+
 ### CalibrationColorSensor.java
 
 This is used to find suitable thresholds for the red, green, and blue detectors in [Sensor.java](#sensorjava). Use the returned values to find suitable thresholds for the sensor class.
@@ -357,10 +363,6 @@ This is used to find suitable thresholds for the red, green, and blue detectors 
 ### CalibrationPotentiometer.java
 
 This is used to calibrate potentiometers. To use, run this OpMode. Turn the potentiometer all the way to one end, and note the number. Turn it to the other end and note down that number too. The smaller number (usually very close to zero) is `Vmin` in [Sensor.java](#sensorjava) and the higher number is `Vmax`. Along with this, you must also find the range of a potentiometer, usually 270°. The number should be on the spec sheet. This number is `POT_MAX`.
-
-### CalibrationBNO055IMU.java
-
-This is used to calibrate the internal IMU (gyroscope) in the REV hub. It is required to run this file and generate the calibration file for this to ensure the gyroscope remains accurate. To use this, you must have the IMU configured as `imu` on the REV hubs. Press "a" on the gamepad to configure the IMU.
 
 ## Miscellaneous Test Files
 
@@ -373,6 +375,10 @@ Simple program to run all motors at 50% power when the user presses X on the gam
 ### TestGyro.java
 
 Checks the angles of the specified gyroscope.
+
+### TestGyroDrive.java
+
+This file contains an opmode to check if the gyroscope functionality and encoders are functioning properly by checking if the robot moves exactly 3 feet forward without drift.
 
 ### TestGyroTurn.java
 

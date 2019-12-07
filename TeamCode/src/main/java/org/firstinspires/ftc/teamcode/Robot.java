@@ -19,6 +19,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
@@ -47,6 +48,9 @@ public class Robot {
     private static final double HEADING_THRESHOLD = 2.0;  // Any less and our robot acts up
     private static final double P_TURN_COEFF      = 0.1;  // Larger is more responsive, but also less stable
     private static final double P_DRIVE_COEFF     = 0.15; // Larger is more responsive, but also less stable
+
+    private static final double TURN_TIMEOUT      = 4.0;  // Timeout to prevent non-stop turning
+    private static final double DRIVE_TIMEOUT     = 10.0; // Maximum execution time for driving
 
     // Quick and dirty hack to prevent issues with stopping the robot
     private LinearOpMode linearOpMode = new LinearOpMode() {
@@ -83,14 +87,17 @@ public class Robot {
     }
 
     void gyroTurn(int id, double speed, double angle) {
-        while (!onHeading(id, speed, angle, P_TURN_COEFF) && (linearOpMode.opModeIsActive())) {
+        ElapsedTime runningtime = new ElapsedTime();
+        runningtime.reset();
+        while (!onHeading(id, speed, angle, P_TURN_COEFF) && (linearOpMode.opModeIsActive()) &&
+                (runningtime.seconds() <= TURN_TIMEOUT)) {
             // Do nothing
         }
     }
 
     private boolean onHeading(int id, double speed, double angle, double PCoeff) {
         double  error = getError(id, angle);
-        double steer;
+        double  steer;
         boolean onTarget = false;
         double  leftSpeed;
         double  rightSpeed;
@@ -150,7 +157,7 @@ public class Robot {
      *                   0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
      *                   If a relative angle is required, add/subtract from current heading.
      */
-    public void gyroDrive(int id, double speed, double distance, double angle) {
+    void gyroDrive(int id, double speed, double distance, double angle) {
         int     newLeftTarget;
         int     newRightTarget;
         int     moveCounts;
@@ -161,48 +168,54 @@ public class Robot {
         double  rightSpeed;
         DcMotor leftDrive, rightDrive;
 
+        ElapsedTime runningtime = new ElapsedTime();
+        runningtime.reset();
+
         leftDrive  = movement.getMotor(3);
         rightDrive = movement.getMotor(4);
 
-        // Determine new target position, and pass to motor controller
-        moveCounts = (int)(distance * COUNTS_PER_INCH);
-        newLeftTarget = movement.getMotor(4).getCurrentPosition() + moveCounts;
-        newRightTarget = rightDrive.getCurrentPosition() + moveCounts;
+        if (linearOpMode.opModeIsActive()) {
+            // Determine new target position, and pass to motor controller
+            moveCounts = (int)(distance * COUNTS_PER_INCH);
+            newLeftTarget = movement.getMotor(4).getCurrentPosition() + moveCounts;
+            newRightTarget = rightDrive.getCurrentPosition() + moveCounts;
 
-        // Set Target and Turn On RUN_TO_POSITION
-        movement.getMotor(3).setTargetPosition(newLeftTarget);
-        movement.getMotor(4).setTargetPosition(newRightTarget);
+            // Set Target and Turn On RUN_TO_POSITION
+            movement.getMotor(3).setTargetPosition(newLeftTarget);
+            movement.getMotor(4).setTargetPosition(newRightTarget);
 
-        leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        // start motion.
-        speed = Range.clip(Math.abs(speed), 0.0, 1.0);
-        leftDrive.setPower(speed);
-        rightDrive.setPower(speed);
+            // start motion.
+            speed = Range.clip(Math.abs(speed), 0.0, 1.0);
+            leftDrive.setPower(speed);
+            rightDrive.setPower(speed);
 
-        // keep looping while we are still active, and BOTH motors are running.
-        while (linearOpMode.opModeIsActive() && (leftDrive.isBusy() && rightDrive.isBusy())) {
-            // adjust relative speed based on heading error.
-            error = getError(id, angle);
-            steer = getSteer(error, P_DRIVE_COEFF);
+            // keep looping while we are still active, and BOTH motors are running.
+            while (linearOpMode.opModeIsActive() && (leftDrive.isBusy() && rightDrive.isBusy()) &&
+                    (runningtime.seconds()<=DRIVE_TIMEOUT)) {
+                // adjust relative speed based on heading error.
+                error = getError(id, angle);
+                steer = getSteer(error, P_DRIVE_COEFF);
 
-            // if driving in reverse, the motor correction also needs to be reversed
-            if (distance < 0) {
-                steer *= -1.0;
+                // if driving in reverse, the motor correction also needs to be reversed
+                if (distance < 0) {
+                    steer *= -1.0;
+                }
+
+                leftSpeed = speed - steer;
+                rightSpeed = speed + steer;
+
+                // Normalize speeds if either one exceeds +/- 1.0;
+                max = Math.max(Math.abs(leftSpeed), Math.abs(rightSpeed));
+                if (max > 1.0) {
+                    leftSpeed  /= max;
+                    rightSpeed /= max;
+                }
+
+                movement.move2x2(leftSpeed, rightSpeed);
             }
-
-            leftSpeed = speed - steer;
-            rightSpeed = speed + steer;
-
-            // Normalize speeds if either one exceeds +/- 1.0;
-            max = Math.max(Math.abs(leftSpeed), Math.abs(rightSpeed));
-            if (max > 1.0) {
-                leftSpeed /= max;
-                rightSpeed /= max;
-            }
-
-            movement.move2x2(leftSpeed, rightSpeed);
         }
 
         // Stop all motion;

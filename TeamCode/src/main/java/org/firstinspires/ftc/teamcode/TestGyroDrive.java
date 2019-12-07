@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 
-@Autonomous(name="Gyroscope Turning Test")
+@Autonomous(name="Gyroscope Driving Test")
 public class TestGyroDrive extends LinearOpMode {
     // Declare OpMode Members
     private ElapsedTime runtime = new ElapsedTime();
@@ -84,9 +84,6 @@ public class TestGyroDrive extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        // run until the end of the match (driver presses STOP)
-        while (opModeIsActive()) {
-            robot.gyroDrive(1, 0.5, 36, robot.sensor.getGyro(1).getAngularOrientation().firstAngle);
-        }
+        robot.gyroDrive(1, 0.5, 36, robot.sensor.getGyro(1).getAngularOrientation().firstAngle);
     }
 }

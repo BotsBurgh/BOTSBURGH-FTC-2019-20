@@ -86,13 +86,13 @@ public class TestGyroTurn extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            robot.gyroTurn(1, 0.5, 0);
+            robot.gyroTurn(0, 0.5, 0);
             sleep(5000);
-            robot.gyroTurn(1, 0.5, 90);
+            robot.gyroTurn(0, 0.5, 90);
             sleep(5000);
-            robot.gyroTurn(1, 0.5, 180);
+            robot.gyroTurn(0, 0.5, 180);
             sleep(5000);
-            robot.gyroTurn(1, 0.5, 270);
+            robot.gyroTurn(0, 0.5, 270);
             sleep(5000);
         }
     }
