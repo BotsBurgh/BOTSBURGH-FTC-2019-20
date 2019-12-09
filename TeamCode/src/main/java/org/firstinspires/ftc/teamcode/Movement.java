@@ -19,7 +19,6 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
-import static android.os.SystemClock.sleep;
 
 /**
  * The Movement class. Moves the robot around through multiple functions.
@@ -39,7 +38,7 @@ class Movement {
 
     // Servo configuration
     private final static int SERVO_SLEEP = 10; // Milliseconds
-    private final static int SERVO_STEP  = 1;  // Degrees
+    private final static double SERVO_STEP  = 0.01;  // Degrees
 
     /**
      ######  #######    #     # ####### #######    ####### ######  ### #######
@@ -142,16 +141,15 @@ class Movement {
      * @param id ID of servo
      * @param degrees Position (in degrees) to scan the servo to.
      */
-    void scanServo(int id, double degrees) {
-        while (servos[id].getPosition() != degrees) {
-            if (servos[id].getPosition() > degrees) {
+    void scanServo(int id, double degrees, boolean clockwise) {
+        while (Math.abs(servos[id].getPosition() - degrees) < 0.001) {
+            if (clockwise) {
                 // Scan down
                 servos[id].setPosition(servos[id].getPosition() - SERVO_STEP);
-            } else if (servos[id].getPosition() < degrees) {
+            } else {
                 // Scan up
                 servos[id].setPosition(servos[id].getPosition() + SERVO_STEP);
             }
-            sleep(SERVO_SLEEP);
         }
     }
 

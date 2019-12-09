@@ -112,9 +112,12 @@ public class Robot {
 
         ElapsedTime runtime = new ElapsedTime();
         runtime.reset();
-        while (!onHeading(id, speed, angle + offset, P_TURN_COEFF) && (linearOpMode.opModeIsActive()) &&
-                (runtime.seconds() <= TURN_TIMEOUT)) {
-            telemetry.update();
+        while (true) {
+            if (onHeading(id, speed, angle + offset, P_TURN_COEFF) && (linearOpMode.opModeIsActive())) {
+                break;
+            } else {
+                telemetry.update();
+            }
         }
     }
 
