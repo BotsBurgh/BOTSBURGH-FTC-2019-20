@@ -89,8 +89,8 @@ public class BasicMovement extends LinearOpMode {
 
         Movement base = new Movement
                 .MovementBuilder()
-                .withMotors(motors)
-                .withServos(servos)
+                .motors(motors)
+                .servos(servos)
                 .build();
 
         // Most robots need the motor on one side to be reversed to drive forward
@@ -110,7 +110,7 @@ public class BasicMovement extends LinearOpMode {
 
         Sensor sensors = new Sensor
             .SensorBuilder()
-            .withColorSensors(colorSensors)
+            .colorSensors(colorSensors)
             .build();
 
         Robot robot = new Robot(sensors, base);
@@ -194,8 +194,8 @@ public class BasicMovement extends LinearOpMode {
             telemetry.addData("Motor Power", "%5.2f", elevatorSpeed);
             telemetry.addData("Up Limit", sul);
             telemetry.addData("Down Limit", sud);
-            telemetry.addData("Arm Position", robot.movement.getServo(0).getPosition());
-            telemetry.addData("Grabber Position", robot.movement.getServo(1).getPosition());
+            telemetry.addData("Arm Position", robot.movement.getServos()[0].getPosition());
+            telemetry.addData("Grabber Position", robot.movement.getServos()[1].getPosition());
             // Show the elapsed game time and wheel power.
             telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
             telemetry.update();

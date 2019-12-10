@@ -48,7 +48,7 @@ public class CalibrationBNO055IMU extends LinearOpMode {
         };
         Sensor sensors = new Sensor
                 .SensorBuilder()
-                .withGyros(gyros)
+                .gyros(gyros)
                 .build();
 
         telemetry.addData("Status", "Initialized");

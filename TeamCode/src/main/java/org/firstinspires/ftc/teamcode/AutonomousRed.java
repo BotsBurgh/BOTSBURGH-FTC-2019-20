@@ -72,14 +72,14 @@ public class AutonomousRed extends LinearOpMode {
         // Initialize sensor class
         Sensor sensor = new Sensor
                 .SensorBuilder()
-                .withColorSensors(colorSensors)
-                .withWebcams(webcams)
+                .colorSensors(colorSensors)
+                .webcams(webcams)
                 .build();
 
         // Initializes movement class
         Movement movement = new Movement
                 .MovementBuilder()
-                .withMotors(motors)
+                .motors(motors)
                 .build();
 
         // Initializes the robot object
@@ -130,24 +130,24 @@ public class AutonomousRed extends LinearOpMode {
             * Robot moves to (-5, -1)
             */
 
-            robot.gyroDrive(0, DRIVE_SPEED, 24, robot.sensor.getGyro(0).getAngularOrientation().firstAngle);
+            robot.gyroDrive(0, DRIVE_SPEED, 24, robot.sensor.getGyros()[0].getAngularOrientation().firstAngle);
             ArrayList<ArrayList<Float>> pos = new ArrayList<>();
             pos = robot.sensor.getTfod();
             double distance = ((pos.get(0).get(0))+(pos.get(0).get(3)))/2;
             double turn = Math.acos(3.5/distance);
             robot.gyroTurn(0, TURN_SPEED, turn);
-            robot.gyroDrive(0, DRIVE_SPEED, distance, robot.sensor.getGyro(0).getAngularOrientation().firstAngle);
+            robot.gyroDrive(0, DRIVE_SPEED, distance, robot.sensor.getGyros()[0].getAngularOrientation().firstAngle);
             // TODO - Grabbing the black box
             robot.gyroTurn(0, TURN_SPEED, -(90-turn));
-            robot.gyroDrive(0, DRIVE_SPEED, 18, robot.sensor.getGyro(0).getAngularOrientation().firstAngle);
-            robot.gyroDrive(0, DRIVE_SPEED, 68, robot.sensor.getGyro(0).getAngularOrientation().firstAngle); // Robot nears the opponent team's bridge
+            robot.gyroDrive(0, DRIVE_SPEED, 18, robot.sensor.getGyros()[0].getAngularOrientation().firstAngle);
+            robot.gyroDrive(0, DRIVE_SPEED, 68, robot.sensor.getGyros()[0].getAngularOrientation().firstAngle); // Robot nears the opponent team's bridge
             robot.gyroTurn(0, TURN_SPEED, -69);
-            robot.gyroDrive(0, DRIVE_SPEED, 87, robot.sensor.getGyro(0).getAngularOrientation().firstAngle);
+            robot.gyroDrive(0, DRIVE_SPEED, 87, robot.sensor.getGyros()[0].getAngularOrientation().firstAngle);
             // TODO - Dropping black box on to the foundation
             robot.gyroTurn(0, TURN_SPEED, -145);
-            robot.gyroDrive(0, DRIVE_SPEED, 87, robot.sensor.getGyro(0).getAngularOrientation().firstAngle);
+            robot.gyroDrive(0, DRIVE_SPEED, 87, robot.sensor.getGyros()[0].getAngularOrientation().firstAngle);
             robot.gyroTurn(0,TURN_SPEED, 145);
-            robot.gyroDrive(0, DRIVE_SPEED, 70, robot.sensor.getGyro(0).getAngularOrientation().firstAngle);
+            robot.gyroDrive(0, DRIVE_SPEED, 70, robot.sensor.getGyros()[0].getAngularOrientation().firstAngle);
 
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());

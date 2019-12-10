@@ -104,7 +104,7 @@ public class Robot {
     }
 
     void gyroTurn(int id, double speed, double angle) {
-        double offset = sensor.getGyro(id).getAngularOrientation(
+        double offset = sensor.getGyros()[id].getAngularOrientation(
                 AxesReference.INTRINSIC,
                 AxesOrder.ZYX,
                 AngleUnit.DEGREES
@@ -157,7 +157,7 @@ public class Robot {
      */
     private double getError(int id, double targetAngle) {
         // calculate error in -179 to +180 range
-        double error = targetAngle - sensor.getGyro(id).getAngularOrientation(
+        double error = targetAngle - sensor.getGyros()[id].getAngularOrientation(
                 AxesReference.INTRINSIC,
                 AxesOrder.ZYX,
                 AngleUnit.DEGREES
@@ -205,8 +205,8 @@ public class Robot {
         ElapsedTime runtime = new ElapsedTime();
         runtime.reset();
 
-        leftDrive  = movement.getMotor(3);
-        rightDrive = movement.getMotor(4);
+        leftDrive  = movement.getMotors()[3];
+        rightDrive = movement.getMotors()[4];
 
         if (linearOpMode.opModeIsActive()) {
             // Determine new target position, and pass to motor controller

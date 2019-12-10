@@ -57,15 +57,15 @@ public class TestGyroTurn extends LinearOpMode {
         // Initialize sensor class
         Sensor sensor = new Sensor
                 .SensorBuilder()
-                .withColorSensors(colorSensors)
-                .withWebcams(webcams)
-                .withGyros(gyros)
+                .colorSensors(colorSensors)
+                .webcams(webcams)
+                .gyros(gyros)
                 .build();
 
         // Initializes movement class
         Movement movement = new Movement
                 .MovementBuilder()
-                .withMotors(motors)
+                .motors(motors)
                 .build();
 
         // Initializes the robot object

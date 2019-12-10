@@ -43,6 +43,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import lombok.Builder;
+import lombok.Getter;
+
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
@@ -53,6 +56,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
  TODO: Just a big issue we have here in this file is that we don't have enough documentation
  */
 
+@Builder
 class Sensor {
     // Potentiometer configuration
     private static final int    POT_MAX = 270;   // Max range in degrees
@@ -136,41 +140,29 @@ class Sensor {
     private static final String LABEL_FIRST_ELEMENT = "Stone";
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
 
-    /**
-     * This is the webcam we are to use. As with other hardware devices such as motors and
-     * servos, this device is identified using the robot configuration tool in the FTC application.
-     */
-    private WebcamName webcamName = null;
-
     private boolean targetVisible = false;
 
-    // TODO: Initialize more sensors
-    private BNO055IMU[] gyros; // Initialize gyroscopes
-    private AnalogInput[] pot; // Initialize potentiometers
-    private DigitalChannel[] button; // Initialize buttons
-    private ColorSensor[] color; // Initialize color sensors
-    private DistanceSensor[] distance; // Initialize distance sensors
-    private WebcamName[] webcams; // Initialize webcams
-
-    private Sensor(SensorBuilder b) {
-        this.gyros = b.gyros;
-        this.pot = b.pot;
-        this.button = b.button;
-        this.color = b.color;
-        this.distance = b.distance;
-        this.webcams = b.webcams;
-    }
+    // TODO: Add more sensor capability
+    @Getter BNO055IMU[] gyros; // Initialize gyroscopes
+    @Getter AnalogInput[] pot; // Initialize potentiometers
+    @Getter private DigitalChannel[] button; // Initialize buttons
+    @Getter private ColorSensor[] colorSensors; // Initialize color sensors
+    @Getter private DistanceSensor[] distance; // Initialize distance sensors
+    @Getter private WebcamName[] webcams; // Initialize webcams
 
     /**
      * Gets the RGB value of the color sensor
      * @return 0 if red, 1 if green, 2 if blue, 3 if none
      */
     int getRGB(int id) {
-        if ((color[id].red()>color[id].blue()) && (color[id].red()>color[id].green()) && color[id].red()>RED_THESH) {
+        double red   = colorSensors[id].red();
+        double green = colorSensors[id].green();
+        double blue  = colorSensors[id].blue();
+        if ((red>blue) && (red>green) && red>RED_THESH) {
             return 0;
-        } else if ((color[id].green()>color[id].red()) && (color[id].green()>color[id].blue()) && color[id].red()>GREEN_THESH) {
+        } else if ((green>red) && (green>blue) && green>GREEN_THESH) {
             return 1;
-        } else if ((color[id].blue()>color[id].red()) && (color[id].blue()>color[id].green()) && color[id].red()>BLUE_THESH) {
+        } else if ((blue>red) && (blue>green) && blue>BLUE_THESH) {
             return 2;
         } else {
             return 3;
@@ -183,7 +175,7 @@ class Sensor {
      * @return Boolean on if the sensor detects red or not
      */
     int getRed(int id) {
-        return color[id].red();
+        return colorSensors[id].red();
     }
 
     /**
@@ -192,7 +184,7 @@ class Sensor {
      * @return Boolean on if the sensor detects green or not
      */
     int getGreen(int id) {
-        return color[id].green();
+        return colorSensors[id].green();
     }
 
     /**
@@ -201,7 +193,7 @@ class Sensor {
      * @return Boolean on if the sensor detects blue or not
      */
     int getBlue(int id) {
-        return color[id].blue();
+        return colorSensors[id].blue();
     }
 
     /**
@@ -248,10 +240,6 @@ class Sensor {
         String filename = String.format(Locale.ENGLISH, "BNO055IMUCalibration%d.json", id);
         File file = AppUtil.getInstance().getSettingsFile(filename);
         ReadWriteFile.writeFile(file, calibrationData.serialize());
-    }
-
-    BNO055IMU getGyro(int id) {
-        return gyros[id];
     }
 
     // TODO: Add Javadoc / other documentation
@@ -563,54 +551,5 @@ class Sensor {
 
     void deactivateTfod() {
         tfod.deactivate();
-    }
-
-    /**
-     * Magic for using a dynamic set of motors. See the README for more information
-     */
-    // lombok @Builder
-    static class SensorBuilder {
-        private BNO055IMU[] gyros; // Initialize gyroscopes
-        private AnalogInput[] pot; // Initialize potentiometers
-        private DigitalChannel[] button; // Initialize buttons
-        private ColorSensor[] color; // Initialize color sensors
-        private DistanceSensor[] distance; // Initialize distance sensors
-        private WebcamName[] webcams; // Initialize webcams
-
-        SensorBuilder() {}
-
-        SensorBuilder withButtons(DigitalChannel... c) {
-            this.button = c;
-            return this;
-        }
-
-        SensorBuilder withPotentiometers(AnalogInput... a) {
-            this.pot = a;
-            return this;
-        }
-
-        SensorBuilder withColorSensors(ColorSensor... c) {
-            this.color = c;
-            return this;
-        }
-
-        SensorBuilder withGyros(BNO055IMU... g) {
-            this.gyros = g;
-            return this;
-        }
-
-        SensorBuilder withDistanceSensors(DistanceSensor... d) {
-            this.distance = d;
-            return this;
-        }
-
-        SensorBuilder withWebcams(WebcamName... c) {
-            this.webcams = c;
-            return this;
-        }
-
-        Sensor build() {
-            return new Sensor(this);
-        }
     }
 }

@@ -90,8 +90,8 @@ public class AutonomousCheat extends LinearOpMode {
 
         Movement base = new Movement
                 .MovementBuilder()
-                .withMotors(motors)
-                .withServos(servos)
+                .motors(motors)
+                .servos(servos)
                 .build();
 
         // Most robots need the motor on one side to be reversed to drive forward
@@ -111,7 +111,7 @@ public class AutonomousCheat extends LinearOpMode {
 
         Sensor sensors = new Sensor
                 .SensorBuilder()
-                .withColorSensors(colorSensors)
+                .colorSensors(colorSensors)
                 .build();
 
         Robot robot = new Robot(sensors, base);

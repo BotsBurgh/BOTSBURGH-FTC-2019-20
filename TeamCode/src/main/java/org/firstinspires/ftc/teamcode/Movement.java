@@ -20,9 +20,13 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import lombok.Builder;
+import lombok.Getter;
+
 /**
  * The Movement class. Moves the robot around through multiple functions.
  */
+@Builder
 class Movement {
     // Motor configuration
     private static final double COUNTS_PER_MOTOR_REV  = 1440 ;
@@ -69,9 +73,9 @@ class Movement {
 
     private static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415);
 
-    private DcMotor[] motors;
-    private Servo[] servos;
-    private CRServo[] crServos;
+    @Getter DcMotor[] motors;
+    @Getter private Servo[] servos;
+    @Getter private CRServo[] crServos;
     
     private Movement(MovementBuilder b) {
         this.motors = b.motors;
@@ -132,10 +136,6 @@ class Movement {
         servos[id].setPosition(degrees);
     }
 
-    Servo getServo(int id) {
-        return servos[id];
-    }
-
     /**
      * Scan the servo (move the servo slowly) to a position.
      * @param id ID of servo
@@ -151,10 +151,6 @@ class Movement {
                 servos[id].setPosition(servos[id].getPosition() + SERVO_STEP);
             }
         }
-    }
-
-    DcMotor getMotor(int id) {
-        return motors[id];
     }
 
     /**
@@ -213,45 +209,6 @@ class Movement {
         } else {
             motors[3].setPower(0);
             motors[4].setPower(0);
-        }
-    }
-
-    /**
-     * Magic for using a dynamic set of motors. See the README for more information
-     */
-    static class MovementBuilder {
-        private DcMotor[] motors;
-        private Servo[] servos;
-        private CRServo[] crServos;
-
-        /**
-         * In this format:
-         * [       Elevator,
-         *  Front Left, Front Right,
-         *  Back Left,  Back Right]
-         *  So, Elevator is id 0
-         *  FL is 1
-         *  FR is 2
-         *  BL is 3
-         *  BR is 4
-         */
-        MovementBuilder withMotors(DcMotor... m) {
-            this.motors = m;
-            return this;
-        }
-        
-        MovementBuilder withServos(Servo... s) {
-            this.servos = s;
-            return this;
-        }
-        
-        MovementBuilder withCRServos(CRServo... c) {
-            this.crServos = c;
-            return this;
-        }
-        
-        Movement build() {
-            return new Movement(this);
         }
     }
 }
