@@ -69,8 +69,8 @@ public class BasicMovement extends LinearOpMode {
 
     Robot robot;
 
-    private double sul = 3;
-    private double sud = 3;
+    private double sul = 3; // Sensor up limit
+    private double sud = 3; // Sensor down limit
 
     @Override
     public void runOpMode() {
