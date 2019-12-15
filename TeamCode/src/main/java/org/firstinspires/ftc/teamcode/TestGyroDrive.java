@@ -69,13 +69,16 @@ public class TestGyroDrive extends LinearOpMode {
                 .build();
 
         // Initializes the robot object
-        robot = new Robot(sensor, movement);
-
+        Robot robot = new Robot.RobotBuilder()
+                .sensor(sensor)
+                .movement(movement)
+                .build();
+        
         // Initialize gyros
-        robot.sensor.calibrateGyro(0);
-        robot.sensor.calibrateGyro(1);
-        robot.sensor.initGyro(0);
-        robot.sensor.initGyro(1);
+        robot.getSensor().calibrateGyro(0);
+        robot.getSensor().calibrateGyro(1);
+        robot.getSensor().initGyro(0);
+        robot.getSensor().initGyro(1);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -84,6 +87,6 @@ public class TestGyroDrive extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        robot.gyroDrive(1, 0.5, 36, robot.sensor.getGyros()[1].getAngularOrientation().firstAngle);
+        robot.gyroDrive(1, 0.5, 36, robot.getSensor().getGyros()[1].getAngularOrientation().firstAngle);
     }
 }
