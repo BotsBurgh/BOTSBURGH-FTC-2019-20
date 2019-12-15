@@ -1,6 +1,8 @@
 dependencies {
     apply plugin: 'android'
     implementation 'org.jetbrains:annotations-java5:15.0'
+    compileOnly 'org.projectlombok:lombok:1.18.10'
+    annotationProcessor 'org.projectlombok:lombok:1.18.10'
 }
 
 // build.gradle in TeamCode
@@ -17,3 +19,7 @@ dependencies {
 
 // Include common definitions from above.
 apply from: '../build.common.gradle'
+
+android {
+    buildToolsVersion = '28.0.3'
+}
