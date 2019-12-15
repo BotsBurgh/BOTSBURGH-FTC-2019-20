@@ -24,7 +24,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 /**
- * The Movement class. Moves the robot around through multiple functions.
+ * The Movement class. Interfaces with servos and motors so you don't have to
  */
 @Builder
 class Movement {
@@ -76,12 +76,6 @@ class Movement {
     @Getter DcMotor[] motors;
     @Getter private Servo[] servos;
     @Getter private CRServo[] crServos;
-    
-    private Movement(MovementBuilder b) {
-        this.motors = b.motors;
-        this.servos = b.servos;
-        this.crServos = b.crServos;
-    }
 
     /**
      * Moves each of the four motors individually. Best for mecanum drives.
@@ -162,53 +156,69 @@ class Movement {
         crServos[id].setPower(power);
     }
 
+    /**
+     * Moves the robot with four chassis motors a set number of inches
+     * @param inches Inches to move forward (or backward)
+     */
     public void moveEnc1x4(int inches) {
-        motors[1].setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motors[2].setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motors[3].setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motors[4].setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motors[1].setTargetPosition(inches);
-        motors[2].setTargetPosition(inches);
-        motors[3].setTargetPosition(inches);
-        motors[4].setTargetPosition(inches);
-        motors[1].setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motors[2].setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motors[3].setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motors[4].setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        DcMotor fr, fl, br, bl;
+        fr = motors[1];
+        fl = motors[2];
+        br = motors[3];
+        bl = motors[4];
+        fr.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        fl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        br.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        bl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        fr.setTargetPosition(inches);
+        fl.setTargetPosition(inches);
+        br.setTargetPosition(inches);
+        bl.setTargetPosition(inches);
+        fr.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        fl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        br.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        bl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         if (inches < 0) {
-            motors[1].setPower(DRIVE_POWER);
-            motors[2].setPower(DRIVE_POWER);
-            motors[3].setPower(DRIVE_POWER);
-            motors[4].setPower(DRIVE_POWER);
+            fr.setPower(DRIVE_POWER);
+            fl.setPower(DRIVE_POWER);
+            br.setPower(DRIVE_POWER);
+            bl.setPower(DRIVE_POWER);
         } else if (inches > 0) {
-            motors[1].setPower(-DRIVE_POWER);
-            motors[2].setPower(-DRIVE_POWER);
-            motors[3].setPower(-DRIVE_POWER);
-            motors[4].setPower(-DRIVE_POWER);
+            fr.setPower(-DRIVE_POWER);
+            fl.setPower(-DRIVE_POWER);
+            br.setPower(-DRIVE_POWER);
+            bl.setPower(-DRIVE_POWER);
         } else {
-            motors[1].setPower(0);
-            motors[2].setPower(0);
-            motors[3].setPower(0);
-            motors[4].setPower(0);
+            fr.setPower(0);
+            fl.setPower(0);
+            br.setPower(0);
+            bl.setPower(0);
         }
     }
 
+    /**
+     * Moves the robot with two chassis motors a set number of inches
+     * @param inches Inches to move forward (or backward)
+     */
     public void moveEnc1x2(double inches) {
-        motors[3].setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motors[4].setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        motors[3].setTargetPosition((int)(inches*COUNTS_PER_INCH));
-        motors[4].setTargetPosition((int)(inches*COUNTS_PER_INCH));
-        motors[3].setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        motors[4].setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        DcMotor bl, br;
+        bl = motors[3];
+        br = motors[4];
+        bl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        br.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        bl.setTargetPosition((int)(inches*COUNTS_PER_INCH));
+        br.setTargetPosition((int)(inches*COUNTS_PER_INCH));
+        bl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        br.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         if (inches < 0) {
-            motors[3].setPower(DRIVE_POWER);
-            motors[4].setPower(DRIVE_POWER);
+            bl.setPower(DRIVE_POWER);
+            br.setPower(DRIVE_POWER);
         } else if (inches > 0) {
-            motors[3].setPower(-DRIVE_POWER);
-            motors[4].setPower(-DRIVE_POWER);
+            bl.setPower(-DRIVE_POWER);
+            br.setPower(-DRIVE_POWER);
         } else {
-            motors[3].setPower(0);
-            motors[4].setPower(0);
+            bl.setPower(0);
+            br.setPower(0);
         }
     }
 }

@@ -45,6 +45,7 @@ import java.util.Locale;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
@@ -52,10 +53,11 @@ import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.YZX;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesReference.EXTRINSIC;
 import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection.BACK;
 
-/*
- TODO: Just a big issue we have here in this file is that we don't have enough documentation
+/**
+ * The Sensor class.
+ * This is a class which interfaces with sensors, so you don't have to. See the README for more
+ * information.
  */
-
 @Builder
 class Sensor {
     // Potentiometer configuration
@@ -66,6 +68,9 @@ class Sensor {
     // VuForia configuration
     private static final VuforiaLocalizer.CameraDirection CAMERA_CHOICE = BACK; // Back camera or front
     private static final boolean PHONE_IS_PORTRAIT = true; // Set to true because our camera is rotated at 90 degrees
+    private final float CAMERA_FORWARD_DISPLACEMENT  = 7.88f  * mmPerInch;   // eg: Camera is 4 Inches in front of robot-center
+    private final float CAMERA_VERTICAL_DISPLACEMENT = 4.5f   * mmPerInch;   // eg: Camera is 8 Inches above ground
+    private final float CAMERA_LEFT_DISPLACEMENT     = 5.625f * mmPerInch;   // eg: Camera is ON the robot's center line
 
     // Phone configuration
     private static       float phoneXRotate    = 0;
@@ -210,7 +215,7 @@ class Sensor {
      * @param id ID of the potentiometer
      * @return Degrees of the potentiometer
      */
-    double getPot(int id) {
+    double getPotDeg(int id) {
         return (POT_MAX/(Vmax-Vmin))*(pot[id].getVoltage()-Vmin); // Converts voltage to angle (degrees)
     }
 
@@ -230,6 +235,10 @@ class Sensor {
         gyros[id].initialize(parameters);
     }
 
+    /**
+     * Calibrates a gyroscope
+     * @param id ID of the gyroscope to calibrate
+     */
     void calibrateGyro(int id) {
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.loggingEnabled = true;
@@ -242,7 +251,11 @@ class Sensor {
         ReadWriteFile.writeFile(file, calibrationData.serialize());
     }
 
-    // TODO: Add Javadoc / other documentation
+    /**
+     * Initialize VuForia. Takes a second or so. Only needed to be run once
+     * @param cameraMonitorViewId Camera screen ID (usually 0)
+     * @param webcamId Webcam ID
+     */
     void initVuforia(int cameraMonitorViewId, int webcamId) {
         // Probably needs to be called only once to
         // initialize. Not really tested yet. It's gonna cause some issues, so we're gonna have to
@@ -407,13 +420,6 @@ class Sensor {
             phoneXRotate = 90 ;
         }
 
-        // Next, translate the camera lens to where it is on the robot.
-        // In this example, it is centered (left to right), but forward of the middle of the robot, and above ground level.
-        // TODO: Find the actual values of these numbers
-        final float CAMERA_FORWARD_DISPLACEMENT  = 7.88f  * mmPerInch;   // eg: Camera is 4 Inches in front of robot-center
-        final float CAMERA_VERTICAL_DISPLACEMENT = 4.5f   * mmPerInch;   // eg: Camera is 8 Inches above ground
-        final float CAMERA_LEFT_DISPLACEMENT     = 5.625f * mmPerInch;   // eg: Camera is ON the robot's center line
-
         OpenGLMatrix robotFromCamera = OpenGLMatrix
                 .translation(CAMERA_FORWARD_DISPLACEMENT, CAMERA_LEFT_DISPLACEMENT, CAMERA_VERTICAL_DISPLACEMENT)
                 .multiplied(Orientation.getRotationMatrix(EXTRINSIC, YZX, DEGREES, phoneYRotate, phoneZRotate, phoneXRotate));
@@ -438,6 +444,10 @@ class Sensor {
         targetsSkyStone.activate();
     }
 
+    /**
+     * Gets the position of the robot relative tot he field using VuForia
+     * @return A VectorF with the position of the robot
+     */
     VectorF getVuforiaPosition() {
         VectorF translation;
         targetVisible = false;
@@ -465,6 +475,10 @@ class Sensor {
         return translation;
     }
 
+    /**
+     * Gets the orientation of the robot relative to the field
+     * @return An Orientation of the robots
+     */
     Orientation getVuforiaRotation() {
         Orientation rotation;
         targetVisible = false;
@@ -545,10 +559,16 @@ class Sensor {
         tfod.activate();
     }
 
+    /**
+     * Deactivates VuForia. Run once at the end of the OpMode
+     */
     void deactivateVuforia() {
         targetsSkyStone.deactivate();
     }
 
+    /**
+     * Deactivates TensorFlow object detection. One once at the end of the OpMode.
+     */
     void deactivateTfod() {
         tfod.deactivate();
     }

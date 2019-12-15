@@ -87,7 +87,7 @@ public class BasicMovement extends LinearOpMode {
                 armSwivel, grabber
         };
 
-        Movement base = new Movement
+        Movement movement = new Movement
                 .MovementBuilder()
                 .motors(motors)
                 .servos(servos)
@@ -109,11 +109,14 @@ public class BasicMovement extends LinearOpMode {
         };
 
         Sensor sensors = new Sensor
-            .SensorBuilder()
-            .colorSensors(colorSensors)
-            .build();
+                .SensorBuilder()
+                .colorSensors(colorSensors)
+                .build();
 
-        Robot robot = new Robot(sensors, base);
+        Robot robot = new Robot.RobotBuilder()
+                .sensor(sensors)
+                .movement(movement)
+                .build();
 
         double elevatorSpeed;
 
@@ -122,8 +125,8 @@ public class BasicMovement extends LinearOpMode {
 
         //lf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
-        robot.movement.setServo(0, 0.05);
-        robot.movement.setServo(1, 1);
+        robot.getMovement().setServo(0, 0.05);
+        robot.getMovement().setServo(1, 1);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -152,8 +155,8 @@ public class BasicMovement extends LinearOpMode {
             
             // Every tenth loop, check the elevator status.
             if (count % 10 == 0) {
-                sul = robot.sensor.getRGB(0);
-                sud = robot.sensor.getRGB(1);
+                sul = robot.getSensor().getRGB(0);
+                sud = robot.getSensor().getRGB(1);
             }
 
             // Check if the limit switch is hit either way, and set the movable direction.
@@ -172,30 +175,30 @@ public class BasicMovement extends LinearOpMode {
             }
 
             if (gamepad2.x) {
-                robot.movement.setServo(0, 0.81);
+                robot.getMovement().setServo(0, 0.81);
             }
             if (gamepad2.y) {
-                robot.movement.setServo(0, 0.05);
+                robot.getMovement().setServo(0, 0.05);
             }
 
             if (gamepad2.a) {
-                robot.movement.setServo(1, 0.3);
+                robot.getMovement().setServo(1, 0.3);
             }
             if (gamepad2.b) {
-                robot.movement.setServo(1, 0.63);
+                robot.getMovement().setServo(1, 0.63);
             }
 
             // Send calculated power to wheels
-            robot.movement.move2x2(leftPower, rightPower);
-            robot.movement.moveElevator(elevatorSpeed);
+            robot.getMovement().move2x2(leftPower, rightPower);
+            robot.getMovement().moveElevator(elevatorSpeed);
 
             // Display the current value(s)
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Motor Power", "%5.2f", elevatorSpeed);
             telemetry.addData("Up Limit", sul);
             telemetry.addData("Down Limit", sud);
-            telemetry.addData("Arm Position", robot.movement.getServos()[0].getPosition());
-            telemetry.addData("Grabber Position", robot.movement.getServos()[1].getPosition());
+            telemetry.addData("Arm Position", robot.getMovement().getServos()[0].getPosition());
+            telemetry.addData("Grabber Position", robot.getMovement().getServos()[1].getPosition());
             // Show the elapsed game time and wheel power.
             telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
             telemetry.update();

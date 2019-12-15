@@ -29,6 +29,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+
 /**
  * Integrates Sensor class and Movement class so we can use VuForia and motors in one function.
  * Use like so: Robot robot = new Robot(new Sensor(whatever), new Movement(whatever));
@@ -36,12 +40,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  * NOTE: You really should edit this file to suit your robot. If you find an error occurring here,
  * add it to our GitHub issues page at https://github.com/botsburgh/BOTSBURGH-FTC-2019-20/issues
  */
-//@RequiredArgsConstructor
-//@AllArgsConstructor
+@Builder
 public class Robot {
-    //@Getter
-    Sensor sensor;
-    Movement movement;
+    @Getter private Sensor sensor;
+    @Getter private Movement movement;
 
     private static final double COUNTS_PER_MOTOR_REV  = 1440; // eg: TETRIX Motor Encoder
     private static final double DRIVE_GEAR_REDUCTION  = 2.0;  // This is < 1.0 if geared UP
@@ -65,43 +67,6 @@ public class Robot {
     };
 
     private Telemetry telemetry;
-
-    /**
-     * Initialize robot with both sensor and movement functionality
-     * @param s Sensor class
-     * @param m Movement class
-     */
-    Robot(Sensor s, Movement m) {
-        sensor = s;
-        movement = m;
-    }
-
-    /**
-     * Initialize robot with both sensor and movement functionality
-     * @param s Sensor class
-     * @param m Movement class
-     */
-    Robot(Sensor s, Movement m, Telemetry t) {
-        sensor = s;
-        movement = m;
-        telemetry = t;
-    }
-
-    /**
-     * Initialize robot with only sensor functionality
-     * @param s Sensor class
-     */
-    Robot(Sensor s) {
-        sensor = s;
-    }
-
-    /**
-     * Initialize robot with only movement functionality
-     * @param m Movement class
-     */
-    Robot(Movement m) {
-        movement = m;
-    }
 
     void gyroTurn(int id, double speed, double angle) {
         double offset = sensor.getGyros()[id].getAngularOrientation(
@@ -348,9 +313,5 @@ public class Robot {
 
     public void telemetry(Telemetry telemetry, String caption, String data) {
         telemetry.addData(caption, data);
-    }
-
-    Sensor getSensor(){
-        return sensor;
     }
 }
