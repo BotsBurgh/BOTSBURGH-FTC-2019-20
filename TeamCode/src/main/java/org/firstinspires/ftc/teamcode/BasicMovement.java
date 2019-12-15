@@ -24,6 +24,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import android.os.AsyncTask;
+
 @TeleOp(name="Basic Movement", group="00-TeleOp")
 public class BasicMovement extends LinearOpMode {
 
@@ -59,16 +61,19 @@ public class BasicMovement extends LinearOpMode {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
 
-    private long count = 0;
+    // Setup a variable for each drive wheel to save power level for telemetry
+    private double leftPower;
+    private double rightPower;
+
+    private double elevatorSpeed;
+
+    Robot robot;
+
+    private double sul = 3;
+    private double sud = 3;
 
     @Override
     public void runOpMode() {
-        // Setup a variable for each drive wheel to save power level for telemetry
-        double leftPower;
-        double rightPower;
-
-        double mod;
-
         DcMotor sc = hardwareMap.get(DcMotor.class, "scissorLift");
         DcMotor lb = hardwareMap.get(DcMotor.class, "lb");
         DcMotor rb = hardwareMap.get(DcMotor.class, "rb");
@@ -118,10 +123,6 @@ public class BasicMovement extends LinearOpMode {
                 .movement(movement)
                 .build();
 
-        double elevatorSpeed;
-
-        double sul = 3;
-        double sud = 3;
 
         //lf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
@@ -137,56 +138,12 @@ public class BasicMovement extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            // Adjust speed based on the bumpers. Idea from Robotic Doges
-            if (gamepad1.left_bumper || gamepad2.left_bumper) {
-                mod = 0.33;
-            } else if (gamepad1.right_bumper || gamepad2.right_bumper) {
-                mod = 1;
-            } else {
-                mod = 0.66;
-            }
+            // Get the speed we should set the motors
+            new AsyncController().execute();
 
-            // POV Mode uses left stick to go forward, and right stick to turn.
-            // - This uses basic math to combine motions and is easier to drive straight.
-            double drive = gamepad1.left_stick_y;
-            double turn  = gamepad1.right_stick_x;
-            leftPower    = Range.clip(drive + turn, -mod, mod);
-            rightPower   = Range.clip(drive - turn, -mod, mod);
-            
-            // Every tenth loop, check the elevator status.
-            if (count % 10 == 0) {
-                sul = robot.getSensor().getRGB(0);
-                sud = robot.getSensor().getRGB(1);
-            }
+            new AsyncColorSensor().execute();
 
-            // Check if the limit switch is hit either way, and set the movable direction.
-            if ((sul == 0) && (gamepad2.left_stick_y < DEADZONE)) {
-                // If we cannot go up, and the user tries to go up, we don't allow that to happen.
-                elevatorSpeed = 0;
-            } else if ((sud == 0) && (gamepad2.left_stick_y > DEADZONE)) {
-                // If we cannot go down, and the user tries to go down, we don't allow that to happen.
-                elevatorSpeed = 0;
-            } else if (Math.abs(gamepad2.left_stick_y) > DEADZONE) {
-                // If the user moves the stick more than 10%, and none of the other conditions are fulfilled, we allow the scissor lift to move
-                elevatorSpeed = -gamepad2.left_stick_y;
-            } else {
-                // If the user is not doing anything, we don't allow the scissor lift to move
-                elevatorSpeed = 0;
-            }
-
-            if (gamepad2.x) {
-                robot.getMovement().setServo(0, 0.81);
-            }
-            if (gamepad2.y) {
-                robot.getMovement().setServo(0, 0.05);
-            }
-
-            if (gamepad2.a) {
-                robot.getMovement().setServo(1, 0.3);
-            }
-            if (gamepad2.b) {
-                robot.getMovement().setServo(1, 0.63);
-            }
+            new AsyncElevatorSpeed().execute();
 
             // Send calculated power to wheels
             robot.getMovement().move2x2(leftPower, rightPower);
@@ -202,7 +159,66 @@ public class BasicMovement extends LinearOpMode {
             // Show the elapsed game time and wheel power.
             telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
             telemetry.update();
-            count++;
+        }
+    }
+
+    private class AsyncController extends AsyncTask<String, String, String> {
+        @Override
+        protected String doInBackground(String... params) {
+            double mod;
+            while (opModeIsActive()) {
+                // Adjust speed based on the bumpers. Idea from Robotic Doges
+                if (gamepad1.left_bumper || gamepad2.left_bumper) {
+                    mod = 0.33;
+                } else if (gamepad1.right_bumper || gamepad2.right_bumper) {
+                    mod = 1;
+                } else {
+                    mod = 0.66;
+                }
+
+                // POV Mode uses left stick to go forward, and right stick to turn.
+                // - This uses basic math to combine motions and is easier to drive straight.
+                double drive = gamepad1.left_stick_y;
+                double turn = gamepad1.right_stick_x;
+                leftPower = Range.clip(drive + turn, -mod, mod);
+                rightPower = Range.clip(drive - turn, -mod, mod);
+                return "";
+            }
+            return "";
+        }
+    }
+
+    private class AsyncColorSensor extends AsyncTask<String, String, String> {
+        @Override
+        protected String doInBackground(String... params) {
+            while (opModeIsActive()) {
+                sul = robot.getSensor().getRGB(0);
+                sud = robot.getSensor().getRGB(1);
+            }
+            return "";
+        }
+    }
+
+    private class AsyncElevatorSpeed extends AsyncTask<String, String, String> {
+        @Override
+        protected String doInBackground(String... params) {
+            while (opModeIsActive()) {
+                // Check if the limit switch is hit either way, and set the movable direction.
+                if ((sul == 0) && (gamepad2.left_stick_y < DEADZONE)) {
+                    // If we cannot go up, and the user tries to go up, we don't allow that to happen.
+                    elevatorSpeed = 0;
+                } else if ((sud == 0) && (gamepad2.left_stick_y > DEADZONE)) {
+                    // If we cannot go down, and the user tries to go down, we don't allow that to happen.
+                    elevatorSpeed = 0;
+                } else if (Math.abs(gamepad2.left_stick_y) > DEADZONE) {
+                    // If the user moves the stick more than 10%, and none of the other conditions are fulfilled, we allow the scissor lift to move
+                    elevatorSpeed = -gamepad2.left_stick_y;
+                } else {
+                    // If the user is not doing anything, we don't allow the scissor lift to move
+                    elevatorSpeed = 0;
+                }
+            }
+            return "";
         }
     }
 }
