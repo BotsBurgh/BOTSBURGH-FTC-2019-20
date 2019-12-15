@@ -92,7 +92,10 @@ public class AutonomousBlue extends LinearOpMode {
                 .build();
 
         // Initializes the robot object
-        Robot robot = new Robot(sensor, movement);
+        Robot robot = new Robot.RobotBuilder()
+                .movement(movement)
+                .sensor(sensor)
+                .build();
 
         VectorF target;
 
@@ -113,8 +116,8 @@ public class AutonomousBlue extends LinearOpMode {
 
          */
 
-        robot.sensor.initGyro(0);
-        robot.sensor.initGyro(1);
+        robot.getSensor().initGyro(0);
+        robot.getSensor().initGyro(1);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -167,9 +170,9 @@ public class AutonomousBlue extends LinearOpMode {
             robot.gyroDrive(0, DRIVE_SPEED, 70, robot.sensor.getGyro(0).getAngularOrientation().firstAngle);
              */
 
-            robot.gyroDrive(0, DRIVE_SPEED, 96, robot.sensor.getGyros()[0].getAngularOrientation().firstAngle); // Robot goes across the field
+            robot.gyroDrive(0, DRIVE_SPEED, 96, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle); // Robot goes across the field
             robot.gyroTurn(0, TURN_SPEED, 90); // Turn 90 degrees so we are facing the
-            robot.gyroDrive(0, DRIVE_SPEED, 24, robot.sensor.getGyros()[1].getAngularOrientation().firstAngle);
+            robot.gyroDrive(0, DRIVE_SPEED, 24, robot.getSensor().getGyros()[1].getAngularOrientation().firstAngle);
 
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());

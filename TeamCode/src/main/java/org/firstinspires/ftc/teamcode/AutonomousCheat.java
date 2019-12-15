@@ -88,7 +88,7 @@ public class AutonomousCheat extends LinearOpMode {
                 armSwivel, grabber
         };
 
-        Movement base = new Movement
+        Movement movement = new Movement
                 .MovementBuilder()
                 .motors(motors)
                 .servos(servos)
@@ -114,12 +114,15 @@ public class AutonomousCheat extends LinearOpMode {
                 .colorSensors(colorSensors)
                 .build();
 
-        Robot robot = new Robot(sensors, base);
+        Robot robot = new Robot.RobotBuilder()
+                .movement(movement)
+                .sensor(sensors)
+                .build();
 
         //lf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 
-        robot.movement.setServo(0, 0.05);
-        robot.movement.setServo(1, 1);
+        robot.getMovement().setServo(0, 0.05);
+        robot.getMovement().setServo(1, 1);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -128,9 +131,9 @@ public class AutonomousCheat extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        robot.movement.move2x2(DRIVE_SPEED, DRIVE_SPEED);
+        robot.getMovement().move2x2(DRIVE_SPEED, DRIVE_SPEED);
         sleep(1500);
-        robot.movement.move2x2(0, 0);
+        robot.getMovement().move2x2(0, 0);
 
     }
 }

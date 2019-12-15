@@ -113,13 +113,13 @@ public class BasicMovement extends LinearOpMode {
                 hardwareMap.get(ColorSensor.class, "scissorUpLimit")
         };
 
-        Sensor sensors = new Sensor
+        Sensor sensor = new Sensor
                 .SensorBuilder()
                 .colorSensors(colorSensors)
                 .build();
 
         Robot robot = new Robot.RobotBuilder()
-                .sensor(sensors)
+                .sensor(sensor)
                 .movement(movement)
                 .build();
 
