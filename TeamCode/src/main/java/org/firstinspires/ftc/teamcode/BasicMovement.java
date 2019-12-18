@@ -182,7 +182,6 @@ public class BasicMovement extends LinearOpMode {
                 double turn = gamepad1.right_stick_x;
                 leftPower = Range.clip(drive + turn, -mod, mod);
                 rightPower = Range.clip(drive - turn, -mod, mod);
-                return "";
             }
             return "";
         }
