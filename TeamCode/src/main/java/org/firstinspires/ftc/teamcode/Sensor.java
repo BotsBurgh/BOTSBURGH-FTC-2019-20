@@ -160,9 +160,10 @@ class Sensor {
      * @return 0 if red, 1 if green, 2 if blue, 3 if none
      */
     int getRGB(int id) {
-        double red   = colorSensors[id].red();
-        double green = colorSensors[id].green();
-        double blue  = colorSensors[id].blue();
+        double red   = getRed(id);
+        double green = getGreen(id);
+        double blue  = getBlue(id);
+
         if ((red>blue) && (red>green) && red>RED_THESH) {
             return 0;
         } else if ((green>red) && (green>blue) && green>GREEN_THESH) {

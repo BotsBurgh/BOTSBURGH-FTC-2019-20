@@ -12,7 +12,7 @@ As a quick breakdown, you will see the following files:
 1. [Movement.java](#movementjava)
 1. [Robot.java](#robotjava)
 1. [BasicMovement.java](#BasicMovementjava)
-1. [AutonomousMain.java](#AutonomousMainjava)
+1. [AutonomousCheat.java](#AutonomousCheatjava)
 1. [Miscellaneous Calibration Files](#Miscellaneous-Calibration-Files)
 1. [Miscellaneous Test Files](#Miscellaneous-Test-Files)
 
@@ -42,7 +42,7 @@ Starting at the beginning of the file, we see a few static variables. These, you
 1. GREEN_THESH: The threshold for detecting if something is green or not. Refer to the [Color Sensor Calibration](#calibrationcolorsensorjava) section to find appropriate values.
 1. BLUE_THESH: The threshold for detecting if something is blue or not. Refer to the [Color Sensor Calibration](#calibrationcolorsensorjava) section to find appropriate values.
 
-Most rookie teams don't need to edit anything below this section, but they should in order to get a better understanding of what is going on. Below, we are going to look at three main things: First, we are going to understand some more static variables, then we are going to look at the functions, and lastly we are going to look at the SensorBuilder class.
+Most rookie teams don't need to edit anything below this section, but they should at least look at it in order to get a better understanding of what is going on. Below, we are going to look at three main things: First, we are going to understand some more static variables, then we are going to look at the functions, and lastly we are going to look at the SensorBuilder class.
 
 ### Additional Static Variables
 
@@ -65,66 +65,18 @@ Most rookie teams don't need to edit anything below this section, but they shoul
 1. getGreen: Returns raw green value
 1. getBlue: Returns raw blue
 1. getButton: Returns true or false based on whether a button is pressed or not
-1. initVuforia: Initializes VuForia. Only really needs to be called once.
+1. getPotDeg: Returns the degrees of the potentiometer
+1. initGyro: Initialize gyroscope
+1. calibrateGyro: Calibrate gyroscope
+1. initVuforia: Initializes VuForia. Only really needs to be called once
 1. getVuforiaPosition: Returns a Vector of the position of the robot based on VuForia
-1. getVuforiaRotation: Returns an Orientation of the rotation of the robot based on VuForia.
-1. initTfod: Initializes TensorFlow object detection.
-1. activateTfod: Starts TFOD functionality.
-1. getTfod: Gets the skystones detected with VuForia and TensorFlow.
-1. deactivateVuforia: Turns off VuForia.
+1. getVuforiaRotation: Returns an Orientation of the rotation of the robot based on VuForia
+1. initTfod: Initializes TensorFlow object detection
+1. getTfod: Gets the skystones detected with VuForia and TensorFlow
+1. deactivateVuforia: Turns off VuForia
+1. deactivateTfod: Turns off TFOD
 
 ### SensorBuilder
-
-As we built on our Sensor class, we kept on adding constructors based on every single use case we had for the class. We had a constructor for every single configuration we had, and this quickly became bloated and difficult to read. After some quick internet searching, we found a few solutions. First, we had the option to overload each class (a constructor for each use case), which we already were using (and kinda sucked). Next, we had the option to use static factory methods (in which we have prebuilt constructors). While simple to implement and understand, this approach also does not scale well with a large number of optional parameters, which we had. The next solution, a builder pattern, was perfect for our use case. We start by defining our class with a private constructor but then introduce a static nested class to function as a builder. The builder class exposes methods for setting parameters and for building the instance. The first issue (after we got past the syntax) was that we had multiple sensors, and any number of it. This is where the next solution comes in: Varargs. Varargs provide a way of to declare that a method accepts 0 or more arguments of a specified type. We essentially passed an array of sensors to the SensorBuilder split up by sensor type. This allowed us to have multiple sensors and with much less code. Along with it being easy to program, it is easy to extend to adapt to more sensors.
-
-Here is an example of our SensorBuilder class:
-
-```java
-static class SensorBuilder {
-    private BNO055IMU[] gyro; // Initialize gyroscopes
-    private AnalogInput[] pot; // Initialize potentiometers
-    private DigitalChannel[] button; // Initialize buttons
-    private ColorSensor[] color; // Initialize color sensors
-    private DistanceSensor[] distance; // Initialize distance sensors
-    private WebcamName[] webcams; // Initialize webcams
-
-    SensorBuilder() {}
-
-    SensorBuilder withButtons(DigitalChannel... c) {
-        this.button = c;
-        return this;
-    }
-
-    SensorBuilder withPotentiometers(AnalogInput... a) {
-        this.pot = a;
-        return this;
-    }
-
-    SensorBuilder withColorSensors(ColorSensor... c) {
-        this.color = c;
-        return this;
-    }
-
-    SensorBuilder withGyros(BNO055IMU... g) {
-        this.gyro = g;
-        return this;
-    }
-
-    SensorBuilder withDistanceSensors(DistanceSensor... d) {
-        this.distance = d;
-        return this;
-    }
-
-    SensorBuilder withWebcams(WebcamName... c) {
-        this.webcams = c;
-        return this;
-    }
-
-    Sensor build() {
-        return new Sensor(this);
-    }
-}
-```
 
 It is very simple to use. We would pass a list of, say, color sensors to the builder like so:
 
@@ -141,6 +93,24 @@ Sensor sensors = new Sensor
 ```
 
 The main sources we used were: <https://stackify.com/optional-parameters-java/> and <https://www.baeldung.com/creational-design-patterns#builder>.
+
+Although the Builder worked perfectly, we wanted to make it better and more standardized. After talking with Austin Frownfelter, we were introduced to something called Project Lombok. Project Lombok is a compile-time only library which processes annotations to prevent boilerplate code, or slightly altered repeated code. With Project Lombok, we could get rid of all of our getter and setter methods and our builder functionality. By adding a `@Getter` and `@Setter` before a variable, we have a getter and setter added to our code (when we compile our code). When we add a `@Builder` before a class, we get a Builder class which will do everything for us.
+
+```java
+@Builder
+class Sensor {
+    ...
+    @Getter BNO055IMU[] gyros; // Initialize gyroscopes
+    @Getter AnalogInput[] pot; // Initialize potentiometers
+    @Getter private DigitalChannel[] button; // Initialize buttons
+    @Getter private ColorSensor[] colorSensors; // Initialize color sensors
+    @Getter private DistanceSensor[] distance; // Initialize distance sensors
+    @Getter private WebcamName[] webcams; // Initialize webcams
+    ...
+}
+```
+
+With this, we eliminated over a hundred lines of code and improved the readability of our code.
 
 ## Movement.java
 
