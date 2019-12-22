@@ -246,7 +246,7 @@ public class Robot {
 
     void vuForiaTurn(double degrees) {
         Orientation startingOri = sensor.getVuforiaRotation();
-        double startingDegrees = startingOri.thirdAngle;
+        double startingDegrees = startingOri.thirdAngle; // x
         double currentDegrees = sensor.getVuforiaRotation().thirdAngle;
         // Find out if we have to turn right or left.
         if (degrees < startingDegrees) {
@@ -280,8 +280,8 @@ public class Robot {
         ); // The formula: degrees = atan((y2-y1)/(x2-x1))
 
         Orientation targetOri = new Orientation();
-        targetOri.firstAngle = startingOri.firstAngle;
-        targetOri.secondAngle = startingOri.secondAngle;
+        targetOri.firstAngle = startingOri.firstAngle; // z
+        targetOri.secondAngle = startingOri.secondAngle; // y
         targetOri.thirdAngle = startingOri.thirdAngle + (float)degrees; // The robot turns on the
                                                                         // Z-Axis
         // Alright, now we have to turn to the targetOri and drive forward until we get to the targetPos

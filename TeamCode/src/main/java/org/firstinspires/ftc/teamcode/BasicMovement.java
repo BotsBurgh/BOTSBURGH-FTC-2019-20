@@ -136,14 +136,15 @@ public class BasicMovement extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
+        // Get the speed we should set the motors
+        new AsyncController().execute();
+
+        new AsyncColorSensor().execute();
+
+        new AsyncElevatorSpeed().execute();
+
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            // Get the speed we should set the motors
-            new AsyncController().execute();
-
-            new AsyncColorSensor().execute();
-
-            new AsyncElevatorSpeed().execute();
 
             // Send calculated power to wheels
             robot.getMovement().move2x2(leftPower, rightPower);
