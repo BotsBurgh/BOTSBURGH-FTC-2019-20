@@ -21,6 +21,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -29,7 +30,8 @@ import android.os.AsyncTask;
 @TeleOp(name="Basic Movement", group="00-TeleOp")
 public class BasicMovement extends LinearOpMode {
 
-    private static final double DEADZONE = 0.05; // Controls controller joystick deadzone
+    private static final double DEADZONE    = 0.05; // Controls controller joystick deadzone
+    private static final double SERVO_POWER = 1.00;
 
     /*
     ######  #######    #     # ####### #######    ####### ######  ### #######
@@ -84,18 +86,23 @@ public class BasicMovement extends LinearOpMode {
                 lb, rb
         };
 
-        Servo armSwivel = hardwareMap.get(Servo.class, "armSwivel");
         Servo grabber = hardwareMap.get(Servo.class, "grabber");
 
-
         Servo[] servos = new Servo[] {
-                armSwivel, grabber
+                grabber
+        };
+
+        CRServo armExtend = hardwareMap.get(CRServo.class, "extender");
+
+        CRServo[] crServos = new CRServo[] {
+                armExtend
         };
 
         Movement movement = new Movement
                 .MovementBuilder()
                 .motors(motors)
                 .servos(servos)
+                .crServos(crServos)
                 .build();
 
         // Most robots need the motor on one side to be reversed to drive forward
@@ -143,6 +150,8 @@ public class BasicMovement extends LinearOpMode {
 
         new AsyncElevatorSpeed().execute();
 
+        new AsyncArm().execute();
+
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
@@ -155,7 +164,7 @@ public class BasicMovement extends LinearOpMode {
             telemetry.addData("Motor Power", "%5.2f", elevatorSpeed);
             telemetry.addData("Up Limit", sul);
             telemetry.addData("Down Limit", sud);
-            telemetry.addData("Arm Position", robot.getMovement().getServos()[0].getPosition());
+            telemetry.addData("Arm Extend", robot.getMovement().getServos()[0].getPosition());
             telemetry.addData("Grabber Position", robot.getMovement().getServos()[1].getPosition());
             // Show the elapsed game time and wheel power.
             telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
@@ -216,6 +225,22 @@ public class BasicMovement extends LinearOpMode {
                 } else {
                     // If the user is not doing anything, we don't allow the scissor lift to move
                     elevatorSpeed = 0;
+                }
+            }
+            return "";
+        }
+    }
+
+    private class AsyncArm extends AsyncTask<String, String, String> {
+        @Override
+        protected String doInBackground(String... params) {
+            while (opModeIsActive()) {
+                if (gamepad2.dpad_up) {
+                    robot.getMovement().getCrServos()[0].setPower(SERVO_POWER);
+                } else if (gamepad2.dpad_down) {
+                    robot.getMovement().getCrServos()[0].setPower(-SERVO_POWER);
+                } else {
+                    robot.getMovement().getCrServos()[0].setPower(0);
                 }
             }
             return "";
