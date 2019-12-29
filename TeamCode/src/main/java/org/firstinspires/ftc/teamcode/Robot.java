@@ -68,6 +68,17 @@ public class Robot {
 
     private Telemetry telemetry;
 
+    /**
+     *  Method to spin on central axis to point in a new direction.
+     *  Move will stop if either of these conditions occur:
+     *  1) Move gets to the heading (angle)
+     *  2) Driver stops the opmode running.
+     *
+     * @param speed Desired speed of turn.
+     * @param angle      Absolute Angle (in Degrees) relative to last gyro reset.
+     *                   0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
+     *                   If a relative angle is required, add/subtract from current heading.
+     */
     void gyroTurn(int id, double speed, double angle) {
         double offset = sensor.getGyros()[id].getAngularOrientation(
                 AxesReference.INTRINSIC,
@@ -86,6 +97,16 @@ public class Robot {
         }
     }
 
+    /**
+     * Perform one cycle of closed loop heading control.
+     *
+     * @param speed     Desired speed of turn.
+     * @param angle     Absolute Angle (in Degrees) relative to last gyro reset.
+     *                  0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
+     *                  If a relative angle is required, add/subtract from current heading.
+     * @param PCoeff    Proportional Gain coefficient
+     * @return
+     */
     private boolean onHeading(int id, double speed, double angle, double PCoeff) {
         double  error = getError(id, angle);
         double  steer;
@@ -139,6 +160,15 @@ public class Robot {
         return error;
     }
 
+    /**
+     * GyroDrive wrapper with debug
+     * @param id         ID of the gyroscope to be used
+     * @param speed      Target speed for forward motion.  Should allow for _/- variance for adjusting heading
+     * @param distance   Distance (in inches) to move from current position.  Negative distance means move backwards.
+     * @param angle      Absolute Angle (in Degrees) relative to last gyro reset.
+     *                   0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
+     *                   If a relative angle is required, add/subtract from current heading.
+     */
     void gyroDrive(int id, double speed, double distance, double angle) {
         gyroDrive(id, speed, distance, angle, false);
     }
@@ -155,6 +185,7 @@ public class Robot {
      * @param angle      Absolute Angle (in Degrees) relative to last gyro reset.
      *                   0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
      *                   If a relative angle is required, add/subtract from current heading.
+     * @param debug      Used to debug this function
      */
     void gyroDrive(int id, double speed, double distance, double angle, boolean debug) {
         int     newLeftTarget;
@@ -244,6 +275,10 @@ public class Robot {
         return Range.clip(error * PCoeff, -1, 1);
     }
 
+    /**
+     * Turn using VuForia. Not tested yet.
+     * @param degrees Degrees to turn
+     */
     void vuForiaTurn(double degrees) {
         Orientation startingOri = sensor.getVuforiaRotation();
         double startingDegrees = startingOri.thirdAngle; // x
@@ -267,6 +302,10 @@ public class Robot {
         }
     }
 
+    /**
+     * Go to a position on the field using VuForia. Not tested yet
+     * @param targetPos VectorF to go to
+     */
     void vuForiaGoto(VectorF targetPos) {
         VectorF startingPos = sensor.getVuforiaPosition();
         Orientation startingOri = sensor.getVuforiaRotation();
@@ -308,10 +347,5 @@ public class Robot {
                     Math.abs(currentPos.get(1)))) + (Math.abs(targetPos.get(0) -
                     Math.abs(currentPos.get(0))))));
         }
-        // Done! This has NOT been tested yet
-    }
-
-    public void telemetry(Telemetry telemetry, String caption, String data) {
-        telemetry.addData(caption, data);
     }
 }

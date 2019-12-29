@@ -31,3 +31,4 @@ TeamCode/src/main/java/org/firstinspires/ftc/teamcode/VuForiaKey.java
 
 # VSCode stuff
 .vscode
+*.code-workspace

@@ -11,10 +11,10 @@ As a quick breakdown, you will see the following files:
 1. [Sensor.java](#sensorjava)
 1. [Movement.java](#movementjava)
 1. [Robot.java](#robotjava)
-1. [BasicMovement.java](#BasicMovementjava)
-1. [AutonomousCheat.java](#AutonomousCheatjava)
-1. [Miscellaneous Calibration Files](#Miscellaneous-Calibration-Files)
-1. [Miscellaneous Test Files](#Miscellaneous-Test-Files)
+1. [BasicMovement.java](#basicmovementjava)
+1. [AutonomousCheat.java](#autonomouscheatjava)
+1. [Miscellaneous Calibration Files](#miscellaneous-calibration-files)
+1. [Miscellaneous Test Files](#miscellaneous-test-files)
 
 In each file we will go over what the file does and the individual functions in it. We will NOT be going over it line-by-line. The files are commented enough that you should be able to deduce what is going on.
 
@@ -49,52 +49,36 @@ Most rookie teams don't need to edit anything below this section, but they shoul
 1. VUFORIA_KEY: This stores the VuForia key. People who copy and paste our code without reading the documentation will run into an error: The file `VuForiaKey.java` does not exist. You must copy the file `VuForiaKey.java.example` to `VuForiaKey.java` and add your key in there. We did this because we thought that some people may inadvertently use our API key, leading to errors for us.
 1. mmPerInch: Simple conversion factor for millimeters and inches.
 1. mmTargetHeight: The height of the target in millimeters.
-1. stoneZ: The orientation of the stone's Z-axis
-1. bridgeX: The X-position of the bridge
-1. bridgeY: The Y-position of the bridge
-1. bridgeZ: The Z-position of the bridge
-1. bridgeRotY: The Y-rotation of the bridge
-1. bridgeRotZ: The Z-rotation of the bridge
-1. halfField: The size of the half field
-1. quadField: The size of the half of half field
+1. stoneZ: The orientation of the stone's Z-axis.
+1. bridgeX: The X-position of the bridge.
+1. bridgeY: The Y-position of the bridge.
+1. bridgeZ: The Z-position of the bridge.
+1. bridgeRotY: The Y-rotation of the bridge.
+1. bridgeRotZ: The Z-rotation of the bridge.
+1. halfField: The size of the half field.
+1. quadField: The size of the half of half field.
 
 ### Sensor Functions
 
 1. getRGB: Returns an integer whether the color detected by the sensor is red, green, or blue based on the thresholds outlined earlier. 0 for red, 1 for green, 2 for blue, 3 for grey.
-1. getRed: Returns raw red value
-1. getGreen: Returns raw green value
-1. getBlue: Returns raw blue
-1. getButton: Returns true or false based on whether a button is pressed or not
-1. getPotDeg: Returns the degrees of the potentiometer
-1. initGyro: Initialize gyroscope
-1. calibrateGyro: Calibrate gyroscope
-1. initVuforia: Initializes VuForia. Only really needs to be called once
-1. getVuforiaPosition: Returns a Vector of the position of the robot based on VuForia
-1. getVuforiaRotation: Returns an Orientation of the rotation of the robot based on VuForia
-1. initTfod: Initializes TensorFlow object detection
-1. getTfod: Gets the skystones detected with VuForia and TensorFlow
-1. deactivateVuforia: Turns off VuForia
-1. deactivateTfod: Turns off TFOD
+1. getRed: Returns raw red value.
+1. getGreen: Returns raw green value.
+1. getBlue: Returns raw blue.
+1. getButton: Returns true or false based on whether a button is pressed or not.
+1. getPotDeg: Returns the degrees of the potentiometer.
+1. initGyro: Initialize gyroscope.
+1. calibrateGyro: Calibrate gyroscope.
+1. initVuforia: Initializes VuForia. Only really needs to be called once.
+1. getVuforiaPosition: Returns a Vector of the position of the robot based on VuForia.
+1. getVuforiaRotation: Returns an Orientation of the rotation of the robot based on VuForia.
+1. initTfod: Initializes TensorFlow object detection.
+1. getTfod: Gets the skystones detected with VuForia and TensorFlow.
+1. deactivateVuforia: Turns off VuForia.
+1. deactivateTfod: Turns off TFOD.
 
 ### SensorBuilder
 
-It is very simple to use. We would pass a list of, say, color sensors to the builder like so:
-
-```java
-ColorSensor[] colorSensors = new ColorSensor[] {
-    hardwareMap.get(ColorSensor.class, "scissorDownLimit"),
-    hardwareMap.get(ColorSensor.class, "scissorUpLimit")
-};
-
-Sensor sensors = new Sensor
-    .SensorBuilder()
-    .withColorSensors(colorSensors)
-    .build();
-```
-
-The main sources we used were: <https://stackify.com/optional-parameters-java/> and <https://www.baeldung.com/creational-design-patterns#builder>.
-
-Although the Builder worked perfectly, we wanted to make it better and more standardized. After talking with Austin Frownfelter, we were introduced to something called Project Lombok. Project Lombok is a compile-time only library which processes annotations to prevent boilerplate code, or slightly altered repeated code. With Project Lombok, we could get rid of all of our getter and setter methods and our builder functionality. By adding a `@Getter` and `@Setter` before a variable, we have a getter and setter added to our code (when we compile our code). When we add a `@Builder` before a class, we get a Builder class which will do everything for us.
+After talking with Austin Frownfelter, we were introduced to something called Project Lombok. Project Lombok is a compile-time only library which processes annotations to prevent boilerplate code, or slightly altered repeated code. With Project Lombok, we could get rid of all of our getter and setter methods and our builder functionality. By adding a `@Getter` and `@Setter` before a variable, we have a getter and setter added to our code (when we compile our code). When we add a `@Builder` before a class, we get a Builder class which will do everything for us.
 
 ```java
 @Builder
@@ -110,6 +94,20 @@ class Sensor {
 }
 ```
 
+It is very simple to use. We would pass a list of, say, color sensors to the builder like so:
+
+```java
+ColorSensor[] colorSensors = new ColorSensor[] {
+    hardwareMap.get(ColorSensor.class, "scissorDownLimit"),
+    hardwareMap.get(ColorSensor.class, "scissorUpLimit")
+};
+
+Sensor sensors = new Sensor
+    .SensorBuilder()
+    .colorSensors(colorSensors)
+    .build();
+```
+
 With this, we eliminated over a hundred lines of code and improved the readability of our code.
 
 ## Movement.java
@@ -118,14 +116,14 @@ Movement.java fulfills similar requirements that Sensor.java does: centralize th
 
 ### Static Variables
 
-1. TURN_POWER: How much power to send to the motors when we are turning in Autonomous
-1. DRIVE_POWER: How much power to send to the motors when we are moving straight forward in autonomous
+1. TURN_POWER: How much power to send to the motors when we are turning in Autonomous.
+1. DRIVE_POWER: How much power to send to the motors when we are moving straight forward in autonomous.
 1. ELEVATOR_POWER: The maximum power sent to the elevator / scissor lift.
 1. SERVO_STEP: The degrees the servo should scan by.
 1. SERVO_SLEEP: The time (in milliseconds) we should wait before scanning the next step in a servo. The total time it will take to scan a servo can be represented by multiplying SERVO_SLEEP by degrees, then dividing by SERVO_STEP.
-1. COUNTS_PER_MOTOR_REV: Usually found on the motor spec sheet (used for encoders)
-1. DRIVE_GEAR_REDUCTION: The gear reduction or increase (used for encoders)
-1. WHEEL_DIAMETER_INCHES: The diameter of the wheel (used for encoders)
+1. COUNTS_PER_MOTOR_REV: Usually found on the motor spec sheet (used for encoders).
+1. DRIVE_GEAR_REDUCTION: The gear reduction or increase (used for encoders).
+1. WHEEL_DIAMETER_INCHES: The diameter of the wheel (used for encoders).
 
 Unlike [Sensor.java](#sensorjava), there is not really much more to this than the configuration variable listed above other than a static variable used for combining `COUNTS_PER_MOTOR_REV`, `DRIVE_GEAR_REDUCTION`, and `WHEEL_DIAMETER_INCHES` into `COUNTS_PER_INCH`. Most rookie teams don't need to edit anything below this section, but they should in order to get a better understanding of what is going on. Below, we are going to look at two main things: First, we are going to look at the functions, and lastly we are going to look at the MovementBuilder class.
 
@@ -142,47 +140,7 @@ Unlike [Sensor.java](#sensorjava), there is not really much more to this than th
 
 ### MovementBuilder
 
-Similarly to [Sensor.java](#sensorjava), we also are using a builder class to replace our constructors. It is written similarly to [Sensor.java](#sensorjava). Here is an example:
-
-```java
-static class MovementBuilder {
-    private DcMotor[] motors;
-    private Servo[] servos;
-    private CRServo[] crServos;
-
-    /**
-     * In this format:
-     * [ Elevator,
-     *   Front Left, Front Right,
-     *   Back Left,  Back Right ]
-     *  So, Elevator is id 0
-     *  FL is 1
-     *  FR is 2
-     *  BL is 3
-     *  BR is 4
-     */
-    MovementBuilder withMotors(DcMotor... m) {
-        this.motors = m;
-        return this;
-    }
-
-    MovementBuilder withServos(Servo... s) {
-        this.servos = s;
-        return this;
-    }
-
-    MovementBuilder withCRServos(CRServo... c) {
-        this.crServos = c;
-        return this;
-    }
-
-    Movement build() {
-        return new Movement(this);
-    }
-}
-```
-
-You can see that the builder classes are very similar between [Sensor.java](#sensorjava) and [Movement.java](#movementjava). You should be able to infer that the initialization would be very similar too, and you would be right.
+Similarly to [Sensor.java](#sensorjava), we also are using a builder class to replace our constructors. We added a single line — `@Builder` — to add a builder.
 
 ```java
 DcMotor sc = hardwareMap.get(DcMotor.class, "scissorLift");
@@ -197,7 +155,7 @@ DcMotor[] motors = new DcMotor[] {
 
 Movement base = new Movement
         .MovementBuilder()
-        .withMotors(motors)
+        .motors(motors)
         .build();
 
 // Most robots need the motor on one side to be reversed to drive forward
@@ -218,7 +176,10 @@ We set the motors to use their own variables so we could change some settings of
 This file is the epitome of our code, as it integrates [Sensor.java](#sensorjava) and [Movement.java](#movementjava) into one class. This allows us to create functions combining both [Sensor.java](#sensorjava) and [Movement.java](#movementjava), such as those which need to move based on VuForia. In this class, we have a few functions doing just that:
 
 1. gyroTurn: This turns the robot based on the internal gyroscope. Simple code, integrates gyroscope functionality from [Sensor.java](#sensorjava) and the `move2x2` function from [Movement.java](#movementjava). Useful for autonomous in conditions where VuForia is unavailable or unreliable. However, as VuForia is more accurate, you *should* use that instead. See the functions below for instructions on how to do that.
+1. onHeading: Performs one cycle of closed loop heading control.
+1. getError: Determines the error between the target angle and the robot's current heading.
 1. gyroDrive: This moves the robot forward based on encoders, and corrects for drift based on gyroscopes. When possible, use vuForiaGoto to move the robot, as it is more accurate. However, this is good for situations where VuForia functionality is unreliable. Best suited for autonomous.
+1. getSteer: Returns desired steering force.  +/- 1 range.  +ve = steer left
 1. vuForiaTurn: This function uses the VuForia orientation function from [Sensor.java](#sensorjava) to determine the angle of the robot, then, using the [Movement.java](#movementjava) class, it will turn the robot until it meets the target angle. Best suited for autonomous.
 1. vuForiaGoto: This function uses the VuForia position function from [Sensor.java](#sensorjava) and some trigonometry to determine how far the robot must turn (using the vuForiaTurn function above), then drive forward (using the [Movement.java](#movementjava) class). Best suited for autonomous.
 
@@ -250,7 +211,44 @@ This file serves the purpose of bridging the gap between the two modular files, 
 
 ## BasicMovement.java
 
-This file is our primary TeleOp program. In this, we integrate the "Big Three" classes to run our robot. This file is a great example of what can be done with the API. In this file, we are doing a few things: First, we are moving around the robot, and second, we are moving the elevator up and down with respect to the color sensors detecting if the elevator is overstepping.
+This file is our primary TeleOp program. In this, we integrate the "Big Three" classes to run our robot. This file is a great example of what can be done with the API. In this file, we are doing a few things: First, we are moving around the robot, and second, we are moving the elevator up and down with respect to the color sensors detecting if the elevator is overstepping. However, these are all done with an asynchronous function.
+
+As an example of the controller running in an async function:
+
+```java
+private class AsyncController extends AsyncTask<String, String, String> {
+    @Override
+    protected String doInBackground(String... params) {
+        double mod;
+        while (opModeIsActive()) {
+            // Adjust speed based on the bumpers. Idea from Robotic Doges
+            if (gamepad1.left_bumper || gamepad2.left_bumper) {
+                mod = 0.33;
+            } else if (gamepad1.right_bumper || gamepad2.right_bumper) {
+                mod = 1;
+            } else {
+                mod = 0.66;
+            }
+
+            // POV Mode uses left stick to go forward, and right stick to turn.
+            // - This uses basic math to combine motions and is easier to drive straight.
+            double drive = gamepad1.left_stick_y;
+            double turn = gamepad1.right_stick_x;
+            leftPower = Range.clip(drive + turn, -mod, mod);
+            rightPower = Range.clip(drive - turn, -mod, mod);
+        }
+        return "";
+    }
+}
+```
+
+This is called from the main class right before the main loop with this line:
+
+```java
+new AsyncController().execute();
+```
+
+This needs to be run only once
 
 ### Basic Movement Static Variables
 
