@@ -20,6 +20,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -69,10 +70,9 @@ public class BasicMovement extends LinearOpMode {
 
     private double elevatorSpeed;
 
-    Robot robot;
+    private int sul, sdl;
 
-    private double sul = 3; // Sensor up limit
-    private double sud = 3; // Sensor down limit
+    Robot robot;
 
     @Override
     public void runOpMode() {
@@ -107,7 +107,7 @@ public class BasicMovement extends LinearOpMode {
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
-        sc.setDirection(DcMotor.Direction.FORWARD);
+        sc.setDirection(DcMotor.Direction.REVERSE);
         lb.setDirection(DcMotor.Direction.REVERSE);
         rb.setDirection(DcMotor.Direction.FORWARD);
 
@@ -130,11 +130,8 @@ public class BasicMovement extends LinearOpMode {
                 .movement(movement)
                 .build();
 
-
-        //lf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-
-        robot.getMovement().setServo(0, 0.05);
-        robot.getMovement().setServo(1, 1);
+        double sul = 3; // Sensor up limit
+        double sdl = 3; // Sensor down limit
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -143,12 +140,11 @@ public class BasicMovement extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        // Get the speed we should set the motors
-        new AsyncController().execute();
-
         new AsyncColorSensor().execute();
 
         new AsyncElevatorSpeed().execute();
+
+        new AsyncController().execute();
 
         new AsyncArm().execute();
 
@@ -163,9 +159,9 @@ public class BasicMovement extends LinearOpMode {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Motor Power", "%5.2f", elevatorSpeed);
             telemetry.addData("Up Limit", sul);
-            telemetry.addData("Down Limit", sud);
-            telemetry.addData("Arm Extend", robot.getMovement().getServos()[0].getPosition());
-            telemetry.addData("Grabber Position", robot.getMovement().getServos()[1].getPosition());
+            telemetry.addData("Down Limit", sdl);
+            telemetry.addData("Arm Extend", robot.getMovement().getCrServos()[0].getPower());
+            telemetry.addData("Grabber Position", robot.getMovement().getServos()[0].getPosition());
             // Show the elapsed game time and wheel power.
             telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
             telemetry.update();
@@ -201,8 +197,8 @@ public class BasicMovement extends LinearOpMode {
         @Override
         protected String doInBackground(String... params) {
             while (opModeIsActive()) {
-                sul = robot.getSensor().getRGB(0);
-                sud = robot.getSensor().getRGB(1);
+                sdl = robot.getSensor().getRGB(0);
+                sul = robot.getSensor().getRGB(1);
             }
             return "";
         }
@@ -216,12 +212,12 @@ public class BasicMovement extends LinearOpMode {
                 if ((sul == 0) && (gamepad2.left_stick_y < DEADZONE)) {
                     // If we cannot go up, and the user tries to go up, we don't allow that to happen.
                     elevatorSpeed = 0;
-                } else if ((sud == 0) && (gamepad2.left_stick_y > DEADZONE)) {
+                } else if ((sdl == 0) && (gamepad2.left_stick_y > DEADZONE)) {
                     // If we cannot go down, and the user tries to go down, we don't allow that to happen.
                     elevatorSpeed = 0;
                 } else if (Math.abs(gamepad2.left_stick_y) > DEADZONE) {
                     // If the user moves the stick more than 10%, and none of the other conditions are fulfilled, we allow the scissor lift to move
-                    elevatorSpeed = -gamepad2.left_stick_y;
+                    elevatorSpeed = gamepad2.left_stick_y;
                 } else {
                     // If the user is not doing anything, we don't allow the scissor lift to move
                     elevatorSpeed = 0;

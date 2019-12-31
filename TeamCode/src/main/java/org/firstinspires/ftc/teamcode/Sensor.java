@@ -164,11 +164,11 @@ class Sensor {
         double green = getGreen(id);
         double blue  = getBlue(id);
 
-        if ((red>blue) && (red>green) && red>RED_THESH) {
+        if ((red>blue) && (red>green) && (red>RED_THESH)) {
             return 0;
-        } else if ((green>red) && (green>blue) && green>GREEN_THESH) {
+        } else if ((green>red) && (green>blue) && (green>GREEN_THESH)) {
             return 1;
-        } else if ((blue>red) && (blue>green) && blue>BLUE_THESH) {
+        } else if ((blue>red) && (blue>green) && (blue>BLUE_THESH)) {
             return 2;
         } else {
             return 3;

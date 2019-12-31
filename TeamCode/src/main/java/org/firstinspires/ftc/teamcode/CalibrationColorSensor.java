@@ -26,6 +26,12 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
  * issues, so we made this file to get proper values for our Sensor class.
  */
 public class CalibrationColorSensor extends LinearOpMode {
+    private static final double RED_THESH =   500;
+    private static final double GREEN_THESH = 700;
+    private static final double BLUE_THESH =  600;
+
+    double red, green, blue;
+    int def;
     @Override
     public void runOpMode() {
         ColorSensor cl1 = hardwareMap.get(ColorSensor.class, "cl");
@@ -34,9 +40,23 @@ public class CalibrationColorSensor extends LinearOpMode {
 
         while (opModeIsActive()) {
             // do stuff
-            telemetry.addData("Red", cl1.red());
-            telemetry.addData("Green", cl1.green());
-            telemetry.addData("Blue", cl1.blue());
+            red   = cl1.red();
+            green = cl1.green();
+            blue  = cl1.blue();
+
+            if ((red>blue) && (red>green) && (red>RED_THESH)) {
+                def =  0;
+            } else if ((green>red) && (green>blue) && (green>GREEN_THESH)) {
+                def = 1;
+            } else if ((blue>red) && (blue>green) && (blue>BLUE_THESH)) {
+                def = 2;
+            } else {
+                def = 3;
+            }
+            telemetry.addData("Red", red);
+            telemetry.addData("Green", green);
+            telemetry.addData("Blue", blue);
+            telemetry.addData("Def", def);
 
             telemetry.update();
             sleep(50);
