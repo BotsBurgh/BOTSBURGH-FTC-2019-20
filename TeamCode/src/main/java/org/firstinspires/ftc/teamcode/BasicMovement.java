@@ -20,7 +20,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -70,9 +69,13 @@ public class BasicMovement extends LinearOpMode {
 
     private double elevatorSpeed;
 
-    private int sul, sdl;
+    private double extenderPower;
 
-    Robot robot;
+    private int sul, sdl = 0;
+
+    public Robot robot;
+
+    public Sensor sensor;
 
     @Override
     public void runOpMode() {
@@ -107,7 +110,7 @@ public class BasicMovement extends LinearOpMode {
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
-        sc.setDirection(DcMotor.Direction.REVERSE);
+        sc.setDirection(DcMotor.Direction.FORWARD);
         lb.setDirection(DcMotor.Direction.REVERSE);
         rb.setDirection(DcMotor.Direction.FORWARD);
 
@@ -130,9 +133,6 @@ public class BasicMovement extends LinearOpMode {
                 .movement(movement)
                 .build();
 
-        double sul = 3; // Sensor up limit
-        double sdl = 3; // Sensor down limit
-
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
@@ -140,20 +140,25 @@ public class BasicMovement extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        new AsyncColorSensor().execute();
+        new AsyncColorSensor().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, robot);
 
-        new AsyncElevatorSpeed().execute();
+        new AsyncBase().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, robot);
 
-        new AsyncController().execute();
+        new AsyncElevatorSpeed().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, robot);
 
-        new AsyncArm().execute();
+        new AsyncArm().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, robot);
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-
-            // Send calculated power to wheels
-            robot.getMovement().move2x2(leftPower, rightPower);
-            robot.getMovement().moveElevator(elevatorSpeed);
+            // Arm extender
+            if (gamepad2.dpad_up) {
+                extenderPower = SERVO_POWER;
+            } else if (gamepad2.dpad_down) {
+                extenderPower = -SERVO_POWER;
+            } else {
+                extenderPower = 0;
+            }
+            robot.getMovement().getCrServos()[0].setPower(extenderPower);
 
             // Display the current value(s)
             telemetry.addData("Status", "Run Time: " + runtime.toString());
@@ -168,9 +173,9 @@ public class BasicMovement extends LinearOpMode {
         }
     }
 
-    private class AsyncController extends AsyncTask<String, String, String> {
+    private class AsyncBase extends AsyncTask<Robot, String, String> {
         @Override
-        protected String doInBackground(String... params) {
+        protected String doInBackground(Robot... params) {
             double mod;
             while (opModeIsActive()) {
                 // Adjust speed based on the bumpers. Idea from Robotic Doges
@@ -188,25 +193,32 @@ public class BasicMovement extends LinearOpMode {
                 double turn = gamepad1.right_stick_x;
                 leftPower = Range.clip(drive + turn, -mod, mod);
                 rightPower = Range.clip(drive - turn, -mod, mod);
+
+                params[0].getMovement().move2x2(leftPower, rightPower);
             }
             return "";
         }
     }
 
-    private class AsyncColorSensor extends AsyncTask<String, String, String> {
+    private class AsyncColorSensor extends AsyncTask<Robot, String, String> {
         @Override
-        protected String doInBackground(String... params) {
+        protected String doInBackground(Robot... params) {
             while (opModeIsActive()) {
-                sdl = robot.getSensor().getRGB(0);
-                sul = robot.getSensor().getRGB(1);
+                sdl = params[0].getSensor().getRGB(0);
+                sul = params[0].getSensor().getRGB(1);
             }
             return "";
         }
+
+        @Override
+        protected void onProgressUpdate(String... params) {
+            // Do nothing
+        }
     }
 
-    private class AsyncElevatorSpeed extends AsyncTask<String, String, String> {
+    private class AsyncElevatorSpeed extends AsyncTask<Robot, String, String> {
         @Override
-        protected String doInBackground(String... params) {
+        protected String doInBackground(Robot... params) {
             while (opModeIsActive()) {
                 // Check if the limit switch is hit either way, and set the movable direction.
                 if ((sul == 0) && (gamepad2.left_stick_y < DEADZONE)) {
@@ -222,22 +234,25 @@ public class BasicMovement extends LinearOpMode {
                     // If the user is not doing anything, we don't allow the scissor lift to move
                     elevatorSpeed = 0;
                 }
+                params[0].getMovement().moveElevator(elevatorSpeed);
             }
             return "";
         }
     }
 
-    private class AsyncArm extends AsyncTask<String, String, String> {
+    private class AsyncArm extends AsyncTask<Robot, String, String> {
         @Override
-        protected String doInBackground(String... params) {
+        protected String doInBackground(Robot... params) {
+            double power;
             while (opModeIsActive()) {
                 if (gamepad2.dpad_up) {
-                    robot.getMovement().getCrServos()[0].setPower(SERVO_POWER);
+                    power = SERVO_POWER;
                 } else if (gamepad2.dpad_down) {
-                    robot.getMovement().getCrServos()[0].setPower(-SERVO_POWER);
+                    power = -SERVO_POWER;
                 } else {
-                    robot.getMovement().getCrServos()[0].setPower(0);
+                    power = 0;
                 }
+                params[0].getMovement().getCrServos()[0].setPower(power);
             }
             return "";
         }
