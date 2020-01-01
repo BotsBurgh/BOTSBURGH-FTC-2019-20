@@ -70,7 +70,8 @@ public class BasicMovement extends LinearOpMode {
 
     private double elevatorSpeed;
 
-    private int sul, sdl;
+    private int sul = 0;
+    private int sdl = 0;
 
     Robot robot;
 
