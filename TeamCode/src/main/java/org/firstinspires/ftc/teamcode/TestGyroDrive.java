@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -14,7 +15,7 @@ public class TestGyroDrive extends LinearOpMode {
     // Declare OpMode Members
     private ElapsedTime runtime = new ElapsedTime();
 
-    private Robot robot;
+    Robot robot;
     private static final double DRIVE_SPEED = 0.7;
 
 
@@ -25,8 +26,8 @@ public class TestGyroDrive extends LinearOpMode {
         DcMotor rb = hardwareMap.get(DcMotor.class, "rb"); // Right back motor
 
         // Because motors are in opposite directions, we have to reverse one motor.
-        lb.setDirection(DcMotor.Direction.REVERSE); // Left motor is set to move in the reverse direction
-        rb.setDirection(DcMotor.Direction.FORWARD); // Right motor is set to move in the forward direction
+        lb.setDirection(DcMotor.Direction.FORWARD); // Left motor is set to move in the reverse direction
+        rb.setDirection(DcMotor.Direction.REVERSE); // Right motor is set to move in the forward direction
 
         // We want both motors to shut off power, so we can completely stop the robot when we command the robot to stop.
         lb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE); // Power to left motor will be reset to zero
@@ -74,6 +75,7 @@ public class TestGyroDrive extends LinearOpMode {
         Robot robot = new Robot.RobotBuilder()
                 .sensor(sensor)
                 .movement(movement)
+                .linearOpMode(TestGyroDrive.this)
                 .build();
         
         // Initialize gyros
@@ -89,6 +91,6 @@ public class TestGyroDrive extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        robot.gyroDrive(0, DRIVE_SPEED, 18, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
+        robot.gyroDrive(0, DRIVE_SPEED,18, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle, true);
     }
 }

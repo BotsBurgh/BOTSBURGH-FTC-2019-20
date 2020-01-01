@@ -72,6 +72,7 @@ public class TestGyroTurn extends LinearOpMode {
         Robot robot = new Robot.RobotBuilder()
                 .sensor(sensor)
                 .movement(movement)
+                .linearOpMode(TestGyroTurn.this)
                 .build();
         // Initialize gyros
         robot.getSensor().calibrateGyro(0);
