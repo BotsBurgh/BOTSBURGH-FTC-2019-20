@@ -15,6 +15,8 @@ public class TestGyroDrive extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
     private Robot robot;
+    private static final double DRIVE_SPEED = 0.7;
+
 
     @Override
     public void runOpMode() {
@@ -87,6 +89,6 @@ public class TestGyroDrive extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        robot.gyroDrive(1, 0.5, 36, robot.getSensor().getGyros()[1].getAngularOrientation().firstAngle);
+        robot.gyroDrive(0, DRIVE_SPEED, 18, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
     }
 }
