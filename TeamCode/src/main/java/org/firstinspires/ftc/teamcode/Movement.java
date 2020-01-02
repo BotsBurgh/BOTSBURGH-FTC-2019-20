@@ -221,4 +221,17 @@ class Movement {
             br.setPower(0);
         }
     }
+
+    /**
+     * Grabs the block based on a boolean assignment
+     * @param command True for grabbing block and false for releasing block
+     */
+    public void grab(boolean command) {
+            Servo sg; // sg: Servo Grabber
+            sg = servos[0];
+            if (command)
+                sg.setPosition(1);
+            else
+                sg.setPosition(0);
+    }
 }

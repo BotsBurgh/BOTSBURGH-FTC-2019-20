@@ -29,7 +29,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -59,14 +58,7 @@ public class Robot {
     private static final double DRIVE_TIMEOUT     = 10.0; // Maximum execution time for driving
 
     // Quick and dirty hack to prevent issues with stopping the robot
-    private LinearOpMode linearOpMode = new LinearOpMode() {
-        @Override
-        public void runOpMode() {
-            // Do nothing
-        }
-    };
-
-    private Telemetry telemetry;
+    private LinearOpMode linearOpMode;
 
     /**
      *  Method to spin on central axis to point in a new direction.
@@ -88,11 +80,11 @@ public class Robot {
 
         ElapsedTime runtime = new ElapsedTime();
         runtime.reset();
-        while (true) {
+        while (linearOpMode.opModeIsActive()) {
             if (onHeading(id, speed, angle + offset, P_TURN_COEFF) && (linearOpMode.opModeIsActive())) {
                 break;
             } else {
-                telemetry.update();
+                linearOpMode.telemetry.update();
             }
         }
     }
@@ -126,8 +118,8 @@ public class Robot {
         }
 
         // Display drive status for the driver.
-        telemetry.addData("Err/St",  "%5.1f/%5.1f",  error, steer);
-        telemetry.addData("Speed",   "%5.2f:%5.2f",  leftSpeed, rightSpeed);
+        linearOpMode.telemetry.addData("Err/St",  "%5.1f/%5.1f",  error, steer);
+        linearOpMode.telemetry.addData("Speed",   "%5.2f:%5.2f",  leftSpeed, rightSpeed);
 
         // Send desired speeds to motors.
         movement.move2x2(leftSpeed, rightSpeed);
@@ -248,11 +240,11 @@ public class Robot {
 
                 if (debug) {
                     // Display drive status for the driver.
-                    telemetry.addData("Err/St",  "%5.1f/%5.1f",  error, steer);
-                    telemetry.addData("Target",  "%7d:%7d",      newLeftTarget,  newRightTarget);
-                    telemetry.addData("Actual",  "%7d:%7d",      leftDrive.getCurrentPosition(),
+                    linearOpMode.telemetry.addData("Err/St",  "%5.1f/%5.1f",  error, steer);
+                    linearOpMode.telemetry.addData("Target",  "%7d:%7d",      newLeftTarget,  newRightTarget);
+                    linearOpMode.telemetry.addData("Actual",  "%7d:%7d",      leftDrive.getCurrentPosition(),
                             rightDrive.getCurrentPosition());
-                    telemetry.addData("Speed",   "%5.2f:%5.2f",  leftSpeed, rightSpeed);
+                    linearOpMode.telemetry.addData("Speed",   "%5.2f:%5.2f",  leftSpeed, rightSpeed);
                 }
             }
         }

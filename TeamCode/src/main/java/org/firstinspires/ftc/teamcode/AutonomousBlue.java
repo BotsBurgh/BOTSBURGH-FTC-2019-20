@@ -99,22 +99,22 @@ public class AutonomousBlue extends LinearOpMode {
 
         VectorF target;
 
-        /*
+
         // Initialize VuForia
-        robot.sensor.initVuforia(hardwareMap.appContext.getResources().getIdentifier(
-                "cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName()), 0
+        robot.getSensor().initVuforia(hardwareMap.appContext.getResources().getIdentifier(
+                "Webcam 1", "id", hardwareMap.appContext.getPackageName()), 0
         );
 
         // Check if we can use TFOD. If we can, initialize it.
         if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
-            robot.sensor.initTfod(hardwareMap.appContext.getResources().getIdentifier(
+            robot.getSensor().initTfod(hardwareMap.appContext.getResources().getIdentifier(
                     "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName())
             );
         } else {
             telemetry.addData("Sorry!", "This device is not compatible with TFOD");
         }
 
-         */
+
 
         robot.getSensor().initGyro(0);
         robot.getSensor().initGyro(1);
@@ -129,6 +129,8 @@ public class AutonomousBlue extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
             // Here goes.
+
+
 
             /*
             * Robot faces the track
@@ -148,31 +150,33 @@ public class AutonomousBlue extends LinearOpMode {
             * Robot moves to (-5, -1)
             */
 
-            /*
-            robot.gyroDrive(0, DRIVE_SPEED, 24, robot.sensor.getGyro(0).getAngularOrientation().firstAngle);
+            // Grabbing the black box
+
+
+
+
+            robot.gyroDrive(0, DRIVE_SPEED, 24, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
             ArrayList<ArrayList<Float>> pos = new ArrayList<>();
-            pos = robot.sensor.getTfod();
-            double distance = ((pos.get(0).get(0))+(pos.get(0).get(3)))/2;
+            pos = robot.getSensor().getTfod();
+            double distance = ((pos.get(0).get(0))+(pos.get(0).get(3)))/2; // figure out what this means
             double turn = Math.acos(3.5/distance);
             robot.gyroTurn(0, TURN_SPEED, turn);
-            robot.gyroDrive(0, DRIVE_SPEED, distance, robot.sensor.getGyro(0).getAngularOrientation().firstAngle);
-            // TODO - Grabbing the black box
+            robot.gyroDrive(0, DRIVE_SPEED, distance, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
+            robot.getMovement().grab(true);
             robot.gyroTurn(0, TURN_SPEED, 90-turn);
-            robot.gyroDrive(0, DRIVE_SPEED, 18, robot.sensor.getGyro(0).getAngularOrientation().firstAngle);
+            robot.gyroDrive(0, DRIVE_SPEED, 18, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
             robot.gyroTurn(0, TURN_SPEED, 135); // Robot turns to 135º
-            robot.gyroDrive(0, DRIVE_SPEED, 68, robot.sensor.getGyro(0).getAngularOrientation().firstAngle); // Robot nears the opponent team's bridge
+            robot.gyroDrive(0, DRIVE_SPEED, 68, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle); // Robot nears the opponent team's bridge
             robot.gyroTurn(0, TURN_SPEED, 69);
-            robot.gyroDrive(0, DRIVE_SPEED, 87, robot.sensor.getGyro(0).getAngularOrientation().firstAngle);
-            // TODO - Dropping black box on to the foundation
+            robot.gyroDrive(0, DRIVE_SPEED, 87, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
+            robot.getMovement().grab(false);
             robot.gyroTurn(0, TURN_SPEED, 145);
-            robot.gyroDrive(0, DRIVE_SPEED, 87, robot.sensor.getGyro(0).getAngularOrientation().firstAngle);
+            robot.gyroDrive(0, DRIVE_SPEED, 87, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
             robot.gyroTurn(0,TURN_SPEED, -145);
-            robot.gyroDrive(0, DRIVE_SPEED, 70, robot.sensor.getGyro(0).getAngularOrientation().firstAngle);
-             */
-
+            robot.gyroDrive(0, DRIVE_SPEED, 70, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
             robot.gyroDrive(0, DRIVE_SPEED, 96, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle); // Robot goes across the field
             robot.gyroTurn(0, TURN_SPEED, 90); // Turn 90 degrees so we are facing the
-            robot.gyroDrive(0, DRIVE_SPEED, 24, robot.getSensor().getGyros()[1].getAngularOrientation().firstAngle);
+            robot.gyroDrive(0, DRIVE_SPEED, 24, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
 
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
