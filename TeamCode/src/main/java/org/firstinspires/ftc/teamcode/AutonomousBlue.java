@@ -84,6 +84,7 @@ public class AutonomousBlue extends LinearOpMode {
                 .RobotBuilder()
                 .sensor(sensor)
                 .movement(movement)
+                .linearOpMode(AutonomousBlue.this)
                 .build();
 
         // Initialize VuForia
@@ -110,6 +111,5 @@ public class AutonomousBlue extends LinearOpMode {
         runtime.reset();
 
         am.blue();
-
     }
 }

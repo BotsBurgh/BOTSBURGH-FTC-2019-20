@@ -16,105 +16,92 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name="AutonomousCheat")
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
+
+import java.util.ArrayList;
+
+
+@Autonomous(name="Autonomous Red", group="Autonomous")
 public class AutonomousCheat extends LinearOpMode {
-
-    private static final double DRIVE_SPEED = 0.5; // Controls controller joystick deadzone
-
-    /*
-    ######  #######    #     # ####### #######    ####### ######  ### #######
-    #     # #     #    ##    # #     #    #       #       #     #  #     #
-    #     # #     #    # #   # #     #    #       #       #     #  #     #
-    #     # #     #    #  #  # #     #    #       #####   #     #  #     #
-    #     # #     #    #   # # #     #    #       #       #     #  #     #
-    #     # #     #    #    ## #     #    #       #       #     #  #     #
-    ######  #######    #     # #######    #       ####### ######  ###    #
-
-    ######  ####### #       ####### #     #    ####### #     # ###  #####
-    #     # #       #       #     # #  #  #       #    #     #  #  #     #
-    #     # #       #       #     # #  #  #       #    #     #  #  #
-    ######  #####   #       #     # #  #  #       #    #######  #   #####
-    #     # #       #       #     # #  #  #       #    #     #  #        #
-    #     # #       #       #     # #  #  #       #    #     #  #  #     #
-    ######  ####### ####### #######  ## ##        #    #     # ###  #####
-
-    #       ### #     # #######
-    #        #  ##    # #
-    #        #  # #   # #
-    #        #  #  #  # #####
-    #        #  #   # # #
-    #        #  #    ## #
-    ####### ### #     # #######
-    (Unless if you know what you are doing)
-     */
-
-    // Declare OpMode members.
+    // Declare OpMode Members
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
     public void runOpMode() {
-        DcMotor sc = hardwareMap.get(DcMotor.class, "scissorLift");
-        DcMotor lb = hardwareMap.get(DcMotor.class, "lb");
-        DcMotor rb = hardwareMap.get(DcMotor.class, "rb");
+        DcMotor sc = hardwareMap.get(DcMotor.class, "scissorLift"); // Scissor lift
+        DcMotor lb = hardwareMap.get(DcMotor.class, "lb"); // Left back motor
+        DcMotor rb = hardwareMap.get(DcMotor.class, "rb"); // Right back motor
 
+        // Because motors are in opposite directions, we have to reverse one motor.
+        lb.setDirection(DcMotor.Direction.REVERSE); // Left motor is set to move in the reverse direction
+        rb.setDirection(DcMotor.Direction.FORWARD); // Right motor is set to move in the forward direction
+
+        // We want both motors to shut off power, so we can completely stop the robot when we command the robot to stop.
+        lb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE); // Power to left motor will be reset to zero
+        rb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE); // Power to right motor will be reset to zero
+
+        // Initialize color sensors
+        ColorSensor[] colorSensors = new ColorSensor[] {
+                hardwareMap.get(ColorSensor.class, "scissorDownLimit"),
+                hardwareMap.get(ColorSensor.class, "scissorUpLimit")
+        };
+
+        // Initialize Web Cam
+        WebcamName[] webcams = new WebcamName[] {
+                hardwareMap.get(WebcamName.class, "Webcam 1")
+        };
+
+        // Initializes the scissor lift mechanism, left back motor, and right back motor
         DcMotor[] motors = new DcMotor[] {
                 sc,
                 null, null, // Because we don't have front motors
                 lb, rb
         };
 
-        Servo armSwivel = hardwareMap.get(Servo.class, "armSwivel");
-        Servo grabber = hardwareMap.get(Servo.class, "grabber");
+        // Initialize sensor class
+        Sensor sensor = new Sensor
+                .SensorBuilder()
+                .colorSensors(colorSensors)
+                .webcams(webcams)
+                .build();
 
-
-        Servo[] servos = new Servo[] {
-                armSwivel, grabber
-        };
-
+        // Initializes movement class
         Movement movement = new Movement
                 .MovementBuilder()
                 .motors(motors)
-                .servos(servos)
                 .build();
 
-        // Most robots need the motor on one side to be reversed to drive forward
-        // Reverse the motor that runs backwards when connected directly to the battery
-        sc.setDirection(DcMotor.Direction.FORWARD);
-        lb.setDirection(DcMotor.Direction.FORWARD);
-        rb.setDirection(DcMotor.Direction.REVERSE);
-
-        sc.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        lb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        ColorSensor[] colorSensors = new ColorSensor[] {
-                hardwareMap.get(ColorSensor.class, "scissorDownLimit"),
-                hardwareMap.get(ColorSensor.class, "scissorUpLimit")
-        };
-
-        Sensor sensors = new Sensor
-                .SensorBuilder()
-                .colorSensors(colorSensors)
-                .build();
-
-        Robot robot = new Robot.RobotBuilder()
+        // Initializes the robot object
+        Robot robot = new Robot
+                .RobotBuilder()
+                .sensor(sensor)
                 .movement(movement)
-                .sensor(sensors)
+                .linearOpMode(AutonomousCheat.this)
                 .build();
 
-        //lf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        // Initialize VuForia
+        robot.getSensor().initVuforia(hardwareMap.appContext.getResources().getIdentifier(
+                "cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName()), 0
+        );
 
-        robot.getMovement().setServo(0, 0.05);
-        robot.getMovement().setServo(1, 1);
+        // Check if we can use TFOD. If we can, initialize it.
+        if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
+            robot.getSensor().initTfod(hardwareMap.appContext.getResources().getIdentifier(
+                    "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName())
+            );
+        } else {
+            telemetry.addData("Sorry!", "This device is not compatible with TFOD");
+        }
+
+        AutonomousMain am = new AutonomousMain(robot);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -123,9 +110,6 @@ public class AutonomousCheat extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        robot.getMovement().move2x2(DRIVE_SPEED, DRIVE_SPEED);
-        sleep(1500);
-        robot.getMovement().move2x2(0, 0);
-
+        am.cheat();
     }
 }

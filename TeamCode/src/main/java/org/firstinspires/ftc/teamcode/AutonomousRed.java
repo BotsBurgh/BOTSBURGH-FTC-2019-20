@@ -84,6 +84,7 @@ public class AutonomousRed extends LinearOpMode {
                 .RobotBuilder()
                 .sensor(sensor)
                 .movement(movement)
+                .linearOpMode(AutonomousRed.this)
                 .build();
         
         // Initialize VuForia

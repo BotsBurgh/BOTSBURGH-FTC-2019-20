@@ -152,6 +152,7 @@ public class BasicMovement extends LinearOpMode {
         Robot robot = new Robot.RobotBuilder()
                 .sensor(sensor)
                 .movement(movement)
+                .linearOpMode(BasicMovement.this)
                 .build();
 
         telemetry.addData("Status", "Initialized");

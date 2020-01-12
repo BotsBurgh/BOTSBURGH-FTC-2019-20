@@ -58,6 +58,7 @@ public class Robot {
     private static final double DRIVE_TIMEOUT     = 10.0; // Maximum execution time for driving
 
     // Quick and dirty hack to prevent issues with stopping the robot
+    @Getter
     private LinearOpMode linearOpMode;
 
     /**

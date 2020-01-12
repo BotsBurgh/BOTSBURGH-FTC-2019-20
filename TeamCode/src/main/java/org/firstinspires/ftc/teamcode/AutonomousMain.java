@@ -76,4 +76,10 @@ class AutonomousMain {
         robot.gyroTurn(0,TURN_SPEED, 145);
         robot.gyroDrive(0, DRIVE_SPEED, 70, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
     }
+
+    void cheat() {
+        robot.getMovement().move2x2(DRIVE_SPEED, DRIVE_SPEED);
+        robot.getLinearOpMode().sleep(1500);
+        robot.getMovement().move2x2(0, 0);
+    }
 }
