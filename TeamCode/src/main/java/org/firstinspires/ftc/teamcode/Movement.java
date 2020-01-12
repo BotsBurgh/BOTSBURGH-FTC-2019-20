@@ -43,6 +43,8 @@ class Movement {
     // Servo configuration
     private final static int SERVO_SLEEP = 10; // Milliseconds
     private final static double SERVO_STEP  = 0.01;  // Degrees
+    private final static double GRABBER_OPEN = 0;
+    private final static double GRABBER_CLOSE = 0.65;
 
     /**
      ######  #######    #     # ####### #######    ####### ######  ### #######
@@ -226,12 +228,12 @@ class Movement {
      * Grabs the block based on a boolean assignment
      * @param command True for grabbing block and false for releasing block
      */
-    public void grab(boolean command) {
-            Servo sg; // sg: Servo Grabber
-            sg = servos[0];
-            if (command)
-                sg.setPosition(1);
-            else
-                sg.setPosition(0);
+    void grab(boolean command) {
+        Servo sg; // sg: Servo Grabber
+        sg = servos[0];
+        if (command)
+            sg.setPosition(GRABBER_OPEN);
+        else
+            sg.setPosition(GRABBER_CLOSE);
     }
 }

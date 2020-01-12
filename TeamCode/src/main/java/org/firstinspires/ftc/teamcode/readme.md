@@ -112,7 +112,7 @@ With this, we eliminated over a hundred lines of code and improved the readabili
 
 ## Movement.java
 
-Movement.java fulfills similar requirements that Sensor.java does: centralize the robot's movement functions into one file. This is somewhat easier to write than the Sensor class, but comes with its own issues we have to fix. First, we will go over some static variables that the users probably should change (but usually are fine without changing them), then we will move on to the functions, and lastly to the builder.
+Movement.java fulfills similar requirements that [Sensor.java](#sensorjava) does: centralize the robot's movement functions into one file. This is somewhat easier to write than the Sensor class, but comes with its own issues we have to fix. First, we will go over some static variables that the users probably should change (but usually are fine without changing them), then we will move on to the functions, and lastly to the builder.
 
 ### Static Variables
 
@@ -124,6 +124,8 @@ Movement.java fulfills similar requirements that Sensor.java does: centralize th
 1. COUNTS_PER_MOTOR_REV: Usually found on the motor spec sheet (used for encoders).
 1. DRIVE_GEAR_REDUCTION: The gear reduction or increase (used for encoders).
 1. WHEEL_DIAMETER_INCHES: The diameter of the wheel (used for encoders).
+1. GRABBER_OPEN: The position of the servo of the grabber in the "open" position
+1. GRABBER_CLOSE: The position of the servo of the grabber in the "close" position
 
 Unlike [Sensor.java](#sensorjava), there is not really much more to this than the configuration variable listed above other than a static variable used for combining `COUNTS_PER_MOTOR_REV`, `DRIVE_GEAR_REDUCTION`, and `WHEEL_DIAMETER_INCHES` into `COUNTS_PER_INCH`. Most rookie teams don't need to edit anything below this section, but they should in order to get a better understanding of what is going on. Below, we are going to look at two main things: First, we are going to look at the functions, and lastly we are going to look at the MovementBuilder class.
 
@@ -135,8 +137,9 @@ Unlike [Sensor.java](#sensorjava), there is not really much more to this than th
 1. moveElevator: Moves the elevator up and down with respect to the elevator speed cap outlined in the [Static Variables](#static-variables) section.
 1. setServo: Sets a servo to a specific position. Useful for a grabber.
 1. scanServo: Scans a servo (moves the servo to a position slowly). Useful for something requiring less speed.
-1. moveEnc1x4: Moves the robot forward using the encoder and four motors with one variable (inches). Note that encoders are unreliable.
-1. moveEnc1x2: Moves the robot forward using the encoder and two motors with one variable (inches). Note that encoders are unreliable.
+1. setServoSpeed: Sets the speed of a CR Servo.
+1. moveEnc1x4: Moves the robot forward using the encoder and four motors with one variable (inches). Note that encoders are unreliable, and you should use the gyroDrive functionality in [Robot.java](#robotjava).
+1. moveEnc1x2: Moves the robot forward using the encoder and two motors with one variable (inches). Note that encoders are unreliable, and you should use the gyroDrive functionality in [Robot.java](#robotjava).
 
 ### MovementBuilder
 
@@ -216,9 +219,9 @@ This file is our primary TeleOp program. In this, we integrate the "Big Three" c
 As an example of the controller running in an async function:
 
 ```java
-private class AsyncController extends AsyncTask<String, String, String> {
+private class AsyncBase extends AsyncTask<Robot, String, String> {
     @Override
-    protected String doInBackground(String... params) {
+    protected String doInBackground(Robot... params) {
         double mod;
         while (opModeIsActive()) {
             // Adjust speed based on the bumpers. Idea from Robotic Doges
@@ -236,6 +239,8 @@ private class AsyncController extends AsyncTask<String, String, String> {
             double turn = gamepad1.right_stick_x;
             leftPower = Range.clip(drive + turn, -mod, mod);
             rightPower = Range.clip(drive - turn, -mod, mod);
+
+            params[0].getMovement().move2x2(leftPower, rightPower);
         }
         return "";
     }
@@ -245,7 +250,7 @@ private class AsyncController extends AsyncTask<String, String, String> {
 This is called from the main class right before the main loop with this line:
 
 ```java
-new AsyncController().execute();
+new AsyncBase().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, robot);
 ```
 
 This needs to be run only once
@@ -253,6 +258,7 @@ This needs to be run only once
 ### Basic Movement Static Variables
 
 1. DEADZONE: The controller deadzone to prevent accidental nudges to a joystick.
+1. SERVO_POWER: The power to be sent to the servos when moving the arm
 
 ### Moving Around
 
@@ -274,8 +280,6 @@ double drive = -gamepad1.left_stick_y;
 double turn  =  gamepad1.right_stick_x;
 leftPower    = Range.clip(drive + turn, -mod, mod);
 rightPower   = Range.clip(drive - turn, -mod, mod);
-
-robot.movement.move2x2(leftPower, rightPower);
 ```
 
 As it is seen above, the bumpers on the gamepad control the robot's speed (defaults to 66% speed), so it is easier to make precise movements with the robot. Using the [Robot.java](#robotjava) class, we are able to move the robot around.
@@ -285,32 +289,51 @@ As it is seen above, the bumpers on the gamepad control the robot's speed (defau
 On our robot, we utilize a scissor lift as an elevator to move game items up and down. However, to prevent the scissor lift from breaking due to physical limits, we placed two color sensors on our robot with some red tape on the scissor lift. Then, in the programming, we added some code to use gamepad input and the sensors to prevent the robot from breaking.
 
 ```java
-if (count % 10 == 0) {
-    sul = robot.sensor.getRGB(0);
-    sud = robot.sensor.getRGB(1);
+private class AsyncElevatorSpeed extends AsyncTask<Robot, String, String> {
+    @Override
+    protected String doInBackground(Robot... params) {
+        while (opModeIsActive()) {
+            // Check if the limit switch is hit either way, and set the movable direction.
+            if ((sul == 0) && (gamepad2.left_stick_y < DEADZONE)) {
+                // If we cannot go up, and the user tries to go up, we don't allow that to happen.
+                elevatorSpeed = 0;
+            } else if ((sdl == 0) && (gamepad2.left_stick_y > DEADZONE)) {
+                // If we cannot go down, and the user tries to go down, we don't allow that to happen.
+                elevatorSpeed = 0;
+            } else if (Math.abs(gamepad2.left_stick_y) > DEADZONE) {
+                // If the user moves the stick more than 10%, and none of the other conditions are fulfilled, we allow the scissor lift to move
+                elevatorSpeed = gamepad2.left_stick_y;
+            } else {
+                // If the user is not doing anything, we don't allow the scissor lift to move
+                elevatorSpeed = 0;
+            }
+            params[0].getMovement().moveElevator(elevatorSpeed);
+        }
+        return "";
+    }
 }
-
-// Check if the limit switch is hit either way, and set the movable direction.
-if ((sul == 0) && (gamepad2.left_stick_y < DEADZONE)) {
-    // If we cannot go up, and the user tries to go up, we don't allow that to happen.
-    elevatorSpeed = 0;
-} else if ((sud == 0) && (gamepad2.left_stick_y > DEADZONE)) {
-    // If we cannot go down, and the user tries to go down, we don't allow that to happen.
-    elevatorSpeed = 0;
-} else if (Math.abs(gamepad2.left_stick_y) > DEADZONE) {
-    // If the user moves the stick more than 10%, and none of the other conditions are fulfilled, we allow the scissor lift to move
-    elevatorSpeed = -gamepad2.left_stick_y;
-} else {
-    // If the user is not doing anything, we don't allow the scissor lift to move
-    elevatorSpeed = 0;
-}
-
-robot.movement.moveElevator(elevatorSpeed);
-
-count++;
 ```
 
-When creating this file, we ran into a few issues. The first one being that there was a lot of lag between pressing a button and the robot reacting. After some debugging, we found the root cause of the issue were the color sensors. Polling the color sensors took too much time in between, so we set it to poll every tenth loop. This led to much less activation time. Another issue we had was that the joysticks were accidentally being hit by the drivers, so we added a deadzone to make sure the presses on the joysticks were intentional. Again, we see that the [Robot.java](#robotjava) class is used for moving the elevator.
+When creating this file, we ran into a few issues. The first one being that there was a lot of lag between pressing a button and the robot reacting. After some debugging, we found the root cause of the issue were the color sensors. Polling the color sensors took too much time in between, so we used an asynchronous function for both the elevator and the color sensors. This led to much less activation time. Another issue we had was that the joysticks were accidentally being hit by the drivers, so we added a deadzone to make sure the presses on the joysticks were intentional. Again, we see that the [Robot.java](#robotjava) class is used for moving the elevator.
+
+### Detecting the Color Sensor
+
+To properly use the elevator, we put the color sensor functionality in an asynchronous function because polling the color sensors is the part of the code which takes the longest time.
+
+```java
+private class AsyncColorSensor extends AsyncTask<Robot, String, String> {
+    @Override
+    protected String doInBackground(Robot... params) {
+        while (opModeIsActive()) {
+            sdl = params[0].getSensor().getRGB(0);
+            sul = params[0].getSensor().getRGB(1);
+        }
+        return "";
+    }
+}
+```
+
+This function sets a number to the color sensor variables, `sul` and `sdl`.
 
 ## AutonomousMain.java
 

@@ -32,6 +32,7 @@ public class BasicMovement extends LinearOpMode {
 
     private static final double DEADZONE    = 0.05; // Controls controller joystick deadzone
     private static final double SERVO_POWER = 1.00;
+    private static final double SERVO_STEP  = 0.01;
 
     /*
     ######  #######    #     # ####### #######    ####### ######  ### #######
@@ -79,28 +80,37 @@ public class BasicMovement extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+        // Get motors
         DcMotor sc = hardwareMap.get(DcMotor.class, "scissorLift");
         DcMotor lb = hardwareMap.get(DcMotor.class, "lb");
         DcMotor rb = hardwareMap.get(DcMotor.class, "rb");
 
+        // Add motors into the list
         DcMotor[] motors = new DcMotor[] {
                 sc,
                 null, null, // Because we don't have front motors
                 lb, rb
         };
 
+        // Get servos
         Servo grabber = hardwareMap.get(Servo.class, "grabber");
+        Servo rotate = hardwareMap.get(Servo.class, "rotate");
 
+        // Add servos into the list
         Servo[] servos = new Servo[] {
-                grabber
+                grabber,
+                rotate
         };
 
+        // Get CRServos
         CRServo armExtend = hardwareMap.get(CRServo.class, "extender");
 
+        // Add CRServos into the list
         CRServo[] crServos = new CRServo[] {
                 armExtend
         };
 
+        // Add lists into the movement class
         Movement movement = new Movement
                 .MovementBuilder()
                 .motors(motors)
@@ -114,20 +124,31 @@ public class BasicMovement extends LinearOpMode {
         lb.setDirection(DcMotor.Direction.REVERSE);
         rb.setDirection(DcMotor.Direction.FORWARD);
 
+        // Set motors to spin in the correct direction
         sc.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         lb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        // Switch direction of servo
+        rotate.setDirection(Servo.Direction.REVERSE);
+
+        // Get color sensors
+        ColorSensor scissorDownLimit = hardwareMap.get(ColorSensor.class, "scissorDownLimit");
+        ColorSensor scissorUpLimit = hardwareMap.get(ColorSensor.class, "scissorUpLimit");
+
+        // Add color sensors into list
         ColorSensor[] colorSensors = new ColorSensor[] {
-                hardwareMap.get(ColorSensor.class, "scissorDownLimit"),
-                hardwareMap.get(ColorSensor.class, "scissorUpLimit")
+                scissorDownLimit,
+                scissorUpLimit
         };
 
+        // Add lists into sensor class
         Sensor sensor = new Sensor
                 .SensorBuilder()
                 .colorSensors(colorSensors)
                 .build();
 
+        // Add movement and sensor class into robot class
         Robot robot = new Robot.RobotBuilder()
                 .sensor(sensor)
                 .movement(movement)
@@ -146,8 +167,6 @@ public class BasicMovement extends LinearOpMode {
 
         new AsyncElevatorSpeed().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, robot);
 
-        new AsyncArm().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, robot);
-
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
             // Arm extender
@@ -160,6 +179,20 @@ public class BasicMovement extends LinearOpMode {
             }
             robot.getMovement().getCrServos()[0].setPower(extenderPower);
 
+            // Grabber
+            if (gamepad2.a) {
+                // Open and close grabber
+                robot.getMovement().grab(true);
+            } else if (gamepad2.b) {
+                robot.getMovement().grab(false);
+            }
+
+            if (gamepad2.x) {
+                robot.getMovement().setServo(1, robot.getMovement().getServos()[1].getPosition() + SERVO_STEP);
+            } else if (gamepad2.y) {
+                robot.getMovement().setServo(1, robot.getMovement().getServos()[1].getPosition() - SERVO_STEP);
+            }
+
             // Display the current value(s)
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Motor Power", "%5.2f", elevatorSpeed);
@@ -167,6 +200,7 @@ public class BasicMovement extends LinearOpMode {
             telemetry.addData("Down Limit", sdl);
             telemetry.addData("Arm Extend", robot.getMovement().getCrServos()[0].getPower());
             telemetry.addData("Grabber Position", robot.getMovement().getServos()[0].getPosition());
+            telemetry.addData("Rotation Position", robot.getMovement().getServos()[1].getPosition());
             // Show the elapsed game time and wheel power.
             telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
             telemetry.update();
@@ -209,11 +243,6 @@ public class BasicMovement extends LinearOpMode {
             }
             return "";
         }
-
-        @Override
-        protected void onProgressUpdate(String... params) {
-            // Do nothing
-        }
     }
 
     private class AsyncElevatorSpeed extends AsyncTask<Robot, String, String> {
@@ -235,24 +264,6 @@ public class BasicMovement extends LinearOpMode {
                     elevatorSpeed = 0;
                 }
                 params[0].getMovement().moveElevator(elevatorSpeed);
-            }
-            return "";
-        }
-    }
-
-    private class AsyncArm extends AsyncTask<Robot, String, String> {
-        @Override
-        protected String doInBackground(Robot... params) {
-            double power;
-            while (opModeIsActive()) {
-                if (gamepad2.dpad_up) {
-                    power = SERVO_POWER;
-                } else if (gamepad2.dpad_down) {
-                    power = -SERVO_POWER;
-                } else {
-                    power = 0;
-                }
-                params[0].getMovement().getCrServos()[0].setPower(power);
             }
             return "";
         }
