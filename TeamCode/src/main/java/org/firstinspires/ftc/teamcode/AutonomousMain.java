@@ -64,17 +64,20 @@ class AutonomousMain {
         double turn = Math.acos(3.5/distance);
         robot.gyroTurn(0, TURN_SPEED, turn);
         robot.gyroDrive(0, DRIVE_SPEED, distance, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
-        // TODO - Grabbing the black box
+        robot.getMovement().grab(true);
         robot.gyroTurn(0, TURN_SPEED, -(90-turn));
         robot.gyroDrive(0, DRIVE_SPEED, 18, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
         robot.gyroDrive(0, DRIVE_SPEED, 68, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle); // Robot nears the opponent team's bridge
         robot.gyroTurn(0, TURN_SPEED, -69);
         robot.gyroDrive(0, DRIVE_SPEED, 87, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
-        // TODO - Dropping black box on to the foundation
+        robot.getMovement().grab(false);
         robot.gyroTurn(0, TURN_SPEED, -145);
         robot.gyroDrive(0, DRIVE_SPEED, 87, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
         robot.gyroTurn(0,TURN_SPEED, 145);
         robot.gyroDrive(0, DRIVE_SPEED, 70, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
+        robot.gyroDrive(0, DRIVE_SPEED, 96, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle); // Robot goes across the field
+        robot.gyroTurn(0, TURN_SPEED, -90); // Turn 90 degrees so we are facing the
+        robot.gyroDrive(0, DRIVE_SPEED, 24, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
     }
 
     void cheat() {
