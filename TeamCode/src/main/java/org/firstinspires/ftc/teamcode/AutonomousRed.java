@@ -114,6 +114,5 @@ public class AutonomousRed extends LinearOpMode {
         runtime.reset();
 
         am.red();
-
     }
 }
