@@ -73,16 +73,10 @@ public class Robot {
      *                   If a relative angle is required, add/subtract from current heading.
      */
     void gyroTurn(int id, double speed, double angle) {
-        double offset = sensor.getGyros()[id].getAngularOrientation(
-                AxesReference.INTRINSIC,
-                AxesOrder.ZYX,
-                AngleUnit.DEGREES
-        ).firstAngle;
-
         ElapsedTime runtime = new ElapsedTime();
         runtime.reset();
         while (linearOpMode.opModeIsActive()) {
-            if (onHeading(id, speed, angle + offset, P_TURN_COEFF) && (linearOpMode.opModeIsActive())) {
+            if (onHeading(id, speed, angle, P_TURN_COEFF) && (linearOpMode.opModeIsActive())) {
                 break;
             } else {
                 linearOpMode.telemetry.update();
