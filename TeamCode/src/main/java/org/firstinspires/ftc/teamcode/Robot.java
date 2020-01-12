@@ -97,7 +97,7 @@ public class Robot {
      *                  0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
      *                  If a relative angle is required, add/subtract from current heading.
      * @param PCoeff    Proportional Gain coefficient
-     * @return
+     * @return onTarget
      */
     private boolean onHeading(int id, double speed, double angle, double PCoeff) {
         double  error = getError(id, angle);
