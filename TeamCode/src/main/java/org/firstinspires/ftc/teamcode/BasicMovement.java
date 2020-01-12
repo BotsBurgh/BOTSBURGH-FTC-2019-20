@@ -161,7 +161,9 @@ public class BasicMovement extends LinearOpMode {
 
         // Zero some servos
         robot.getMovement().setServo(2, 0); // Foundation
-        robot.getMovement().setServo(3, 0); // More foundation
+        robot.getMovement().setServo(3, 180); // More foundation
+
+        // TODO: Zero the rest of the servos (arm, swivel)
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -205,11 +207,11 @@ public class BasicMovement extends LinearOpMode {
 
             // Foundation servos
             if (gamepad1.x) {
-                robot.getMovement().setServo(2, 55);
-                robot.getMovement().setServo(3, 55);
+                robot.getMovement().setServo(2, 180);
+                robot.getMovement().setServo(3, 0);
             } else if (gamepad1.y) {
                 robot.getMovement().setServo(2, 0);
-                robot.getMovement().setServo(3, 0);
+                robot.getMovement().setServo(3, 180);
             }
 
             // Display the current value(s)
