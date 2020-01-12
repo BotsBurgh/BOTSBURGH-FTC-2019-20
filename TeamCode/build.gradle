@@ -17,4 +17,5 @@ apply from: '../build.common.gradle'
 dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.10'
     annotationProcessor 'org.projectlombok:lombok:1.18.10'
+    implementation 'org.jetbrains:annotations-java5:15.0'
 }

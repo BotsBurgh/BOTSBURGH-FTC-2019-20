@@ -29,7 +29,7 @@ import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import java.util.ArrayList;
 
 
-@Autonomous(name="Autonomous Red", group="Autonomous")
+@Autonomous(name="Autonomous Cheat", group="Autonomous")
 public class AutonomousCheat extends LinearOpMode {
     // Declare OpMode Members
     private ElapsedTime runtime = new ElapsedTime();
