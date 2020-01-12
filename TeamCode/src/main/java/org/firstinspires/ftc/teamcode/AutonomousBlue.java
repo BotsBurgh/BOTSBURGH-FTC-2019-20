@@ -16,18 +16,16 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
+
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
-
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 
@@ -35,9 +33,6 @@ import java.util.ArrayList;
 public class AutonomousBlue extends LinearOpMode {
     // Declare OpMode Members
     private ElapsedTime runtime = new ElapsedTime();
-
-    private static final double DRIVE_SPEED = 0.7;
-    private static final double TURN_SPEED = 0.5;
 
     @Override
     public void runOpMode() {
@@ -71,17 +66,10 @@ public class AutonomousBlue extends LinearOpMode {
                 lb, rb
         };
 
-        // Initialize Gyros
-        BNO055IMU[] gyros = new BNO055IMU[] {
-                hardwareMap.get(BNO055IMU.class, "imu"),
-                hardwareMap.get(BNO055IMU.class, "imu 1")
-        };
-
         // Initialize sensor class
         Sensor sensor = new Sensor
                 .SensorBuilder()
                 .colorSensors(colorSensors)
-                .gyros(gyros)
                 .webcams(webcams)
                 .build();
 
@@ -92,17 +80,15 @@ public class AutonomousBlue extends LinearOpMode {
                 .build();
 
         // Initializes the robot object
-        Robot robot = new Robot.RobotBuilder()
-                .movement(movement)
+        Robot robot = new Robot
+                .RobotBuilder()
                 .sensor(sensor)
+                .movement(movement)
                 .build();
-
-        VectorF target;
-
 
         // Initialize VuForia
         robot.getSensor().initVuforia(hardwareMap.appContext.getResources().getIdentifier(
-                "Webcam 1", "id", hardwareMap.appContext.getPackageName()), 0
+                "cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName()), 0
         );
 
         // Check if we can use TFOD. If we can, initialize it.
@@ -114,10 +100,7 @@ public class AutonomousBlue extends LinearOpMode {
             telemetry.addData("Sorry!", "This device is not compatible with TFOD");
         }
 
-
-
-        robot.getSensor().initGyro(0);
-        robot.getSensor().initGyro(1);
+        AutonomousMain am = new AutonomousMain(robot);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -126,60 +109,7 @@ public class AutonomousBlue extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        // run until the end of the match (driver presses STOP)
-        while (opModeIsActive()) {
-            // Here goes.
+        am.blue();
 
-
-
-            /*
-            * Robot faces the track
-            * Using vuforia, robot approaches black box
-            * Using the scissor lift mechanism, it'll grab the black box
-            * Robot backs up by about 1.5 feet
-            * Robot rotates until gyro detects 90º
-            * Robot approaches (3, -1)
-            * Robot turns back until gyro detects 0º
-            * Robot approaches (-4. -1)
-            * Robot turns until gyro detects 135º
-            * Robot approaches (-1, 3)
-            * Robot drops black box on foundation
-            * Robot rotates until gyro detects 150º and pushes foundation along
-            * Robot pushes foundation to triangle slot
-            * Robot rotates itself and foundation until gro detects 360º
-            * Robot moves to (-5, -1)
-            */
-
-            // Grabbing the black box
-
-
-
-
-            robot.gyroDrive(0, DRIVE_SPEED, 24, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
-            ArrayList<ArrayList<Float>> pos = new ArrayList<>();
-            pos = robot.getSensor().getTfod();
-            double distance = ((pos.get(0).get(0))+(pos.get(0).get(3)))/2; // figure out what this means
-            double turn = Math.acos(3.5/distance);
-            robot.gyroTurn(0, TURN_SPEED, turn);
-            robot.gyroDrive(0, DRIVE_SPEED, distance, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
-            robot.getMovement().grab(true);
-            robot.gyroTurn(0, TURN_SPEED, 90-turn);
-            robot.gyroDrive(0, DRIVE_SPEED, 18, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
-            robot.gyroTurn(0, TURN_SPEED, 135); // Robot turns to 135º
-            robot.gyroDrive(0, DRIVE_SPEED, 68, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle); // Robot nears the opponent team's bridge
-            robot.gyroTurn(0, TURN_SPEED, 69);
-            robot.gyroDrive(0, DRIVE_SPEED, 87, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
-            robot.getMovement().grab(false);
-            robot.gyroTurn(0, TURN_SPEED, 145);
-            robot.gyroDrive(0, DRIVE_SPEED, 87, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
-            robot.gyroTurn(0,TURN_SPEED, -145);
-            robot.gyroDrive(0, DRIVE_SPEED, 70, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
-            robot.gyroDrive(0, DRIVE_SPEED, 96, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle); // Robot goes across the field
-            robot.gyroTurn(0, TURN_SPEED, 90); // Turn 90 degrees so we are facing the
-            robot.gyroDrive(0, DRIVE_SPEED, 24, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
-
-
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
-        }
     }
 }
