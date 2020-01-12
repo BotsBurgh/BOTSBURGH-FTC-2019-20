@@ -24,6 +24,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 
 @Autonomous(name="Gyroscope Turning Test")
 public class TestGyroTurn extends LinearOpMode {
@@ -96,6 +99,12 @@ public class TestGyroTurn extends LinearOpMode {
         robot.getSensor().initGyro(0);
         robot.getSensor().initGyro(1);
 
+        double offset = sensor.getGyros()[0].getAngularOrientation(
+                AxesReference.INTRINSIC,
+                AxesOrder.ZYX,
+                AngleUnit.DEGREES
+        ).firstAngle;
+
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
@@ -105,13 +114,13 @@ public class TestGyroTurn extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            robot.gyroTurn(0, 0.5, 0);
+            robot.gyroTurn(0, 0.5, 0 + offset);
             sleep(5000);
-            robot.gyroTurn(0, 0.5, 90);
+            robot.gyroTurn(0, 0.5, 90 + offset);
             sleep(5000);
-            robot.gyroTurn(0, 0.5, 180);
+            robot.gyroTurn(0, 0.5, 180 + offset);
             sleep(5000);
-            robot.gyroTurn(0, 0.5, 270);
+            robot.gyroTurn(0, 0.5, 270 + offset);
             sleep(5000);
         }
     }

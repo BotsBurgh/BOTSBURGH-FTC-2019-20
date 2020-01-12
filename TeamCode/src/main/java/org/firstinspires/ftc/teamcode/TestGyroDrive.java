@@ -32,7 +32,7 @@ public class TestGyroDrive extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
     Robot robot;
-    private static final double DRIVE_SPEED = 0.7;
+    private static final double DRIVE_SPEED = 0.5;
 
 
     @Override

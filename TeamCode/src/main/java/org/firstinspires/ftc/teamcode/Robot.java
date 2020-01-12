@@ -22,7 +22,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
@@ -213,16 +212,22 @@ public class Robot {
             while (linearOpMode.opModeIsActive() && (leftDrive.isBusy() && rightDrive.isBusy()) &&
                     (runtime.seconds()<=DRIVE_TIMEOUT)) {
                 // adjust relative speed based on heading error.
-                error = getError(id, angle);
-                steer = getSteer(error, P_DRIVE_COEFF);
+                //error = getError(id, angle);
+                //steer = getSteer(error, P_DRIVE_COEFF);
 
                 // if driving in reverse, the motor correction also needs to be reversed
+                /*
                 if (distance < 0) {
                     steer *= -1.0;
                 }
 
                 leftSpeed = speed - steer;
                 rightSpeed = speed + steer;
+
+                 */
+
+                leftSpeed = speed;
+                rightSpeed = speed;
 
                 // Normalize speeds if either one exceeds +/- 1.0;
                 max = Math.max(Math.abs(leftSpeed), Math.abs(rightSpeed));
@@ -235,11 +240,12 @@ public class Robot {
 
                 if (debug) {
                     // Display drive status for the driver.
-                    linearOpMode.telemetry.addData("Err/St","%5.1f/%5.1f", error, steer);
+                    //linearOpMode.telemetry.addData("Err/St","%5.1f/%5.1f", error, steer);
                     linearOpMode.telemetry.addData("Target","%7d:%7d",     newLeftTarget,  newRightTarget);
                     linearOpMode.telemetry.addData("Actual","%7d:%7d",     leftDrive.getCurrentPosition(),
                             rightDrive.getCurrentPosition());
                     linearOpMode.telemetry.addData("Speed", "%5.2f:%5.2f", leftSpeed, rightSpeed);
+                    linearOpMode.telemetry.update();
                 }
             }
         }

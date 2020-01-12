@@ -88,6 +88,7 @@ public class AutonomousBlue extends LinearOpMode {
                 .build();
 
         // Initialize VuForia
+        /*
         robot.getSensor().initVuforia(hardwareMap.appContext.getResources().getIdentifier(
                 "cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName()), 0
         );
@@ -100,6 +101,8 @@ public class AutonomousBlue extends LinearOpMode {
         } else {
             telemetry.addData("Sorry!", "This device is not compatible with TFOD");
         }
+
+         */
 
         AutonomousMain am = new AutonomousMain(robot);
 
