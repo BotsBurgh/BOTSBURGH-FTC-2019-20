@@ -95,11 +95,15 @@ public class BasicMovement extends LinearOpMode {
         // Get servos
         Servo grabber = hardwareMap.get(Servo.class, "grabber");
         Servo rotate = hardwareMap.get(Servo.class, "rotate");
+        Servo fRight = hardwareMap.get(Servo.class, "foundationRight");
+        Servo fLeft = hardwareMap.get(Servo.class, "foundationLeft");
 
         // Add servos into the list
         Servo[] servos = new Servo[] {
                 grabber,
-                rotate
+                rotate,
+                fRight,
+                fLeft
         };
 
         // Get CRServos
@@ -155,6 +159,10 @@ public class BasicMovement extends LinearOpMode {
                 .linearOpMode(BasicMovement.this)
                 .build();
 
+        // Zero some servos
+        robot.getMovement().setServo(2, 0); // Foundation
+        robot.getMovement().setServo(3, 0); // More foundation
+
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
@@ -180,7 +188,7 @@ public class BasicMovement extends LinearOpMode {
             }
             robot.getMovement().getCrServos()[0].setPower(extenderPower);
 
-            // Grabber
+            // Grabber servo
             if (gamepad2.a) {
                 // Open and close grabber
                 robot.getMovement().grab(true);
@@ -188,10 +196,20 @@ public class BasicMovement extends LinearOpMode {
                 robot.getMovement().grab(false);
             }
 
+            // Arm tilt servo
             if (gamepad2.x) {
                 robot.getMovement().setServo(1, robot.getMovement().getServos()[1].getPosition() + SERVO_STEP);
             } else if (gamepad2.y) {
                 robot.getMovement().setServo(1, robot.getMovement().getServos()[1].getPosition() - SERVO_STEP);
+            }
+
+            // Foundation servos
+            if (gamepad1.x) {
+                robot.getMovement().setServo(2, 55);
+                robot.getMovement().setServo(3, 55);
+            } else if (gamepad1.y) {
+                robot.getMovement().setServo(2, 0);
+                robot.getMovement().setServo(3, 0);
             }
 
             // Display the current value(s)
