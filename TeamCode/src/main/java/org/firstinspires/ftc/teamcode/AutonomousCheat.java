@@ -60,16 +60,8 @@ public class AutonomousCheat extends LinearOpMode {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
 
-    private long count = 0;
-
     @Override
     public void runOpMode() {
-        // Setup a variable for each drive wheel to save power level for telemetry
-        double leftPower;
-        double rightPower;
-
-        double mod;
-
         DcMotor sc = hardwareMap.get(DcMotor.class, "scissorLift");
         DcMotor lb = hardwareMap.get(DcMotor.class, "lb");
         DcMotor rb = hardwareMap.get(DcMotor.class, "rb");
