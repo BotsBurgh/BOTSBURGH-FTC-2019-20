@@ -79,7 +79,8 @@ public class BasicMovement extends LinearOpMode {
         robot.getMovement().setServo(2, 0); // Foundation
         robot.getMovement().setServo(3, 180); // More foundation
 
-        // TODO: Zero the rest of the servos (arm, swivel)
+        // Zeroing Swivel (Rotate)
+        robot.getMovement().setServo(1, 1); // Since this is a digital servo, it is initilialized to 1.
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
