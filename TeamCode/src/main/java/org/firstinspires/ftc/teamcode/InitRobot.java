@@ -1,84 +1,102 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 
-public class InitRobot {
-    LinearOpMode l;
+class InitRobot {
+    private LinearOpMode l;
 
     InitRobot(LinearOpMode l) {
         this.l = l;
     }
 
+    Robot robot;
+
     Robot init() {
-        DcMotor sc = l.hardwareMap.get(DcMotor.class, "scissorLift"); // Scissor lift
-        DcMotor lb = l.hardwareMap.get(DcMotor.class, "lb"); // Left back motor
-        DcMotor rb = l.hardwareMap.get(DcMotor.class, "rb"); // Right back motor
+        // Get motors
+        DcMotor sc = l.hardwareMap.get(DcMotor.class, "scissorLift");
+        DcMotor lb = l.hardwareMap.get(DcMotor.class, "lb");
+        DcMotor rb = l.hardwareMap.get(DcMotor.class, "rb");
 
-        // Because motors are in opposite directions, we have to reverse one motor.
-        lb.setDirection(DcMotor.Direction.REVERSE); // Left motor is set to move in the reverse direction
-        rb.setDirection(DcMotor.Direction.FORWARD); // Right motor is set to move in the forward direction
-
-        // We want both motors to shut off power, so we can completely stop the robot when we command the robot to stop.
-        lb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE); // Power to left motor will be reset to zero
-        rb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE); // Power to right motor will be reset to zero
-
-        // Initialize color sensors
-        ColorSensor[] colorSensors = new ColorSensor[] {
-                l.hardwareMap.get(ColorSensor.class, "scissorDownLimit"),
-                l.hardwareMap.get(ColorSensor.class, "scissorUpLimit")
-        };
-
-        // Initialize Web Cam
-        WebcamName[] webcams = new WebcamName[] {
-                l.hardwareMap.get(WebcamName.class, "Webcam 1")
-        };
-
-        // Initializes the scissor lift mechanism, left back motor, and right back motor
+        // Add motors into the list
         DcMotor[] motors = new DcMotor[] {
                 sc,
                 null, null, // Because we don't have front motors
                 lb, rb
         };
 
-        // Initialize sensor class
-        Sensor sensor = new Sensor
-                .SensorBuilder()
-                .colorSensors(colorSensors)
-                .webcams(webcams)
-                .build();
+        // Get servos
+        Servo grabber = l.hardwareMap.get(Servo.class, "grabber");
+        Servo rotate = l.hardwareMap.get(Servo.class, "rotate");
+        Servo fRight = l.hardwareMap.get(Servo.class, "foundationRight");
+        Servo fLeft = l.hardwareMap.get(Servo.class, "foundationLeft");
 
-        // Initializes movement class
+        // Add servos into the list
+        Servo[] servos = new Servo[] {
+                grabber,
+                rotate,
+                fRight,
+                fLeft
+        };
+
+        // Get CRServos
+        CRServo armExtend = l.hardwareMap.get(CRServo.class, "extender");
+
+        // Add CRServos into the list
+        CRServo[] crServos = new CRServo[] {
+                armExtend
+        };
+
+        // Add lists into the movement class
         Movement movement = new Movement
                 .MovementBuilder()
                 .motors(motors)
+                .servos(servos)
+                .crServos(crServos)
                 .build();
 
-        // Initializes the robot object
-        Robot robot = new Robot
-                .RobotBuilder()
+        // Most robots need the motor on one side to be reversed to drive forward
+        // Reverse the motor that runs backwards when connected directly to the battery
+        sc.setDirection(DcMotor.Direction.FORWARD);
+        lb.setDirection(DcMotor.Direction.REVERSE);
+        rb.setDirection(DcMotor.Direction.FORWARD);
+
+        // Set motors to spin in the correct direction
+        sc.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        lb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        // Switch direction of servo
+        rotate.setDirection(Servo.Direction.REVERSE);
+
+        // Get color sensors
+        ColorSensor scissorDownLimit = l.hardwareMap.get(ColorSensor.class, "scissorDownLimit");
+        ColorSensor scissorUpLimit = l.hardwareMap.get(ColorSensor.class, "scissorUpLimit");
+
+        // Add color sensors into list
+        ColorSensor[] colorSensors = new ColorSensor[] {
+                scissorDownLimit,
+                scissorUpLimit
+        };
+
+        // Add lists into sensor class
+        Sensor sensor = new Sensor
+                .SensorBuilder()
+                .colorSensors(colorSensors)
+                .build();
+
+        // Add movement and sensor class into robot class
+        robot = new Robot.RobotBuilder()
                 .sensor(sensor)
                 .movement(movement)
                 .linearOpMode(l)
                 .build();
-
-        // Initialize VuForia
-        robot.getSensor().initVuforia(l.hardwareMap.appContext.getResources().getIdentifier(
-                "cameraMonitorViewId", "id", l.hardwareMap.appContext.getPackageName()), 0
-        );
-
-        // Check if we can use TFOD. If we can, initialize it.
-        if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
-            robot.getSensor().initTfod(l.hardwareMap.appContext.getResources().getIdentifier(
-                    "tfodMonitorViewId", "id", l.hardwareMap.appContext.getPackageName())
-            );
-        } else {
-            l.telemetry.addData("Sorry!", "This device is not compatible with TFOD");
-        }
 
         return robot;
     }
