@@ -183,6 +183,7 @@ public class Robot {
         double  leftSpeed;
         double  rightSpeed;
         DcMotor leftDrive, rightDrive;
+        distance = -distance;
 
         ElapsedTime runtime = new ElapsedTime();
         runtime.reset();

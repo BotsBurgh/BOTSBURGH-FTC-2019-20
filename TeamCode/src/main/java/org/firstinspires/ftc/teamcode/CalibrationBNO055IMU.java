@@ -33,6 +33,7 @@ public class CalibrationBNO055IMU extends LinearOpMode {
                 hardwareMap.get(BNO055IMU.class, "imu"),
                 hardwareMap.get(BNO055IMU.class, "imu 1")
         };
+
         Sensor sensors = new Sensor
                 .SensorBuilder()
                 .gyros(gyros)

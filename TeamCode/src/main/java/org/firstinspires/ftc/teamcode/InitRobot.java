@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -112,11 +113,17 @@ class InitRobot {
                 webcam1
         };
 
+        BNO055IMU[] gyros = new BNO055IMU[] {
+                l.hardwareMap.get(BNO055IMU.class, "imu"),
+                l.hardwareMap.get(BNO055IMU.class, "imu 1")
+        };
+
         // Add lists into sensor class
         Sensor sensor = new Sensor
                 .SensorBuilder()
                 .colorSensors(colorSensors)
                 .webcams(webcams)
+                .gyros(gyros)
                 .build();
 
         // Add movement and sensor class into robot class
