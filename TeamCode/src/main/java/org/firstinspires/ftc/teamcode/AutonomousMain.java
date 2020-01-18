@@ -35,7 +35,7 @@ class AutonomousMain {
     void blue() {
         robot.gyroDrive(0, DRIVE_SPEED, 24, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
         ArrayList<ArrayList<Float>> pos;
-        pos = robot.getSensor().getTfod();
+        pos = robot.getSensor().getTfodPositions();
         double distance = ((pos.get(0).get(0)) + (pos.get(0).get(3))) / 2; // figure out what this means
         double turn = Math.acos(3.5 / distance);
         robot.gyroTurn(0, TURN_SPEED, turn);
@@ -62,7 +62,7 @@ class AutonomousMain {
     void red() {
         robot.gyroDrive(0, DRIVE_SPEED, 24, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
         ArrayList<ArrayList<Float>> pos;
-        pos = robot.getSensor().getTfod();
+        pos = robot.getSensor().getTfodPositions();
         double distance = ((pos.get(0).get(0))+(pos.get(0).get(3)))/2;
         double turn = Math.acos(3.5/distance);
         robot.gyroTurn(0, TURN_SPEED, turn);

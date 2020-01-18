@@ -9,24 +9,35 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 
+// TODO: JavaDoc
 class InitRobot {
     private LinearOpMode l;
 
     private boolean vuforia;
 
-    InitRobot(LinearOpMode l) {
-        this.l = l;
-        this.vuforia = true;
+    InitRobot(LinearOpMode linearOpMode, Boolean vuforiaEnabled) {
+        this.l = linearOpMode;
+        this.vuforia = vuforiaEnabled;
     }
 
-    InitRobot(LinearOpMode l, Boolean v) {
-        this.l = l;
-        this.vuforia = v;
+    InitRobot(LinearOpMode linearOpMode) {
+        this(linearOpMode, true);
     }
 
     Robot robot;
 
+    // TODO: JavaDoc
     Robot init() {
+        /*
+        * #######                   ######
+        * #       #####  # #####    #     # ###### #       ####  #    #
+        * #       #    # #   #      #     # #      #      #    # #    #
+        * #####   #    # #   #      ######  #####  #      #    # #    #
+        * #       #    # #   #      #     # #      #      #    # # ## #
+        * #       #    # #   #      #     # #      #      #    # ##  ##
+        * ####### #####  #   #      ######  ###### ######  ####  #    #
+        */
+
         // Get motors
         DcMotor sc = l.hardwareMap.get(DcMotor.class, "scissorLift");
         DcMotor lb = l.hardwareMap.get(DcMotor.class, "lb");
@@ -116,7 +127,7 @@ class InitRobot {
                 .build();
 
         if (vuforia) {
-            // Initialize VuForia
+            // Initialize Vuforia
             robot.getSensor().initVuforia(l.hardwareMap.appContext.getResources().getIdentifier(
                     "cameraMonitorViewId", "id", l.hardwareMap.appContext.getPackageName()), 0
             );
@@ -132,5 +143,13 @@ class InitRobot {
         }
 
         return robot;
+    }
+
+    // TODO: JavaDoc
+    void deInit() {
+        if (!vuforia) {
+            robot.getSensor().deactivateTfod();
+            robot.getSensor().deactivateVuforia();
+        }
     }
 }

@@ -16,15 +16,9 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 
 @Autonomous(name="Gyroscope Driving Test")
 public class TestGyroDrive extends LinearOpMode {
@@ -37,7 +31,7 @@ public class TestGyroDrive extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        InitRobot initializer = new InitRobot(TestGyroDrive.this);
+        InitRobot initializer = new InitRobot(TestGyroDrive.this, false);
         Robot robot = initializer.init();
         
         // Initialize gyros

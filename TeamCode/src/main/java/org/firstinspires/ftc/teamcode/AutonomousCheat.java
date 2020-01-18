@@ -39,5 +39,7 @@ public class AutonomousCheat extends LinearOpMode {
         runtime.reset();
 
         am.cheat();
+
+        initializer.deInit();
     }
 }

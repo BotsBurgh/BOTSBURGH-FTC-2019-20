@@ -116,7 +116,7 @@ class Sensor {
     private VuforiaLocalizer vuforia;
     private List<VuforiaTrackable> allTrackables;
     private VuforiaTrackables targetsSkyStone;
-    private TFObjectDetector tfod;
+    @Getter TFObjectDetector tfod;
 
     // To get this to work, copy the file VuForiaKey.java.example to VuForiaKey.java and add your key in that file.
     private static final String VUFORIA_KEY = VuForiaKey.VUFORIAKEY;
@@ -145,7 +145,7 @@ class Sensor {
     private static final String LABEL_FIRST_ELEMENT = "Stone";
     private static final String LABEL_SECOND_ELEMENT = "Skystone";
 
-    private boolean targetVisible = false;
+    private boolean targetVisible;
 
     // TODO: Add more sensor capability
     @Getter BNO055IMU[] gyros; // Initialize gyroscopes
@@ -511,7 +511,7 @@ class Sensor {
      * Gets the locations of the sky stones with VuForia and TensorFlow.
      * @return An array of positions. 0 is top, 1 is left, 2 is right, 3 is bottom
      */
-    ArrayList<ArrayList<Float>> getTfod() {
+    ArrayList<ArrayList<Float>> getTfodPositions() {
         /*
         {
             { distance from top of the first skystone, left, right, bottom }
