@@ -16,8 +16,9 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import java.util.ArrayList;
-
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 
 class AutonomousMain {
     // Declare OpMode Members
@@ -91,7 +92,35 @@ class AutonomousMain {
         robot.getMovement().move2x2(0, 0);
     }
 
+    void blue_new() {
+        double offset = robot.getSensor().getGyros()[0].getAngularOrientation(
+                AxesReference.INTRINSIC,
+                AxesOrder.ZYX,
+                AngleUnit.DEGREES
+        ).firstAngle;
+
+        shared();
+        sleep(5000);
+        robot.getMovement().grab(false);
+        sleep(3000);
+        robot.gyroDrive(0, DRIVE_SPEED, 24, 0, true);
+        robot.getMovement().grab(true);
+        sleep(1500);
+        robot.gyroDrive(0, DRIVE_SPEED, -10, 0, true);
+        robot.gyroTurn(0, TURN_SPEED, -90 + offset);
+        robot.gyroDrive(0, DRIVE_SPEED, 58, 0, true);
+        robot.getMovement().grab(false);
+        sleep(1500);
+        robot.gyroDrive(0, DRIVE_SPEED, -20, 0, true);
+    }
+
     private void shared() {
         // Nothing... yet
+        robot.getMovement().swivel(true); // Open arm swivel
+        robot.getMovement().grab(true); // Close grabber
+    }
+
+    private void sleep(int milliseconds) {
+        robot.getLinearOpMode().sleep(milliseconds);
     }
 }

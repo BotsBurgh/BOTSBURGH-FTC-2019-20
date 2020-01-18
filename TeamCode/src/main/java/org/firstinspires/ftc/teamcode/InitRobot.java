@@ -113,9 +113,12 @@ class InitRobot {
                 webcam1
         };
 
+        BNO055IMU gyro0 = l.hardwareMap.get(BNO055IMU.class, "imu");
+        BNO055IMU gyro1 = l.hardwareMap.get(BNO055IMU.class, "imu 1");
+
         BNO055IMU[] gyros = new BNO055IMU[] {
-                l.hardwareMap.get(BNO055IMU.class, "imu"),
-                l.hardwareMap.get(BNO055IMU.class, "imu 1")
+                gyro0,
+                gyro1
         };
 
         // Add lists into sensor class
@@ -132,6 +135,10 @@ class InitRobot {
                 .movement(movement)
                 .linearOpMode(l)
                 .build();
+
+        for (int i = 0; i<gyros.length; i++) {
+            robot.getSensor().initGyro(i);
+        }
 
         if (vuforia) {
             // Initialize Vuforia
