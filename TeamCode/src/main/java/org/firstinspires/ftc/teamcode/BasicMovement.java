@@ -110,16 +110,16 @@ public class BasicMovement extends LinearOpMode {
             // Grabber servo
             if (gamepad2.a) {
                 // Open and close grabber
-                robot.getMovement().grab(true);
+                robot.getMovement().openGrabber(true);
             } else if (gamepad2.b) {
-                robot.getMovement().grab(false);
+                robot.getMovement().openGrabber(false);
             }
 
             // Arm tilt servo
             if (gamepad2.x) {
-                robot.getMovement().swivel(true);
+                robot.getMovement().openSwivel(true);
             } else if (gamepad2.y) {
-                robot.getMovement().swivel(false);
+                robot.getMovement().openSwivel(false);
             }
 
             // Foundation servos

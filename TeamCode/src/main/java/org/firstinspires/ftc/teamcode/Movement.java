@@ -230,23 +230,23 @@ class Movement {
      * Grabs the block based on a boolean assignment
      * @param command True for grabbing block and false for releasing block
      */
-    void grab(boolean command) {
-        Servo sg; // sg: Servo Grabber
+    void openGrabber(boolean command) {
+        Servo sg; // sg: Servo grabber
         sg = servos[0];
         if (command) {
-            sg.setPosition(GRABBER_OPEN);
+            sg.setPosition(GRABBER_OPEN); //
         } else {
             sg.setPosition(GRABBER_CLOSE);
         }
     }
 
-    void swivel(boolean command) {
+    void openSwivel(boolean command) {
         Servo ss; // ss: Servo Swivel
         ss = servos[1];
         if (command) {
-            ss.setPosition(1);
-        } else {
             ss.setPosition(0);
+        } else {
+            ss.setPosition(1);
         }
     }
 }

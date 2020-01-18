@@ -35,17 +35,13 @@ class AutonomousMain {
     void blue() {
         shared();
         robot.gyroDrive(0, DRIVE_SPEED, 24, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
-        /*
         ArrayList<ArrayList<Float>> pos;
         pos = robot.getSensor().getTfodPositions();
-        double distance = ((pos.get(0).get(0)) + (pos.get(0).get(3))) / 2; // figure out what this means
+        double distance = ((pos.get(0).get(0)) + (pos.get(0).get(3))) / 2; // Robot's calculation to get to the block
+        robot.getMovement().openGrabber(false);
         double turn = Math.acos(3.5 / distance);
         robot.gyroTurn(0, TURN_SPEED, turn);
         robot.gyroDrive(0, DRIVE_SPEED, distance, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
-         */
-        robot.gyroDrive(0, DRIVE_SPEED, 20, 0);
-        robot.getMovement().swivel(true);
-        robot.getMovement().grab(true);
         robot.gyroTurn(0, TURN_SPEED, 90);
         robot.gyroDrive(0, DRIVE_SPEED, 18, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
         robot.gyroTurn(0, TURN_SPEED, 135); // Robot turns to 135º
@@ -53,7 +49,7 @@ class AutonomousMain {
         robot.gyroTurn(0, TURN_SPEED, 69);
         robot.gyroDrive(0, DRIVE_SPEED, 87, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
         robot.getMovement().setServo(1, robot.getMovement().getServos()[1].getPosition() - SERVO_STEP);
-        robot.getMovement().grab(false);
+        robot.getMovement().openGrabber(true);
         robot.gyroTurn(0, TURN_SPEED, 145);
         robot.gyroDrive(0, DRIVE_SPEED, 87, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
         robot.gyroTurn(0, TURN_SPEED, -145);
@@ -73,13 +69,13 @@ class AutonomousMain {
         double turn = Math.acos(3.5/distance);
          */
         //robot.gyroDrive(0, DRIVE_SPEED, distance, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
-        robot.getMovement().grab(true);
+        robot.getMovement().openGrabber(true);
         robot.gyroTurn(0, TURN_SPEED, -90);
         robot.gyroDrive(0, DRIVE_SPEED, 18, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
         robot.gyroDrive(0, DRIVE_SPEED, 68, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle); // Robot nears the opponent team's bridge
         robot.gyroTurn(0, TURN_SPEED, -69);
         robot.gyroDrive(0, DRIVE_SPEED, 87, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
-        robot.getMovement().grab(false);
+        robot.getMovement().openGrabber(false);
         robot.gyroTurn(0, TURN_SPEED, -145);
         robot.gyroDrive(0, DRIVE_SPEED, 87, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
         robot.gyroTurn(0,TURN_SPEED, 145);
