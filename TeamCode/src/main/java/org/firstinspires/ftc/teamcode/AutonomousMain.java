@@ -127,7 +127,7 @@ class AutonomousMain {
         sleep(500);
         robot.gyroTurn(0, TURN_SPEED, -90+offset);
         sleep(500);
-        robot.gyroDrive(0, DRIVE_SPEED, 63, 0, true);
+        robot.gyroDrive(0, DRIVE_SPEED, 65, 0, true);
         sleep(500);
         robot.gyroTurn(0, TURN_SPEED, -90+offset);
         sleep(500);
@@ -139,7 +139,8 @@ class AutonomousMain {
         sleep(500);
         robot.gyroTurn(0, TURN_SPEED, 90+offset);
         sleep(500);
-        robot.gyroDrive(0, DRIVE_SPEED, -60, 0,true);
+        robot.gyroDrive(0, DRIVE_SPEED, -65, 0,true);
+        shared();
 
         /*
         robot.getMovement().openGrabber(false);
