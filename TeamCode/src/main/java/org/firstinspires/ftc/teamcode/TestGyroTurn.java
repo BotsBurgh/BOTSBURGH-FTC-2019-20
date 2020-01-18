@@ -33,7 +33,7 @@ public class TestGyroTurn extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        InitRobot initializer = new InitRobot(TestGyroTurn.this);
+        InitRobot initializer = new InitRobot(TestGyroTurn.this, false);
         Robot robot = initializer.init();
 
         // Initialize gyros

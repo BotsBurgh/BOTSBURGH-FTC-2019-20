@@ -11,6 +11,7 @@ As a quick breakdown, you will see the following files:
 1. [Sensor.java](#sensorjava)
 1. [Movement.java](#movementjava)
 1. [Robot.java](#robotjava)
+1. [InitRobot.java](#initrobotjava)
 1. [BasicMovement.java](#basicmovementjava)
 1. [AutonomousCheat.java](#autonomouscheatjava)
 1. [Miscellaneous Calibration Files](#miscellaneous-calibration-files)
@@ -211,6 +212,17 @@ double distance = Math.sqrt(
 ```
 
 This file serves the purpose of bridging the gap between the two modular files, [Sensor.java](#sensorjava) and [Movement.java](#movementjava). Because the design of our code is meant to be modular, the bridge between them needs some tweaking to get it to work everywhere. In this file, you may have to modify some functions to suit your robot, such as replacing the `move2x2` function with `move4x4`, or something else, based on your robot's design.
+
+## InitRobot.java
+
+In order to make robot hardware configuration easier, we added a centralized file for configuring the hardware. Under the `init()` function, add the code to initialize the robot. The only difference is that you must replace all occurrences of `hardwareMap` with `l.hardwareMap`.
+
+Here is an example of initializing an OpMode.
+
+```java
+InitRobot initializer = new InitRobot(BasicMovement.this, false);
+Robot robot = initializer.init();
+```
 
 ## BasicMovement.java
 

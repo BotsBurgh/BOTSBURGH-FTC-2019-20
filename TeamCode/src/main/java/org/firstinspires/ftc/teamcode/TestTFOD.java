@@ -33,20 +33,20 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import java.util.ArrayList;
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+
+import java.util.List;
 
 
-@TeleOp(name="VuForia Test", group ="20-Test")
-public class TestVuForia extends LinearOpMode {
+@TeleOp(name="TFOD Test", group ="20-Test")
+public class TestTFOD extends LinearOpMode {
     // Declare OpMode Members
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
     public void runOpMode() {
-        InitRobot initializer = new InitRobot(TestVuForia.this);
+        InitRobot initializer = new InitRobot(TestTFOD.this);
         Robot robot = initializer.init();
-
-        ArrayList<ArrayList<Float>> tfod;
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -55,14 +55,27 @@ public class TestVuForia extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        while (opModeIsActive()) {
-            tfod = robot.getSensor().getTfod();
-            if (!tfod.isEmpty() && !tfod.get(0).isEmpty()) {
-                telemetry.addData("> ", robot.getSensor().getTfod().toString());
-            } else {
-                telemetry.addData("> ", "Nothing detected");
+        if (opModeIsActive()) {
+            while (opModeIsActive()) {
+                if (robot.getSensor().getTfod() != null) {
+                    // getUpdatedRecognitions() will return null if no new information is available since
+                    // the last time that call was made.
+                    List<Recognition> updatedRecognitions = robot.getSensor().getTfod().getUpdatedRecognitions();
+                    if (updatedRecognitions != null) {
+                        telemetry.addData("# Object Detected", updatedRecognitions.size());
+                        // step through the list of recognitions and display boundary info.
+                        int i = 0;
+                        for (Recognition recognition : updatedRecognitions) {
+                            telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
+                            telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
+                                    recognition.getLeft(), recognition.getTop());
+                            telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
+                                    recognition.getRight(), recognition.getBottom());
+                        }
+                        telemetry.update();
+                    }
+                }
             }
-            telemetry.update();
         }
     }
 }

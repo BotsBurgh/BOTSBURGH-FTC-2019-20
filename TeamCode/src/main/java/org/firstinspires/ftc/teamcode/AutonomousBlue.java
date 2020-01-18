@@ -39,5 +39,7 @@ public class AutonomousBlue extends LinearOpMode {
         runtime.reset();
 
         am.blue();
+
+        initializer.deInit();
     }
 }
