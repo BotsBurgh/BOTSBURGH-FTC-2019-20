@@ -45,8 +45,7 @@ class AutonomousMain {
         robot.gyroDrive(0, DRIVE_SPEED, 20, 0);
         robot.getMovement().swivel(true);
         robot.getMovement().grab(true);
-        
-        //robot.gyroTurn(0, TURN_SPEED, 90 - turn);
+        robot.gyroTurn(0, TURN_SPEED, 90);
         robot.gyroDrive(0, DRIVE_SPEED, 18, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
         robot.gyroTurn(0, TURN_SPEED, 135); // Robot turns to 135º
         robot.gyroDrive(0, DRIVE_SPEED, 68, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle); // Robot nears the opponent team's bridge
