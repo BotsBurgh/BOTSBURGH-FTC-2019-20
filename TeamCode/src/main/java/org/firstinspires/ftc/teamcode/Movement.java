@@ -244,9 +244,9 @@ class Movement {
         Servo ss; // ss: Servo Swivel
         ss = servos[1];
         if (command) {
-            ss.setPosition(1);
-        } else {
             ss.setPosition(0);
+        } else {
+            ss.setPosition(1);
         }
     }
 }
