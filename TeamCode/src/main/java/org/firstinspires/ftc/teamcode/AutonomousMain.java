@@ -33,6 +33,7 @@ class AutonomousMain {
     }
 
     void blue() {
+        shared();
         robot.gyroDrive(0, DRIVE_SPEED, 24, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
         /*
         ArrayList<ArrayList<Float>> pos;
@@ -63,16 +64,17 @@ class AutonomousMain {
     }
 
     void red() {
+        shared();
         robot.gyroDrive(0, DRIVE_SPEED, 24, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
+        /*
         ArrayList<ArrayList<Float>> pos;
         pos = robot.getSensor().getTfodPositions();
         double distance = ((pos.get(0).get(0))+(pos.get(0).get(3)))/2;
         double turn = Math.acos(3.5/distance);
-        robot.gyroTurn(0, TURN_SPEED, turn);
-        robot.gyroDrive(0, DRIVE_SPEED, distance, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
-        robot.getMovement().swivel(true);
+         */
+        //robot.gyroDrive(0, DRIVE_SPEED, distance, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
         robot.getMovement().grab(true);
-        robot.gyroTurn(0, TURN_SPEED, -(90-turn));
+        robot.gyroTurn(0, TURN_SPEED, -90);
         robot.gyroDrive(0, DRIVE_SPEED, 18, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
         robot.gyroDrive(0, DRIVE_SPEED, 68, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle); // Robot nears the opponent team's bridge
         robot.gyroTurn(0, TURN_SPEED, -69);
@@ -93,8 +95,7 @@ class AutonomousMain {
         robot.getMovement().move2x2(0, 0);
     }
 
-    void armSwivel() {
-        // Initializing position of the swivel
-        robot.getMovement().setServo(1, robot.getMovement().getServos()[1].getPosition() - 0.01);
+    private void shared() {
+        // Nothing... yet
     }
 }
