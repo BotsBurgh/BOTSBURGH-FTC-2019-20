@@ -43,8 +43,10 @@ class Movement {
     // Servo configuration
     private final static int SERVO_SLEEP = 10; // Milliseconds
     private final static double SERVO_STEP  = 0.01;  // Degrees
-    private final static double GRABBER_OPEN = 0;
-    private final static double GRABBER_CLOSE = 0.65;
+    private final static double GRABBER_OPEN = 0; // Degrees
+    private final static double GRABBER_CLOSE = 0.65; // Degrees
+    private final static double SWIVEL_OPEN = 0; // Degrees
+    private final static double SWIVEL_CLOSE = 1; // Degrees
 
     /**
      ######  #######    #     # ####### #######    ####### ######  ### #######
@@ -235,5 +237,14 @@ class Movement {
             sg.setPosition(GRABBER_OPEN);
         else
             sg.setPosition(GRABBER_CLOSE);
+    }
+
+    void swivel(boolean command) {
+        Servo ss; // ss: Servo Swivel
+        ss = servos[1];
+        if (command)
+            ss.setPosition(ss.getPosition() + SERVO_STEP);
+        else
+            ss.setPosition(ss.getPosition() - SERVO_STEP);
     }
 }

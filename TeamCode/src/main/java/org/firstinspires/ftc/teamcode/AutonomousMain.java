@@ -24,6 +24,7 @@ class AutonomousMain {
 
     private static final double DRIVE_SPEED = 0.7;
     private static final double TURN_SPEED = 0.5;
+    private static final double SERVO_STEP = 0.01;
 
     Robot robot;
 
@@ -39,6 +40,7 @@ class AutonomousMain {
         double turn = Math.acos(3.5 / distance);
         robot.gyroTurn(0, TURN_SPEED, turn);
         robot.gyroDrive(0, DRIVE_SPEED, distance, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
+        robot.getMovement().swivel(true);
         robot.getMovement().grab(true);
         robot.gyroTurn(0, TURN_SPEED, 90 - turn);
         robot.gyroDrive(0, DRIVE_SPEED, 18, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
@@ -46,6 +48,7 @@ class AutonomousMain {
         robot.gyroDrive(0, DRIVE_SPEED, 68, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle); // Robot nears the opponent team's bridge
         robot.gyroTurn(0, TURN_SPEED, 69);
         robot.gyroDrive(0, DRIVE_SPEED, 87, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
+        robot.getMovement().setServo(1, robot.getMovement().getServos()[1].getPosition() - SERVO_STEP);
         robot.getMovement().grab(false);
         robot.gyroTurn(0, TURN_SPEED, 145);
         robot.gyroDrive(0, DRIVE_SPEED, 87, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
@@ -84,5 +87,10 @@ class AutonomousMain {
         robot.getMovement().move2x2(DRIVE_SPEED, DRIVE_SPEED);
         robot.getLinearOpMode().sleep(1500);
         robot.getMovement().move2x2(0, 0);
+    }
+
+    void armSwivel() {
+        // Initializing position of the swivel
+        robot.getMovement().setServo(1, robot.getMovement().getServos()[1].getPosition() - 0.01);
     }
 }

@@ -117,9 +117,9 @@ public class BasicMovement extends LinearOpMode {
 
             // Arm tilt servo
             if (gamepad2.x) {
-                robot.getMovement().setServo(1, robot.getMovement().getServos()[1].getPosition() + SERVO_STEP);
+                robot.getMovement().swivel(true);
             } else if (gamepad2.y) {
-                robot.getMovement().setServo(1, robot.getMovement().getServos()[1].getPosition() - SERVO_STEP);
+                robot.getMovement().swivel(false);
             }
 
             // Foundation servos
