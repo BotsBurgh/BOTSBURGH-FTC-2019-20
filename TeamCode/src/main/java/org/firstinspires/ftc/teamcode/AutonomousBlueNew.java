@@ -40,6 +40,6 @@ public class AutonomousBlueNew extends LinearOpMode {
 
         am.blue_new();
 
-        initializer.deInit();
+        //initializer.deInit();
     }
 }

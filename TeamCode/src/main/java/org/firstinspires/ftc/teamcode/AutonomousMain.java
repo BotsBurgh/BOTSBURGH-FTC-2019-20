@@ -36,6 +36,7 @@ class AutonomousMain {
     void blue() {
         shared();
         robot.gyroDrive(0, DRIVE_SPEED, 24, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
+        /**
         ArrayList<ArrayList<Float>> pos;
         pos = robot.getSensor().getTfodPositions();
         double distance = ((pos.get(0).get(0)) + (pos.get(0).get(3))) / 2; // Robot's calculation to get to the block
@@ -43,9 +44,14 @@ class AutonomousMain {
         double turn = Math.acos(3.5 / distance);
         robot.gyroTurn(0, TURN_SPEED, turn);
         robot.gyroDrive(0, DRIVE_SPEED, distance, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
+         */
+        robot.getMovement().openGrabber(false);
         robot.gyroTurn(0, TURN_SPEED, 90);
-        robot.gyroDrive(0, DRIVE_SPEED, 18, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
-        robot.gyroTurn(0, TURN_SPEED, 135); // Robot turns to 135º
+        robot.gyroDrive(0, DRIVE_SPEED, 38, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
+        robot.getMovement().openGrabber(true);
+        // robot.gyroDrive(0, DRIVE_SPEED,38, );
+        /**
+        robot.gyroTurn(0, TURN_SPEED, -45); // Robot turns to 135º
         robot.gyroDrive(0, DRIVE_SPEED, 68, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle); // Robot nears the opponent team's bridge
         robot.gyroTurn(0, TURN_SPEED, 69);
         robot.gyroDrive(0, DRIVE_SPEED, 87, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
@@ -58,6 +64,7 @@ class AutonomousMain {
         robot.gyroDrive(0, DRIVE_SPEED, 96, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle); // Robot goes across the field
         robot.gyroTurn(0, TURN_SPEED, 90); // Turn 90 degrees so we are facing the
         robot.gyroDrive(0, DRIVE_SPEED, 24, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
+         */
     }
 
     void red() {
@@ -100,24 +107,54 @@ class AutonomousMain {
         ).firstAngle;
 
         shared();
-        sleep(5000);
-        robot.getMovement().grab(false);
+        /*
+        robot.gyroDrive(0, DRIVE_SPEED, 20, 0, true);
+        sleep(750);
+        robot.getMovement().openGrabber(false);
+        sleep(750);
+        robot.gyroDrive(0, DRIVE_SPEED, -15, 0, true);
+        sleep(1000);
+        robot.gyroTurn(0, TURN_SPEED, -90 + offset);
+        sleep(1000);
+        robot.gyroDrive(0, DRIVE_SPEED, 38, 0, true);
+        sleep(750);
+        robot.getMovement().openGrabber(true);
+        sleep(750);
+        robot.gyroDrive(0,DRIVE_SPEED, -15, 0, true);
+        */
+
+        robot.gyroDrive(0, DRIVE_SPEED, 10, 0, true);
+        sleep(500);
+        robot.gyroTurn(0, TURN_SPEED, -90+offset);
+        sleep(500);
+        robot.gyroDrive(0, DRIVE_SPEED, 44, 0, true);
+        sleep(500);
+        robot.gyroTurn(0, TURN_SPEED, 90+offset);
+        sleep(500);
+        robot.gyroDrive(0, DRIVE_SPEED, 3, 0, true);
+        sleep(500);
+        robot.getMovement().grabFoundation(true);
+        sleep(500);
+        robot.gyroDrive(0, DRIVE_SPEED, );
+
+        /*
+        robot.getMovement().openGrabber(false);
         sleep(3000);
-        robot.gyroDrive(0, DRIVE_SPEED, 24, 0, true);
-        robot.getMovement().grab(true);
+        robot.getMovement().openGrabber(true);
         sleep(1500);
         robot.gyroDrive(0, DRIVE_SPEED, -10, 0, true);
         robot.gyroTurn(0, TURN_SPEED, -90 + offset);
         robot.gyroDrive(0, DRIVE_SPEED, 58, 0, true);
-        robot.getMovement().grab(false);
+        robot.getMovement().openGrabber(false);
         sleep(1500);
         robot.gyroDrive(0, DRIVE_SPEED, -20, 0, true);
+         */
     }
 
     private void shared() {
-        // Nothing... yet
-        robot.getMovement().swivel(true); // Open arm swivel
-        robot.getMovement().grab(true); // Close grabber
+        robot.getMovement().openGrabber(false);
+        robot.getMovement().openSwivel(true); // Open arm swivel
+        robot.getMovement().openGrabber(true); // Close openGrabber
     }
 
     private void sleep(int milliseconds) {

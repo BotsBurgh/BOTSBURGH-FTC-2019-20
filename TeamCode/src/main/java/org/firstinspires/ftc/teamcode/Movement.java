@@ -227,26 +227,44 @@ class Movement {
     }
 
     /**
-     * Grabs the block based on a boolean assignment
-     * @param command True for grabbing block and false for releasing block
+     * Opens the grabber based on a boolean assignment
+     * @param command true to open the grabber or false to close the grabber
      */
     void openGrabber(boolean command) {
         Servo sg; // sg: Servo grabber
         sg = servos[0];
         if (command) {
-            sg.setPosition(GRABBER_OPEN); //
+            sg.setPosition(GRABBER_OPEN); // Opens the grabber
         } else {
-            sg.setPosition(GRABBER_CLOSE);
+            sg.setPosition(GRABBER_CLOSE); // Closes the grabber
         }
     }
 
+    /**
+     * Opens the swivel based on a boolean assignment
+     * @param command true to open the swivel or false to close the swivel
+     */
     void openSwivel(boolean command) {
         Servo ss; // ss: Servo Swivel
         ss = servos[1];
         if (command) {
-            ss.setPosition(0);
+            ss.setPosition(0); // Opens the swivel
         } else {
-            ss.setPosition(1);
+            ss.setPosition(1); // Closes the swivel
+        }
+    }
+
+    void grabFoundation(boolean command) {
+        Servo slf, srf;
+        slf = servos[2]; // sfl: Servo Left Foundation
+        srf = servos[3]; // sfr: Servo Right Foundation
+        if (command) {
+            slf.setPosition(180);
+            srf.setPosition(0);
+        }
+        else {
+            slf.setPosition(0);
+            srf.setPosition(180);
         }
     }
 }
