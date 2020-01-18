@@ -72,7 +72,7 @@ public class BasicMovement extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        InitRobot initializer = new InitRobot(BasicMovement.this);
+        InitRobot initializer = new InitRobot(BasicMovement.this, false);
         Robot robot = initializer.init();
 
         // Zero some servos
@@ -80,7 +80,7 @@ public class BasicMovement extends LinearOpMode {
         robot.getMovement().setServo(3, 180); // More foundation
 
         // Zeroing Swivel (Rotate)
-        robot.getMovement().setServo(1, 1); // Since this is a digital servo, it is initilialized to 1.
+        robot.getMovement().setServo(1, 1); // Since this is a digital servo, it is initialized to 1.
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();

@@ -33,6 +33,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import java.util.ArrayList;
+
 
 @TeleOp(name="VuForia Test", group ="20-Test")
 public class TestVuForia extends LinearOpMode {
@@ -44,6 +46,8 @@ public class TestVuForia extends LinearOpMode {
         InitRobot initializer = new InitRobot(TestVuForia.this);
         Robot robot = initializer.init();
 
+        ArrayList<ArrayList<Float>> tfod;
+
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
@@ -52,8 +56,13 @@ public class TestVuForia extends LinearOpMode {
         runtime.reset();
 
         while (opModeIsActive()) {
-            telemetry.addData("> ", robot.getSensor().getTfod());
+            tfod = robot.getSensor().getTfod();
+            if (!tfod.isEmpty() && !tfod.get(0).isEmpty()) {
+                telemetry.addData("> ", robot.getSensor().getTfod().toString());
+            } else {
+                telemetry.addData("> ", "Nothing detected");
+            }
+            telemetry.update();
         }
-
     }
 }
