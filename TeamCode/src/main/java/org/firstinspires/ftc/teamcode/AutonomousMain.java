@@ -106,7 +106,7 @@ class AutonomousMain {
                 AngleUnit.DEGREES
         ).firstAngle;
 
-        shared();
+        // shared();
         /*
         robot.gyroDrive(0, DRIVE_SPEED, 20, 0, true);
         sleep(750);
@@ -127,15 +127,19 @@ class AutonomousMain {
         sleep(500);
         robot.gyroTurn(0, TURN_SPEED, -90+offset);
         sleep(500);
-        robot.gyroDrive(0, DRIVE_SPEED, 44, 0, true);
+        robot.gyroDrive(0, DRIVE_SPEED, 63, 0, true);
         sleep(500);
-        robot.gyroTurn(0, TURN_SPEED, 90+offset);
+        robot.gyroTurn(0, TURN_SPEED, -90+offset);
         sleep(500);
         robot.gyroDrive(0, DRIVE_SPEED, 3, 0, true);
         sleep(500);
         robot.getMovement().grabFoundation(true);
         sleep(500);
-        robot.gyroDrive(0, DRIVE_SPEED, );
+        robot.gyroDrive(0, DRIVE_SPEED,-8, 0, true);
+        sleep(500);
+        robot.gyroTurn(0, TURN_SPEED, 90+offset);
+        sleep(500);
+        robot.gyroDrive(0, DRIVE_SPEED, -60, 0,true);
 
         /*
         robot.getMovement().openGrabber(false);
