@@ -67,6 +67,7 @@ class AutonomousMain {
         double turn = Math.acos(3.5/distance);
         robot.gyroTurn(0, TURN_SPEED, turn);
         robot.gyroDrive(0, DRIVE_SPEED, distance, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
+        robot.getMovement().swivel(true);
         robot.getMovement().grab(true);
         robot.gyroTurn(0, TURN_SPEED, -(90-turn));
         robot.gyroDrive(0, DRIVE_SPEED, 18, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
