@@ -233,18 +233,20 @@ class Movement {
     void grab(boolean command) {
         Servo sg; // sg: Servo Grabber
         sg = servos[0];
-        if (command)
+        if (command) {
             sg.setPosition(GRABBER_OPEN);
-        else
+        } else {
             sg.setPosition(GRABBER_CLOSE);
+        }
     }
 
     void swivel(boolean command) {
         Servo ss; // ss: Servo Swivel
         ss = servos[1];
-        if (command)
-            ss.setPosition(ss.getPosition() + SERVO_STEP);
-        else
-            ss.setPosition(ss.getPosition() - SERVO_STEP);
+        if (command) {
+            ss.setPosition(1);
+        } else {
+            ss.setPosition(0);
+        }
     }
 }
