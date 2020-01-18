@@ -12,8 +12,16 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 class InitRobot {
     private LinearOpMode l;
 
+    private boolean vuforia;
+
     InitRobot(LinearOpMode l) {
         this.l = l;
+        this.vuforia = true;
+    }
+
+    InitRobot(LinearOpMode l, Boolean v) {
+        this.l = l;
+        this.vuforia = v;
     }
 
     Robot robot;
@@ -85,10 +93,19 @@ class InitRobot {
                 scissorUpLimit
         };
 
+        // Get webcams
+        WebcamName webcam1 = l.hardwareMap.get(WebcamName.class, "Webcam 1");
+
+        // Add webcams to list
+        WebcamName[] webcams = new WebcamName[] {
+                webcam1
+        };
+
         // Add lists into sensor class
         Sensor sensor = new Sensor
                 .SensorBuilder()
                 .colorSensors(colorSensors)
+                .webcams(webcams)
                 .build();
 
         // Add movement and sensor class into robot class
@@ -97,6 +114,22 @@ class InitRobot {
                 .movement(movement)
                 .linearOpMode(l)
                 .build();
+
+        if (vuforia) {
+            // Initialize VuForia
+            robot.getSensor().initVuforia(l.hardwareMap.appContext.getResources().getIdentifier(
+                    "cameraMonitorViewId", "id", l.hardwareMap.appContext.getPackageName()), 0
+            );
+
+            // Check if we can use TFOD. If we can, initialize it.
+            if (ClassFactory.getInstance().canCreateTFObjectDetector()) {
+                robot.getSensor().initTfod(l.hardwareMap.appContext.getResources().getIdentifier(
+                        "tfodMonitorViewId", "id", l.hardwareMap.appContext.getPackageName())
+                );
+            } else {
+                l.telemetry.addData("Sorry!", "This device is not compatible with TFOD");
+            }
+        }
 
         return robot;
     }
