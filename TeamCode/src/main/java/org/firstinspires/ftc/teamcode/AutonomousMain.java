@@ -99,39 +99,18 @@ class AutonomousMain {
     }
 
     void blue_new() {
-        double offset = robot.getSensor().getGyros()[0].getAngularOrientation(
-                AxesReference.INTRINSIC,
-                AxesOrder.ZYX,
-                AngleUnit.DEGREES
-        ).firstAngle;
-
-        // Blocks + Autonomous (In Progress)
-        shared(); // Preparation for block grabbing
-        robot.gyroDrive(0, DRIVE_SPEED, 20, 0, true); // Robot approaches the block
-        robot.getMovement().openGrabber(false); // Robot grabs the block
-        sleep(500); // Robot process the grab to avoid unintentional errors
-        robot.gyroTurn(0, TURN_SPEED, 90 + offset); // Robot turns toward the alliance bridge
-        robot.gyroDrive(0, DRIVE_SPEED, 57, 0, true); // Robot drives under the alliance bridge with the block
-        sleep(500); // Wait time to prepare robot to release block
-        robot.getMovement().moveElevator(0.8); // Preparing elevator for drop on to the foundation
-        sleep(500); // Running elevator
-        robot.getMovement().moveElevator(0); // Scissor up
-        robot.gyroTurn(0, TURN_SPEED, 0 + offset); // Robot turns toward the foundation
-        robot.gyroDrive(0, DRIVE_SPEED, 2, 0, true); // Robot approaches the foundation
-        robot.getMovement().openGrabber(true); // Robot releases the block
-        sleep(500);
-        robot.getMovement().grabFoundation(true); // Robot grabs the foundation
-        sleep(500); // Wait time for robot to process the foundation grab
-        robot.gyroDrive(0, DRIVE_SPEED, -15, 0, true); // Robot moves the foundation back
-        robot.gyroTurn(0, TURN_SPEED, 26 + offset); // Robot turns to angle foundation for placement in the building site
-        sleep(500); // Wait time to process the angling
-        robot.gyroDrive(0, DRIVE_SPEED,-18, 0, true); // Robot moves the foundation close to the building zone
-        robot.getMovement().grabFoundation(false); // Robot releases foundation
-        robot.gyroTurn(0, TURN_SPEED, -90 + offset); // Robot turns to knock foundation into building site
-        robot.gyroDrive(0, DRIVE_SPEED, 22, 0,true); // Robot drives under alliance bridge and parks
+        together(1);
     }
 
     void red_new() {
+        together(-1);
+    }
+
+    /**
+     *
+     * @param side -1 is red, 1 is blue
+     */
+    private void together(int side) {
         double offset = robot.getSensor().getGyros()[0].getAngularOrientation(
                 AxesReference.INTRINSIC,
                 AxesOrder.ZYX,
@@ -144,7 +123,7 @@ class AutonomousMain {
         sleep(500); // Wait time to prepare the grabber for grabbing the block
         robot.getMovement().openGrabber(false); // Robot grabs the block
         sleep(500); // Robot process the grab to avoid unintentional errors
-        robot.gyroTurn(0, TURN_SPEED, -90+offset); // Robot turns toward the alliance bridge
+        robot.gyroTurn(0, TURN_SPEED, side*90+offset); // Robot turns toward the alliance bridge
         robot.gyroDrive(0, DRIVE_SPEED, 57, 0, true); // Robot drives under the alliance bridge with the block
         sleep(500); // Wait time to prepare robot to release block
         robot.getMovement().openGrabber(true); // Robot releases the block
@@ -153,11 +132,11 @@ class AutonomousMain {
         robot.getMovement().grabFoundation(true); // Robot grabs the foundation
         sleep(500); // Wait time for robot to process the foundation grab
         robot.gyroDrive(0, DRIVE_SPEED, -15, 0, true); // Robot moves the foundation back
-        robot.gyroTurn(0, TURN_SPEED, -26+offset); // Robot turns to angle foundation for placement in the building site
+        robot.gyroTurn(0, TURN_SPEED, side*26+offset); // Robot turns to angle foundation for placement in the building site
         sleep(500); // Wait time to process the angling
         robot.gyroDrive(0, DRIVE_SPEED,-18, 0, true); // Robot moves the foundation close to the building zone
         robot.getMovement().grabFoundation(false); // Robot releases foundation
-        robot.gyroTurn(0, TURN_SPEED, 90+offset); // Robot turns to knock foundation into building site
+        robot.gyroTurn(0, TURN_SPEED, -side*90+offset); // Robot turns to knock foundation into building site
         robot.gyroDrive(0, DRIVE_SPEED, 22, 0,true); // Robot drives under alliance bridge and parks
     }
 
