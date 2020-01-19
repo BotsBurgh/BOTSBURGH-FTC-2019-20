@@ -23,7 +23,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 class AutonomousMain {
     // Declare OpMode Members
 
-    private static final double DRIVE_SPEED = 0.7;
+    private static final double DRIVE_SPEED = 0.85;
     private static final double TURN_SPEED = 0.6;
 
     Robot robot;
@@ -120,9 +120,9 @@ class AutonomousMain {
         // Blocks + Autonomous (In Progress)
         shared(); // Preparation for block grabbing
         robot.gyroDrive(0, DRIVE_SPEED, 20, 0, true); // Robot approaches the block
-        sleep(500); // Wait time to prepare the grabber for grabbing the block
+        sleep(1000); // Wait time to prepare the grabber for grabbing the block
         robot.getMovement().openGrabber(false); // Robot grabs the block
-        sleep(500); // Robot process the grab to avoid unintentional errors
+        sleep(1000); // Robot process the grab to avoid unintentional errors
         robot.gyroTurn(0, TURN_SPEED, side*90+offset); // Robot turns toward the alliance bridge
         robot.gyroDrive(0, DRIVE_SPEED, 57, 0, true); // Robot drives under the alliance bridge with the
         robot.getMovement().moveElevator(1);
