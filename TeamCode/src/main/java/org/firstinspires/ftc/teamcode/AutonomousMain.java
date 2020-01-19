@@ -50,21 +50,6 @@ class AutonomousMain {
         robot.gyroDrive(0, DRIVE_SPEED, 38, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
         robot.getMovement().openGrabber(true);
         // robot.gyroDrive(0, DRIVE_SPEED,38, );
-        /**
-        robot.gyroTurn(0, TURN_SPEED, -45); // Robot turns to 135º
-        robot.gyroDrive(0, DRIVE_SPEED, 68, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle); // Robot nears the opponent team's bridge
-        robot.gyroTurn(0, TURN_SPEED, 69);
-        robot.gyroDrive(0, DRIVE_SPEED, 87, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
-        robot.getMovement().setServo(1, robot.getMovement().getServos()[1].getPosition() - SERVO_STEP);
-        robot.getMovement().openGrabber(true);
-        robot.gyroTurn(0, TURN_SPEED, 145);
-        robot.gyroDrive(0, DRIVE_SPEED, 87, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
-        robot.gyroTurn(0, TURN_SPEED, -145);
-        robot.gyroDrive(0, DRIVE_SPEED, 70, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
-        robot.gyroDrive(0, DRIVE_SPEED, 96, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle); // Robot goes across the field
-        robot.gyroTurn(0, TURN_SPEED, 90); // Turn 90 degrees so we are facing the
-        robot.gyroDrive(0, DRIVE_SPEED, 24, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
-         */
     }
 
     void red() {
@@ -117,6 +102,8 @@ class AutonomousMain {
                 AxesOrder.ZYX,
                 AngleUnit.DEGREES
         ).firstAngle;
+
+
 
         // Blocks + Autonomous (In Progress)
         shared(); // Preparation for block grabbing
