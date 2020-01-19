@@ -17,19 +17,17 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name="Autonomous Blue", group="Autonomous")
-@Disabled
-public class AutonomousBlue extends LinearOpMode {
+@Autonomous(name="Autonomous Red All", group="00-Red Autonomous")
+public class AutonomousRedAll extends LinearOpMode {
     // Declare OpMode Members
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
     public void runOpMode() {
-        InitRobot initializer = new InitRobot(AutonomousBlue.this);
+        InitRobot initializer = new InitRobot(AutonomousRedAll.this, false);
         Robot robot = initializer.init();
         AutonomousMain am = new AutonomousMain(robot);
 
@@ -40,8 +38,8 @@ public class AutonomousBlue extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        am.blue();
+        am.red_all();
 
-        initializer.deInit();
+        //initializer.deInit();
     }
 }
