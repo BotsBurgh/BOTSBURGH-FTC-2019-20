@@ -20,14 +20,14 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name="Autonomous Blue New", group="Autonomous")
-public class AutonomousBlueNew extends LinearOpMode {
+@Autonomous(name="Autonomous Blue Block", group="01-Blue Autonomous")
+public class AutonomousBlueBlock extends LinearOpMode {
     // Declare OpMode Members
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
     public void runOpMode() {
-        InitRobot initializer = new InitRobot(AutonomousBlueNew.this, false);
+        InitRobot initializer = new InitRobot(AutonomousBlueBlock.this, false);
         Robot robot = initializer.init();
         AutonomousMain am = new AutonomousMain(robot);
 
@@ -38,7 +38,7 @@ public class AutonomousBlueNew extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        am.blue_new();
+        am.blue_block();
 
         //initializer.deInit();
     }

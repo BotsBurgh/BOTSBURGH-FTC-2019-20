@@ -20,25 +20,16 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name="Gyroscope Driving Test", group="02-Test")
-public class TestGyroDrive extends LinearOpMode {
+@Autonomous(name="Autonomous Blue Foundation", group="01-Blue Autonomous")
+public class AutonomousBlueFoundation extends LinearOpMode {
     // Declare OpMode Members
     private ElapsedTime runtime = new ElapsedTime();
 
-    Robot robot;
-    private static final double DRIVE_SPEED = 0.5;
-
-
     @Override
     public void runOpMode() {
-        InitRobot initializer = new InitRobot(TestGyroDrive.this, false);
+        InitRobot initializer = new InitRobot(AutonomousBlueFoundation.this, false);
         Robot robot = initializer.init();
-        
-        // Initialize gyros
-        robot.getSensor().calibrateGyro(0);
-        robot.getSensor().calibrateGyro(1);
-        robot.getSensor().initGyro(0);
-        robot.getSensor().initGyro(1);
+        AutonomousMain am = new AutonomousMain(robot);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -47,6 +38,8 @@ public class TestGyroDrive extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        robot.gyroDrive(0, DRIVE_SPEED,18, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle, true);
+        am.blue_foundation();
+
+        //initializer.deInit();
     }
 }

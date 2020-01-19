@@ -34,48 +34,35 @@ class AutonomousMain {
     }
 
     void blue() {
-        shared();
-        robot.gyroDrive(0, DRIVE_SPEED, 24, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
-        /**
-        ArrayList<ArrayList<Float>> pos;
-        pos = robot.getSensor().getTfodPositions();
-        double distance = ((pos.get(0).get(0)) + (pos.get(0).get(3))) / 2; // Robot's calculation to get to the block
-        robot.getMovement().openGrabber(false);
-        double turn = Math.acos(3.5 / distance);
-        robot.gyroTurn(0, TURN_SPEED, turn);
-        robot.gyroDrive(0, DRIVE_SPEED, distance, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
-         */
-        robot.getMovement().openGrabber(false);
-        robot.gyroTurn(0, TURN_SPEED, 90);
-        robot.gyroDrive(0, DRIVE_SPEED, 38, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
-        robot.getMovement().openGrabber(true);
-        // robot.gyroDrive(0, DRIVE_SPEED,38, );
+        // TODO
     }
 
     void red() {
-        shared();
-        robot.gyroDrive(0, DRIVE_SPEED, 24, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
-        /*
-        ArrayList<ArrayList<Float>> pos;
-        pos = robot.getSensor().getTfodPositions();
-        double distance = ((pos.get(0).get(0))+(pos.get(0).get(3)))/2;
-        double turn = Math.acos(3.5/distance);
-         */
-        //robot.gyroDrive(0, DRIVE_SPEED, distance, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
-        robot.getMovement().openGrabber(true);
-        robot.gyroTurn(0, TURN_SPEED, -90);
-        robot.gyroDrive(0, DRIVE_SPEED, 18, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
-        robot.gyroDrive(0, DRIVE_SPEED, 68, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle); // Robot nears the opponent team's bridge
-        robot.gyroTurn(0, TURN_SPEED, -69);
-        robot.gyroDrive(0, DRIVE_SPEED, 87, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
-        robot.getMovement().openGrabber(false);
-        robot.gyroTurn(0, TURN_SPEED, -145);
-        robot.gyroDrive(0, DRIVE_SPEED, 87, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
-        robot.gyroTurn(0,TURN_SPEED, 145);
-        robot.gyroDrive(0, DRIVE_SPEED, 70, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
-        robot.gyroDrive(0, DRIVE_SPEED, 96, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle); // Robot goes across the field
-        robot.gyroTurn(0, TURN_SPEED, -90); // Turn 90 degrees so we are facing the
-        robot.gyroDrive(0, DRIVE_SPEED, 24, robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
+        // TODO
+    }
+
+    void red_block() {
+        together_block(-1);
+    }
+
+    void blue_block() {
+        together_block(1);
+    }
+
+    void red_foundation() {
+        together_foundation(-1);
+    }
+
+    void blue_foundation() {
+        together_foundation(1);
+    }
+
+    void blue_all() {
+        together_new(1);
+    }
+
+    void red_all() {
+        together_new(-1);
     }
 
     void cheat() {
@@ -84,19 +71,11 @@ class AutonomousMain {
         robot.getMovement().move2x2(0, 0);
     }
 
-    void blue_new() {
-        together(1);
-    }
-
-    void red_new() {
-        together(-1);
-    }
-
     /**
      *
      * @param side -1 is red, 1 is blue
      */
-    private void together(int side) {
+    private void together_new(int side) {
         double offset = robot.getSensor().getGyros()[0].getAngularOrientation(
                 AxesReference.INTRINSIC,
                 AxesOrder.ZYX,
@@ -134,6 +113,30 @@ class AutonomousMain {
         }
         robot.getMovement().moveElevator(0);
         robot.gyroDrive(0, DRIVE_SPEED, 19, 0,true); // Robot drives under alliance bridge and parks
+    }
+
+    /**
+     *
+     * @param side -1 is red, 1 is blue
+     */
+    private void together_block(int side) {
+        double offset = robot.getSensor().getGyros()[0].getAngularOrientation(
+                AxesReference.INTRINSIC,
+                AxesOrder.ZYX,
+                AngleUnit.DEGREES
+        ).firstAngle;
+
+        shared();
+        // TODO: FINISH
+        robot.gyroDrive(0, DRIVE_SPEED, 18.5, 0);
+        robot.getMovement().openGrabber(false);
+        robot.gyroTurn(0, TURN_SPEED, side*offset - 90);
+        robot.gyroDrive(0, DRIVE_SPEED, 38, 0);
+        robot.getMovement().openGrabber(true);
+    }
+
+    private void together_foundation(int side) {
+        // TODO
     }
 
     private void shared() {
