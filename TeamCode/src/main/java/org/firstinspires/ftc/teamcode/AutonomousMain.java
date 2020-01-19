@@ -119,7 +119,7 @@ class AutonomousMain {
 
         // Blocks + Autonomous (In Progress)
         shared(); // Preparation for block grabbing
-        robot.gyroDrive(0, DRIVE_SPEED, 24, 0, true); // Robot approaches the block
+        robot.gyroDrive(0, DRIVE_SPEED, 21, 0, true); // Robot approaches the block
         sleep(1000); // Wait time to prepare the grabber for grabbing the block
         robot.getMovement().openGrabber(false); // Robot grabs the block
         sleep(1000); // Robot process the grab to avoid unintentional errors
