@@ -24,6 +24,7 @@ class AutonomousMain {
     // Declare OpMode Members
 
     private static final double DRIVE_SPEED = 0.85;
+    private static final double DRIVE_SPEED_SLOW = 0.7;
     private static final double TURN_SPEED = 0.6;
 
     Robot robot;
@@ -93,7 +94,7 @@ class AutonomousMain {
     }
 
     void cheat() {
-        robot.getMovement().move2x2(-DRIVE_SPEED, -DRIVE_SPEED);
+        robot.getMovement().move2x2(-DRIVE_SPEED_SLOW, -DRIVE_SPEED_SLOW);
         robot.getLinearOpMode().sleep(1000);
         robot.getMovement().move2x2(0, 0);
     }

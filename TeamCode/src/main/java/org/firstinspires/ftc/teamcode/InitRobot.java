@@ -161,7 +161,7 @@ class InitRobot {
 
     // TODO: JavaDoc
     void deInit() {
-        if (!vuforia) {
+        if (vuforia) {
             robot.getSensor().deactivateTfod();
             robot.getSensor().deactivateVuforia();
         }
