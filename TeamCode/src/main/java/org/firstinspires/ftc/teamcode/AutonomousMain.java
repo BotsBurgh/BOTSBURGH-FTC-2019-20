@@ -25,7 +25,6 @@ class AutonomousMain {
 
     private static final double DRIVE_SPEED = 0.7;
     private static final double TURN_SPEED = 0.6;
-    private static final double SERVO_STEP = 0.01;
 
     Robot robot;
 
