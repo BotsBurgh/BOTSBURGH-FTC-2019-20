@@ -138,43 +138,6 @@ class AutonomousMain {
                 AngleUnit.DEGREES
         ).firstAngle;
 
-
-        /* Block Autonomous (Working)
-        shared();
-        robot.gyroDrive(0, DRIVE_SPEED, 20, 0, true);
-        sleep(750);
-        robot.getMovement().openGrabber(false);
-        sleep(750);
-        robot.gyroDrive(0, DRIVE_SPEED, -15, 0, true);
-        sleep(1000);
-        robot.gyroTurn(0, TURN_SPEED, -90 + offset);
-        sleep(1000);
-        robot.gyroDrive(0, DRIVE_SPEED, 38, 0, true);
-        sleep(750);
-        robot.getMovement().openGrabber(true);
-        sleep(750);
-        robot.gyroDrive(0,DRIVE_SPEED, -15, 0, true);
-        */
-
-        /* Foundation Autonomous (In Progress)
-        robot.gyroDrive(0, DRIVE_SPEED, 20, 0, true);
-        robot.gyroTurn(0, TURN_SPEED, -90+offset);
-        robot.gyroDrive(0, DRIVE_SPEED, 61, 0, true);
-        // sleep(1000);
-        robot.gyroTurn(0, TURN_SPEED, 0+offset);
-        robot.gyroDrive(0, DRIVE_SPEED, 2, 0, true);
-        robot.getMovement().grabFoundation(true);
-        sleep(500);
-        robot.gyroDrive(0, DRIVE_SPEED, -15, 0, true);
-        robot.gyroTurn(0, TURN_SPEED, -26+offset);
-        sleep(500);
-        robot.gyroDrive(0, DRIVE_SPEED,-18, 0, true);
-        robot.getMovement().grabFoundation(false);
-        robot.gyroTurn(0, TURN_SPEED, 90+offset);
-        robot.gyroDrive(0, DRIVE_SPEED, 22, 0,true);
-        shared();
-        */
-
         // Blocks + Autonomous (In Progress)
         shared(); // Preparation for block grabbing
         robot.gyroDrive(0, DRIVE_SPEED, 20, 0, true); // Robot approaches the block
