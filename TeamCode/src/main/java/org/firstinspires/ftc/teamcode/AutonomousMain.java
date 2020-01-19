@@ -140,6 +140,10 @@ class AutonomousMain {
         robot.gyroDrive(0, DRIVE_SPEED,-18, 0, true); // Robot moves the foundation close to the building zone
         robot.getMovement().grabFoundation(false); // Robot releases foundation
         robot.gyroTurn(0, TURN_SPEED, -side*90+offset); // Robot turns to knock foundation into building site
+        while (robot.getSensor().getRGB(0) != 0) {
+            robot.getMovement().moveElevator(-1);
+        }
+        robot.getMovement().moveElevator(0);
         robot.gyroDrive(0, DRIVE_SPEED, 22, 0,true); // Robot drives under alliance bridge and parks
     }
 
