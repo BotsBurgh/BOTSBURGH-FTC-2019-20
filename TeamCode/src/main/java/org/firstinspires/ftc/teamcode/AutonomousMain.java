@@ -145,7 +145,6 @@ class AutonomousMain {
         // Blocks + Autonomous (In Progress)
         shared(); // Preparation for block grabbing
         robot.gyroDrive(0, DRIVE_SPEED, 20, 0, true); // Robot approaches the block
-        sleep(500); // Wait time to prepare the grabber for grabbing the block
         robot.getMovement().openGrabber(false); // Robot grabs the block
         sleep(500); // Robot process the grab to avoid unintentional errors
         robot.gyroTurn(0, TURN_SPEED, -90+offset); // Robot turns toward the alliance bridge

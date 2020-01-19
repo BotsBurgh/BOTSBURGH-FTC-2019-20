@@ -258,11 +258,11 @@ class Movement {
         Servo slf, srf;
         slf = servos[2]; // sfl: Servo Left Foundation
         srf = servos[3]; // sfr: Servo Right Foundation
-        if (command) {
+        if (command) { // Grabs foundation
             slf.setPosition(180);
             srf.setPosition(0);
         }
-        else {
+        else { // Releases foundation
             slf.setPosition(0);
             srf.setPosition(180);
         }
