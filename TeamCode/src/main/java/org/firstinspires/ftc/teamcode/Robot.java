@@ -74,7 +74,7 @@ public class Robot {
     void gyroTurn(int id, double speed, double angle) {
         ElapsedTime runtime = new ElapsedTime();
         runtime.reset();
-        while (linearOpMode.opModeIsActive()) {
+        while (linearOpMode.opModeIsActive() && !linearOpMode.isStopRequested()) {
             if (onHeading(id, speed, angle, P_TURN_COEFF) && (linearOpMode.opModeIsActive())) {
                 break;
             } else {
@@ -211,7 +211,7 @@ public class Robot {
 
             // keep looping while we are still active, and BOTH motors are running.
             while (linearOpMode.opModeIsActive() && (leftDrive.isBusy() && rightDrive.isBusy()) &&
-                    (runtime.seconds()<=DRIVE_TIMEOUT)) {
+                    (runtime.seconds()<=DRIVE_TIMEOUT) && !linearOpMode.isStopRequested()) {
                 // adjust relative speed based on heading error.
                 //error = getError(id, angle);
                 //steer = getSteer(error, P_DRIVE_COEFF);
