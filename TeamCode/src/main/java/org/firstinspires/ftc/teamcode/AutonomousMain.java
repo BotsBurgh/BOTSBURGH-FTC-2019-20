@@ -119,7 +119,7 @@ class AutonomousMain {
 
         // Blocks + Autonomous (In Progress)
         shared(); // Preparation for block grabbing
-        robot.gyroDrive(0, DRIVE_SPEED, 21, 0, true); // Robot approaches the block
+        robot.gyroDrive(0, DRIVE_SPEED, 19, 0, true); // Robot approaches the block
         sleep(1000); // Wait time to prepare the grabber for grabbing the block
         robot.getMovement().openGrabber(false); // Robot grabs the block
         sleep(1000); // Robot process the grab to avoid unintentional errors
@@ -129,7 +129,7 @@ class AutonomousMain {
         sleep(2000); // Wait time to prepare robot to release block
         robot.getMovement().moveElevator(0);
         robot.gyroTurn(0, TURN_SPEED, 0+offset); // Robot turns toward the foundation
-        robot.gyroDrive(0, DRIVE_SPEED, 2, 0, true); // Robot approaches the foundation
+        robot.gyroDrive(0, DRIVE_SPEED, 1, 0, true); // Robot approaches the foundation
         robot.getMovement().openGrabber(true); // Robot releases the block
         sleep(500);
         robot.getMovement().grabFoundation(true); // Robot grabs the foundation
@@ -144,7 +144,7 @@ class AutonomousMain {
             robot.getMovement().moveElevator(1);
         }
         robot.getMovement().moveElevator(0);
-        robot.gyroDrive(0, DRIVE_SPEED, 22, 0,true); // Robot drives under alliance bridge and parks
+        robot.gyroDrive(0, DRIVE_SPEED, 19, 0,true); // Robot drives under alliance bridge and parks
     }
 
     private void shared() {
