@@ -28,7 +28,6 @@ public class BasicMovement extends LinearOpMode {
 
     private static final double DEADZONE    = 0.05; // Controls controller joystick deadzone
     private static final double SERVO_POWER = 1.00;
-    private static final double SERVO_STEP  = 0.01;
 
     /*
     ######  #######    #     # ####### #######    ####### ######  ### #######
@@ -66,8 +65,6 @@ public class BasicMovement extends LinearOpMode {
 
     private double elevatorSpeed;
 
-    private double extenderPower;
-
     private int sul, sdl = 0;
 
     @Override
@@ -98,6 +95,7 @@ public class BasicMovement extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
             // Arm extender
+            double extenderPower;
             if (gamepad2.dpad_up) {
                 extenderPower = SERVO_POWER;
             } else if (gamepad2.dpad_down) {
