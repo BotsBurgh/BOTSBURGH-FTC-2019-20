@@ -94,7 +94,7 @@ class AutonomousMain {
 
     void cheat() {
         robot.getMovement().move2x2(-DRIVE_SPEED, -DRIVE_SPEED);
-        robot.getLinearOpMode().sleep(1500);
+        robot.getLinearOpMode().sleep(1000);
         robot.getMovement().move2x2(0, 0);
     }
 
@@ -119,7 +119,7 @@ class AutonomousMain {
 
         // Blocks + Autonomous (In Progress)
         shared(); // Preparation for block grabbing
-        robot.gyroDrive(0, DRIVE_SPEED, 19, 0, true); // Robot approaches the block
+        robot.gyroDrive(0, DRIVE_SPEED, 18.5, 0, true); // Robot approaches the block
         sleep(1000); // Wait time to prepare the grabber for grabbing the block
         robot.getMovement().openGrabber(false); // Robot grabs the block
         sleep(1000); // Robot process the grab to avoid unintentional errors
@@ -134,8 +134,8 @@ class AutonomousMain {
         sleep(500);
         robot.getMovement().grabFoundation(true); // Robot grabs the foundation
         sleep(500); // Wait time for robot to process the foundation grab
-        robot.gyroDrive(0, DRIVE_SPEED, -15, 0, true); // Robot moves the foundation back
         robot.gyroTurn(0, TURN_SPEED, side*26+offset); // Robot turns to angle foundation for placement in the building site
+        robot.gyroDrive(0, DRIVE_SPEED, -15, 0, true); // Robot moves the foundation back
         sleep(500); // Wait time to process the angling
         robot.gyroDrive(0, DRIVE_SPEED,-18, 0, true); // Robot moves the foundation close to the building zone
         robot.getMovement().grabFoundation(false); // Robot releases foundation
