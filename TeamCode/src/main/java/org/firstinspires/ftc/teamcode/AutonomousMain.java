@@ -25,7 +25,6 @@ class AutonomousMain {
 
     private static final double DRIVE_SPEED = 0.7;
     private static final double TURN_SPEED = 0.6;
-    private static final double SERVO_STEP = 0.01;
 
     Robot robot;
 
@@ -94,7 +93,7 @@ class AutonomousMain {
     }
 
     void cheat() {
-        robot.getMovement().move2x2(DRIVE_SPEED, DRIVE_SPEED);
+        robot.getMovement().move2x2(-DRIVE_SPEED, -DRIVE_SPEED);
         robot.getLinearOpMode().sleep(1500);
         robot.getMovement().move2x2(0, 0);
     }
