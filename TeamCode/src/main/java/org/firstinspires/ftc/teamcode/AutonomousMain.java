@@ -94,7 +94,7 @@ class AutonomousMain {
     }
 
     void cheat() {
-        robot.getMovement().move2x2(DRIVE_SPEED, DRIVE_SPEED);
+        robot.getMovement().move2x2(-DRIVE_SPEED, -DRIVE_SPEED);
         robot.getLinearOpMode().sleep(1500);
         robot.getMovement().move2x2(0, 0);
     }
@@ -145,12 +145,12 @@ class AutonomousMain {
 
         // Blocks + Autonomous (In Progress)
         shared(); // Preparation for block grabbing
-        robot.gyroDrive(0, DRIVE_SPEED, 18, 0, true); // Robot approaches the block
+        robot.gyroDrive(0, DRIVE_SPEED, 20, 0, true); // Robot approaches the block
         sleep(500); // Wait time to prepare the grabber for grabbing the block
         robot.getMovement().openGrabber(false); // Robot grabs the block
         sleep(500); // Robot process the grab to avoid unintentional errors
-        robot.gyroTurn(0, TURN_SPEED, 90+offset); // Robot turns toward the alliance bridge
-        robot.gyroDrive(0, DRIVE_SPEED, 61, 0, true); // Robot drives under the alliance bridge with the block
+        robot.gyroTurn(0, TURN_SPEED, -90+offset); // Robot turns toward the alliance bridge
+        robot.gyroDrive(0, DRIVE_SPEED, 57, 0, true); // Robot drives under the alliance bridge with the block
         sleep(500); // Wait time to prepare robot to release block
         robot.getMovement().openGrabber(true); // Robot releases the block
         robot.gyroTurn(0, TURN_SPEED, 0+offset); // Robot turns toward the foundation

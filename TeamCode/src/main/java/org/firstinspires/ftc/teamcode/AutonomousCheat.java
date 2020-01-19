@@ -27,7 +27,7 @@ public class AutonomousCheat extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        InitRobot initializer = new InitRobot(AutonomousCheat.this);
+        InitRobot initializer = new InitRobot(AutonomousCheat.this, false);
         Robot robot = initializer.init();
         AutonomousMain am = new AutonomousMain(robot);
 
