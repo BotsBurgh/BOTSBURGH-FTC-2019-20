@@ -58,11 +58,11 @@ class AutonomousMain {
     }
 
     void blue_all() {
-        together_new(1);
+        together_all(1);
     }
 
     void red_all() {
-        together_new(-1);
+        together_all(-1);
     }
 
     void cheat() {
@@ -75,7 +75,7 @@ class AutonomousMain {
      *
      * @param side -1 is red, 1 is blue
      */
-    private void together_new(int side) {
+    private void together_all(int side) {
         double offset = robot.getSensor().getGyros()[0].getAngularOrientation(
                 AxesReference.INTRINSIC,
                 AxesOrder.ZYX,
