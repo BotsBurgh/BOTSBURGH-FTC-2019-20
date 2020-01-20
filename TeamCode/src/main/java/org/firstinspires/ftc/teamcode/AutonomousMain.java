@@ -127,14 +127,14 @@ class AutonomousMain {
         ).firstAngle;
 
         shared();
-        robot.gyroDrive(0, DRIVE_SPEED, 24, 0, true);
+        robot.gyroDrive(0, DRIVE_SPEED, 20, 0, true);
         robot.getMovement().openGrabber(false);
         sleep(500);
         robot.gyroDrive(0, DRIVE_SPEED, -10, 0, true);
         robot.gyroTurn(0, TURN_SPEED, side*90 + offset);
-        robot.gyroDrive(0, DRIVE_SPEED, 58, 0, true);
+        robot.gyroDrive(0, DRIVE_SPEED, 40, 0, true);
         robot.getMovement().openGrabber(true);
-        robot.gyroDrive(0, DRIVE_SPEED, -20, 0, true);
+        robot.gyroDrive(0, DRIVE_SPEED, -5, 0, true);
     }
 
     private void together_foundation(int side) {
@@ -147,12 +147,12 @@ class AutonomousMain {
         robot.gyroDrive(0, DRIVE_SPEED, 20, 0, true);
         robot.gyroTurn(0, TURN_SPEED, side*90+offset);
         robot.gyroDrive(0, DRIVE_SPEED, 61, 0, true);
-        robot.gyroTurn(0, TURN_SPEED, 0+offset);
-        robot.gyroDrive(0, DRIVE_SPEED, 2, 0, true);
+        robot.gyroTurn(0, TURN_SPEED, offset);
+        robot.gyroDrive(0, DRIVE_SPEED, 5, 0, true);
         robot.getMovement().grabFoundation(true);
         sleep(500);
         robot.gyroDrive(0, DRIVE_SPEED, -15, 0, true);
-        robot.gyroTurn(0, TURN_SPEED, side*26+offset);
+        robot.gyroTurn(0, TURN_SPEED, side*27.5+offset);
         sleep(500);
         robot.gyroDrive(0, DRIVE_SPEED,-18, 0, true);
         robot.getMovement().grabFoundation(false);
