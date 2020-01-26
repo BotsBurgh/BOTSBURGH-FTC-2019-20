@@ -76,13 +76,7 @@ class AutonomousMain {
      * @param side -1 is red, 1 is blue
      */
     private void together_all(int side) {
-        double offset = robot.getSensor().getGyros()[0].getAngularOrientation(
-                AxesReference.INTRINSIC,
-                AxesOrder.ZYX,
-                AngleUnit.DEGREES
-        ).firstAngle;
-
-
+        double offset = offset();
 
         // Blocks + Autonomous (In Progress)
         shared(); // Preparation for block grabbing
@@ -108,7 +102,7 @@ class AutonomousMain {
         robot.gyroDrive(0, DRIVE_SPEED,-18, 0, true); // Robot moves the foundation close to the building zone
         robot.getMovement().grabFoundation(false); // Robot releases foundation
         robot.gyroTurn(0, TURN_SPEED, -side*90+offset); // Robot turns to knock foundation into building site
-        while (robot.getSensor().getRGB(0) != 0) {
+        while (robot.getSensor().getRGB("scissorDownLimit") != 0) {
             robot.getMovement().moveElevator(1);
         }
         robot.getMovement().moveElevator(0);
@@ -120,11 +114,8 @@ class AutonomousMain {
      * @param side -1 is red, 1 is blue
      */
     private void together_block(int side) {
-        double offset = robot.getSensor().getGyros()[0].getAngularOrientation(
-                AxesReference.INTRINSIC,
-                AxesOrder.ZYX,
-                AngleUnit.DEGREES
-        ).firstAngle;
+        double offset = offset();
+
 
         shared();
         robot.gyroDrive(0, DRIVE_SPEED, 24, 0, true);
@@ -138,11 +129,7 @@ class AutonomousMain {
     }
 
     private void together_foundation(int side) {
-        double offset = robot.getSensor().getGyros()[0].getAngularOrientation(
-                AxesReference.INTRINSIC,
-                AxesOrder.ZYX,
-                AngleUnit.DEGREES
-        ).firstAngle;
+        double offset = offset();
 
         robot.gyroDrive(0, DRIVE_SPEED, 20, 0, true);
         robot.gyroTurn(0, TURN_SPEED, side*90+offset);
@@ -165,6 +152,14 @@ class AutonomousMain {
         robot.getMovement().openGrabber(false);
         robot.getMovement().openSwivel(true); // Open arm swivel
         robot.getMovement().openGrabber(true); // Close openGrabber
+    }
+
+    private double offset() {
+        return robot.getSensor().getGyro("imu").getAngularOrientation(
+                AxesReference.INTRINSIC,
+                AxesOrder.ZYX,
+                AngleUnit.DEGREES
+        ).firstAngle;
     }
 
     private void sleep(int milliseconds) {

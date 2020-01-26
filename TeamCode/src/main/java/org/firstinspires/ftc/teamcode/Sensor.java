@@ -40,6 +40,7 @@ import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -148,18 +149,18 @@ class Sensor {
     private boolean targetVisible;
 
     // TODO: Add more sensor capability
-    @Getter BNO055IMU[] gyros; // Initialize gyroscopes
-    @Getter AnalogInput[] pot; // Initialize potentiometers
-    @Getter private DigitalChannel[] button; // Initialize buttons
-    @Getter private ColorSensor[] colorSensors; // Initialize color sensors
-    @Getter private DistanceSensor[] distance; // Initialize distance sensors
-    @Getter private WebcamName[] webcams; // Initialize webcams
+    @Getter private HashMap<String, BNO055IMU> gyros; // Initialize gyroscopes
+    @Getter private HashMap<String, AnalogInput> pots; // Initialize potentiometers
+    @Getter private HashMap<String, DigitalChannel> buttons; // Initialize buttons
+    @Getter private HashMap<String, ColorSensor> colorSensors; // Initialize color sensors
+    @Getter private HashMap<String, DistanceSensor> distances; // Initialize distance sensors
+    @Getter private HashMap<String, WebcamName> webcams; // Initialize webcams
 
     /**
      * Gets the RGB value of the color sensor
      * @return 0 if red, 1 if green, 2 if blue, 3 if none
      */
-    int getRGB(int id) {
+    int getRGB(String id) {
         double red   = getRed(id);
         double green = getGreen(id);
         double blue  = getBlue(id);
@@ -175,13 +176,17 @@ class Sensor {
         }
     }
 
+    BNO055IMU getGyro(String id) {
+        return gyros.get(id);
+    }
+
     /**
      * Gets if a color sensor detects red
      * @param id ID of the color sensor
      * @return Boolean on if the sensor detects red or not
      */
-    int getRed(int id) {
-        return colorSensors[id].red();
+    int getRed(String id) {
+        return colorSensors.get(id).red();
     }
 
     /**
@@ -189,8 +194,8 @@ class Sensor {
      * @param id ID of the color sensor
      * @return Boolean on if the sensor detects green or not
      */
-    int getGreen(int id) {
-        return colorSensors[id].green();
+    int getGreen(String id) {
+        return colorSensors.get(id).green();
     }
 
     /**
@@ -198,8 +203,8 @@ class Sensor {
      * @param id ID of the color sensor
      * @return Boolean on if the sensor detects blue or not
      */
-    int getBlue(int id) {
-        return colorSensors[id].blue();
+    int getBlue(String id) {
+        return colorSensors.get(id).blue();
     }
 
     /**
@@ -207,8 +212,8 @@ class Sensor {
      * @param id ID of the button
      * @return Boolean of if the button is pressed or not
      */
-    boolean getButton(int id) {
-        return !(button[id].getState());
+    boolean getButton(String id) {
+        return !(buttons.get(id).getState());
     }
 
     /**
@@ -216,15 +221,15 @@ class Sensor {
      * @param id ID of the potentiometer
      * @return Degrees of the potentiometer
      */
-    double getPotDeg(int id) {
-        return (POT_MAX/(Vmax-Vmin))*(pot[id].getVoltage()-Vmin); // Converts voltage to angle (degrees)
+    double getPotDeg(String id) {
+        return (POT_MAX/(Vmax-Vmin))*(pots.get(id).getVoltage()-Vmin); // Converts voltage to angle (degrees)
     }
 
     /**
      * Initializes the gyroscope.
      * @param id ID of the gyroscope
      */
-    void initGyro(int id) {
+    void initGyro(String id) {
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
@@ -233,20 +238,20 @@ class Sensor {
         parameters.loggingTag          = "IMU";
         parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
 
-        gyros[id].initialize(parameters);
+        gyros.get(id).initialize(parameters);
     }
 
     /**
      * Calibrates a gyroscope
      * @param id ID of the gyroscope to calibrate
      */
-    void calibrateGyro(int id) {
+    void calibrateGyro(String id) {
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.loggingEnabled = true;
         parameters.loggingTag     = "IMU";
-        gyros[id].initialize(parameters);
+        gyros.get(id).initialize(parameters);
 
-        BNO055IMU.CalibrationData calibrationData = gyros[id].readCalibrationData();
+        BNO055IMU.CalibrationData calibrationData = gyros.get(id).readCalibrationData();
         String filename = String.format(Locale.ENGLISH, "BNO055IMUCalibration%d.json", id);
         File file = AppUtil.getInstance().getSettingsFile(filename);
         ReadWriteFile.writeFile(file, calibrationData.serialize());
@@ -279,7 +284,7 @@ class Sensor {
         /*
          * We also indicate which camera on the RC we wish to use.
          */
-        parameters.cameraName = webcams[webcamId];
+        parameters.cameraName = webcams.get(webcamId);
 
         //  Instantiate the Vuforia engine
         vuforia = ClassFactory.getInstance().createVuforia(parameters);

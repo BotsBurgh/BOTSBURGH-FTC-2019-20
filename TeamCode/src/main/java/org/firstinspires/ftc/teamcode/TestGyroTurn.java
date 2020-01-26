@@ -29,8 +29,6 @@ public class TestGyroTurn extends LinearOpMode {
     // Declare OpMode Members
     private ElapsedTime runtime = new ElapsedTime();
 
-    private Robot robot;
-
     @Override
     public void runOpMode() {
         InitRobot initializer = new InitRobot(TestGyroTurn.this, false);

@@ -10,6 +10,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 
+import java.util.HashMap;
+
 // TODO: JavaDoc
 class InitRobot {
     private LinearOpMode l;
@@ -44,12 +46,10 @@ class InitRobot {
         DcMotor lb = l.hardwareMap.get(DcMotor.class, "lb");
         DcMotor rb = l.hardwareMap.get(DcMotor.class, "rb");
 
-        // Add motors into the list
-        DcMotor[] motors = new DcMotor[] {
-                sc,
-                null, null, // Because we don't have front motors
-                lb, rb
-        };
+        HashMap<String, DcMotor> motors = new HashMap<>();
+        motors.put("lb", lb);
+        motors.put("rb", rb);
+        motors.put("lift", sc);
 
         // Get servos
         Servo grabber = l.hardwareMap.get(Servo.class, "grabber");
@@ -58,20 +58,18 @@ class InitRobot {
         Servo fLeft = l.hardwareMap.get(Servo.class, "foundationLeft");
 
         // Add servos into the list
-        Servo[] servos = new Servo[] {
-                grabber,
-                rotate,
-                fRight,
-                fLeft
-        };
+        HashMap<String, Servo> servos = new HashMap<>();
+        servos.put("grabber", grabber);
+        servos.put("rotate", rotate);
+        servos.put("foundationR", fRight);
+        servos.put("foundationL", fLeft);
 
         // Get CRServos
         CRServo armExtend = l.hardwareMap.get(CRServo.class, "extender");
 
         // Add CRServos into the list
-        CRServo[] crServos = new CRServo[] {
-                armExtend
-        };
+        HashMap<String, CRServo> crServos = new HashMap<>();
+        crServos.put("extender", armExtend);
 
         // Add lists into the movement class
         Movement movement = new Movement
@@ -100,26 +98,23 @@ class InitRobot {
         ColorSensor scissorUpLimit = l.hardwareMap.get(ColorSensor.class, "scissorUpLimit");
 
         // Add color sensors into list
-        ColorSensor[] colorSensors = new ColorSensor[] {
-                scissorDownLimit,
-                scissorUpLimit
-        };
+        HashMap<String, ColorSensor> colorSensors = new HashMap<>();
+        colorSensors.put("scissorDownLimit", scissorDownLimit);
+        colorSensors.put("scissorUpLimit", scissorUpLimit);
 
         // Get webcams
         WebcamName webcam1 = l.hardwareMap.get(WebcamName.class, "Webcam 1");
 
         // Add webcams to list
-        WebcamName[] webcams = new WebcamName[] {
-                webcam1
-        };
+        HashMap<String, WebcamName> webcams = new HashMap<>();
+        webcams.put("webcam1", webcam1);
 
         BNO055IMU gyro0 = l.hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU gyro1 = l.hardwareMap.get(BNO055IMU.class, "imu 1");
 
-        BNO055IMU[] gyros = new BNO055IMU[] {
-                gyro0,
-                gyro1
-        };
+        HashMap<String, BNO055IMU> gyros = new HashMap<>();
+        gyros.put("imu", gyro0);
+        gyros.put("imu 1", gyro1);
 
         // Add lists into sensor class
         Sensor sensor = new Sensor
@@ -136,8 +131,9 @@ class InitRobot {
                 .linearOpMode(l)
                 .build();
 
-        for (int i = 0; i<gyros.length; i++) {
-            robot.getSensor().initGyro(i);
+        // Initialize gyros
+        for (String i : gyros.keySet()) {
+            gyros.get(i).initialize()
         }
 
         if (vuforia) {
