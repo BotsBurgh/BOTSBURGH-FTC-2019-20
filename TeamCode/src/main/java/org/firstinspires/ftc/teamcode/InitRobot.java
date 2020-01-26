@@ -47,9 +47,9 @@ class InitRobot {
         DcMotor rb = l.hardwareMap.get(DcMotor.class, "rb");
 
         HashMap<String, DcMotor> motors = new HashMap<>();
-        motors.put("lb", lb);
-        motors.put("rb", rb);
-        motors.put("lift", sc);
+        motors.put(Naming.MOTOR_BL_NAME, lb);
+        motors.put(Naming.MOTOR_BR_NAME, rb);
+        motors.put(Naming.MOTOR_LIFT_NAME, sc);
 
         // Get servos
         Servo grabber = l.hardwareMap.get(Servo.class, "grabber");
@@ -59,17 +59,17 @@ class InitRobot {
 
         // Add servos into the list
         HashMap<String, Servo> servos = new HashMap<>();
-        servos.put("grabber", grabber);
-        servos.put("rotate", rotate);
-        servos.put("foundationR", fRight);
-        servos.put("foundationL", fLeft);
+        servos.put(Naming.SERVO_GRABBER_NAME, grabber);
+        servos.put(Naming.SERVO_ROTATE_NAME, rotate);
+        servos.put(Naming.SERVO_FOUNDATION_RIGHT_NAME, fRight);
+        servos.put(Naming.SERVO_FOUNDATION_LEFT_NAME, fLeft);
 
         // Get CRServos
         CRServo armExtend = l.hardwareMap.get(CRServo.class, "extender");
 
         // Add CRServos into the list
         HashMap<String, CRServo> crServos = new HashMap<>();
-        crServos.put("extender", armExtend);
+        crServos.put(Naming.CRSERVO_EXTEND_NAME, armExtend);
 
         // Add lists into the movement class
         Movement movement = new Movement
@@ -99,22 +99,22 @@ class InitRobot {
 
         // Add color sensors into list
         HashMap<String, ColorSensor> colorSensors = new HashMap<>();
-        colorSensors.put("scissorDownLimit", scissorDownLimit);
-        colorSensors.put("scissorUpLimit", scissorUpLimit);
+        colorSensors.put(Naming.COLOR_SENSOR_DOWN_LIMIT_NAME, scissorDownLimit);
+        colorSensors.put(Naming.COLOR_SENSOR_UP_LIMIT_NAME, scissorUpLimit);
 
         // Get webcams
         WebcamName webcam1 = l.hardwareMap.get(WebcamName.class, "Webcam 1");
 
         // Add webcams to list
         HashMap<String, WebcamName> webcams = new HashMap<>();
-        webcams.put("webcam1", webcam1);
+        webcams.put(Naming.WEBCAME_0_NAME, webcam1);
 
         BNO055IMU gyro0 = l.hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU gyro1 = l.hardwareMap.get(BNO055IMU.class, "imu 1");
 
         HashMap<String, BNO055IMU> gyros = new HashMap<>();
-        gyros.put("imu", gyro0);
-        gyros.put("imu 1", gyro1);
+        gyros.put(Naming.GYRO_0_NAME, gyro0);
+        gyros.put(Naming.GYRO_1_NAME, gyro1);
 
         // Add lists into sensor class
         Sensor sensor = new Sensor
@@ -133,7 +133,7 @@ class InitRobot {
 
         // Initialize gyros
         for (String i : gyros.keySet()) {
-            gyros.get(i).initialize()
+            robot.getSensor().initGyro(i);
         }
 
         if (vuforia) {

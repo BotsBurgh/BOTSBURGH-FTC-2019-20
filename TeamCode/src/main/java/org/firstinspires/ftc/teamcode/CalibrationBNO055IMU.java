@@ -29,15 +29,9 @@ public class CalibrationBNO055IMU extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        BNO055IMU[] gyros = new BNO055IMU[] {
-                hardwareMap.get(BNO055IMU.class, "imu"),
-                hardwareMap.get(BNO055IMU.class, "imu 1")
-        };
+        InitRobot initializer = new InitRobot(CalibrationBNO055IMU.this, false);
 
-        Sensor sensors = new Sensor
-                .SensorBuilder()
-                .gyros(gyros)
-                .build();
+        Robot robot = initializer.init();
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -48,8 +42,10 @@ public class CalibrationBNO055IMU extends LinearOpMode {
 
         telemetry.addData("> ", "Calibrating...");
         telemetry.update();
-        sensors.calibrateGyro(0);
-        sensors.calibrateGyro(1);
+
+        robot.getSensor().calibrateGyro(Naming.GYRO_0_NAME);
+        robot.getSensor().calibrateGyro(Naming.GYRO_1_NAME);
+
         telemetry.addData("> ", "Done calibrating");
         telemetry.update();
     }

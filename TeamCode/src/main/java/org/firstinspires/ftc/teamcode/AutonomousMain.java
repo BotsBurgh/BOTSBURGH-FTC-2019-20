@@ -68,7 +68,7 @@ class AutonomousMain {
     void cheat() {
         robot.getMovement().move2x2(-DRIVE_SPEED_SLOW, -DRIVE_SPEED_SLOW);
         robot.getLinearOpMode().sleep(1000);
-        robot.getMovement().move2x2(0, 0);
+        robot.getMovement().move2x2(0,0);
     }
 
     /**
@@ -81,32 +81,32 @@ class AutonomousMain {
         // Blocks + Autonomous (In Progress)
         shared(); // Preparation for block grabbing
         sleep(250);
-        robot.gyroDrive(0, DRIVE_SPEED, 18.5, 0, true); // Robot approaches the block
+        robot.gyroDrive(Naming.GYRO_0_NAME,DRIVE_SPEED, 18.5, 0, true); // Robot approaches the block
         sleep(500); // Wait time to prepare the grabber for grabbing the block
         robot.getMovement().openGrabber(false); // Robot grabs the block
         sleep(500); // Robot process the grab to avoid unintentional errors
-        robot.gyroTurn(0, TURN_SPEED, side*90+offset); // Robot turns toward the alliance bridge
-        robot.gyroDrive(0, DRIVE_SPEED, 57, 0, true); // Robot drives under the alliance bridge with the
+        robot.gyroTurn(Naming.GYRO_0_NAME,TURN_SPEED, side*90+offset); // Robot turns toward the alliance bridge
+        robot.gyroDrive(Naming.GYRO_0_NAME,DRIVE_SPEED, 57, 0, true); // Robot drives under the alliance bridge with the
         robot.getMovement().moveElevator(-1);
         sleep(500); // Wait time to prepare robot to release block
         robot.getMovement().moveElevator(0);
-        robot.gyroTurn(0, TURN_SPEED, 0+offset); // Robot turns toward the foundation
-        robot.gyroDrive(0, DRIVE_SPEED, 1, 0, true); // Robot approaches the foundation
+        robot.gyroTurn(Naming.GYRO_0_NAME,TURN_SPEED, 0+offset); // Robot turns toward the foundation
+        robot.gyroDrive(Naming.GYRO_0_NAME,DRIVE_SPEED, 1, 0, true); // Robot approaches the foundation
         robot.getMovement().openGrabber(true); // Robot releases the block
         sleep(250);
         robot.getMovement().grabFoundation(true); // Robot grabs the foundation
         sleep(250); // Wait time for robot to process the foundation grab
-        robot.gyroTurn(0, TURN_SPEED, side*26+offset); // Robot turns to angle foundation for placement in the building site
-        robot.gyroDrive(0, DRIVE_SPEED, -15, 0, true); // Robot moves the foundation back
+        robot.gyroTurn(Naming.GYRO_0_NAME,TURN_SPEED, side*26+offset); // Robot turns to angle foundation for placement in the building site
+        robot.gyroDrive(Naming.GYRO_0_NAME,DRIVE_SPEED, -15, 0, true); // Robot moves the foundation back
         sleep(250); // Wait time to process the angling
-        robot.gyroDrive(0, DRIVE_SPEED,-18, 0, true); // Robot moves the foundation close to the building zone
+        robot.gyroDrive(Naming.GYRO_0_NAME,DRIVE_SPEED,-18, 0, true); // Robot moves the foundation close to the building zone
         robot.getMovement().grabFoundation(false); // Robot releases foundation
-        robot.gyroTurn(0, TURN_SPEED, -side*90+offset); // Robot turns to knock foundation into building site
+        robot.gyroTurn(Naming.GYRO_0_NAME,TURN_SPEED, -side*90+offset); // Robot turns to knock foundation into building site
         while (robot.getSensor().getRGB("scissorDownLimit") != 0) {
             robot.getMovement().moveElevator(1);
         }
         robot.getMovement().moveElevator(0);
-        robot.gyroDrive(0, DRIVE_SPEED, 19, 0,true); // Robot drives under alliance bridge and parks
+        robot.gyroDrive(Naming.GYRO_0_NAME,DRIVE_SPEED, 19, 0,true); // Robot drives under alliance bridge and parks
     }
 
     /**
@@ -118,33 +118,33 @@ class AutonomousMain {
 
 
         shared();
-        robot.gyroDrive(0, DRIVE_SPEED, 20, 0, true);
+        robot.gyroDrive(Naming.GYRO_0_NAME,DRIVE_SPEED, 20, 0, true);
         robot.getMovement().openGrabber(false);
         sleep(500);
-        robot.gyroDrive(0, DRIVE_SPEED, -10, 0, true);
-        robot.gyroTurn(0, TURN_SPEED, side*90 + offset);
-        robot.gyroDrive(0, DRIVE_SPEED, 40, 0, true);
+        robot.gyroDrive(Naming.GYRO_0_NAME,DRIVE_SPEED, -10, 0, true);
+        robot.gyroTurn(Naming.GYRO_0_NAME,TURN_SPEED, side*90 + offset);
+        robot.gyroDrive(Naming.GYRO_0_NAME,DRIVE_SPEED, 40, 0, true);
         robot.getMovement().openGrabber(true);
-        robot.gyroDrive(0, DRIVE_SPEED, -5, 0, true);
+        robot.gyroDrive(Naming.GYRO_0_NAME,DRIVE_SPEED, -5, 0, true);
     }
 
     private void together_foundation(int side) {
         double offset = offset();
 
-        robot.gyroDrive(0, DRIVE_SPEED, 20, 0, true);
-        robot.gyroTurn(0, TURN_SPEED, side*90+offset);
-        robot.gyroDrive(0, DRIVE_SPEED, 61, 0, true);
-        robot.gyroTurn(0, TURN_SPEED, offset);
-        robot.gyroDrive(0, DRIVE_SPEED, 5, 0, true);
+        robot.gyroDrive(Naming.GYRO_0_NAME,DRIVE_SPEED, 20, 0, true);
+        robot.gyroTurn(Naming.GYRO_0_NAME,TURN_SPEED, side*90+offset);
+        robot.gyroDrive(Naming.GYRO_0_NAME,DRIVE_SPEED, 61, 0, true);
+        robot.gyroTurn(Naming.GYRO_0_NAME,TURN_SPEED, offset);
+        robot.gyroDrive(Naming.GYRO_0_NAME,DRIVE_SPEED, 5, 0, true);
         robot.getMovement().grabFoundation(true);
         sleep(500);
-        robot.gyroDrive(0, DRIVE_SPEED, -15, 0, true);
-        robot.gyroTurn(0, TURN_SPEED, side*27.5+offset);
+        robot.gyroDrive(Naming.GYRO_0_NAME,DRIVE_SPEED, -15, 0, true);
+        robot.gyroTurn(Naming.GYRO_0_NAME,TURN_SPEED, side*27.5+offset);
         sleep(500);
-        robot.gyroDrive(0, DRIVE_SPEED,-18, 0, true);
+        robot.gyroDrive(Naming.GYRO_0_NAME,DRIVE_SPEED,-18, 0, true);
         robot.getMovement().grabFoundation(false);
-        robot.gyroTurn(0, TURN_SPEED, side*-90+offset);
-        robot.gyroDrive(0, DRIVE_SPEED, 22, 0,true);
+        robot.gyroTurn(Naming.GYRO_0_NAME,TURN_SPEED, side*-90+offset);
+        robot.gyroDrive(Naming.GYRO_0_NAME,DRIVE_SPEED, 22, 0,true);
         shared();
     }
 

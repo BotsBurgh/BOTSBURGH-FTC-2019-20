@@ -73,11 +73,11 @@ public class BasicMovement extends LinearOpMode {
         Robot robot = initializer.init();
 
         // Zero some servos
-        robot.getMovement().setServo(2, 0); // Foundation
-        robot.getMovement().setServo(3, 180); // More foundation
+        robot.getMovement().setServo("foundationL", 0); // Foundation
+        robot.getMovement().setServo("foundationR", 180); // More foundation
 
         // Zeroing Swivel (Rotate)
-        robot.getMovement().setServo(1, 1); // Since this is a digital servo, it is initialized to 1.
+        robot.getMovement().setServo("rotate", 1); // Since this is a digital servo, it is initialized to 1.
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -103,7 +103,7 @@ public class BasicMovement extends LinearOpMode {
             } else {
                 extenderPower = 0;
             }
-            robot.getMovement().getCrServos()[0].setPower(extenderPower);
+            robot.getMovement().getCRServo(Naming.CRSERVO_EXTEND_NAME).setPower(extenderPower);
 
             // Grabber servo
             if (gamepad2.a) {
@@ -122,11 +122,9 @@ public class BasicMovement extends LinearOpMode {
 
             // Foundation servos
             if (gamepad1.x) {
-                robot.getMovement().setServo(2, 180);
-                robot.getMovement().setServo(3, 0);
+                robot.getMovement().grabFoundation(true);
             } else if (gamepad1.y) {
-                robot.getMovement().setServo(2, 0);
-                robot.getMovement().setServo(3, 180);
+                robot.getMovement().grabFoundation(false);
             }
 
             // Display the current value(s)
@@ -134,9 +132,9 @@ public class BasicMovement extends LinearOpMode {
             telemetry.addData("Motor Power", "%5.2f", elevatorSpeed);
             telemetry.addData("Up Limit", sul);
             telemetry.addData("Down Limit", sdl);
-            telemetry.addData("Arm Extend", robot.getMovement().getCrServos()[0].getPower());
-            telemetry.addData("Grabber Position", robot.getMovement().getServos()[0].getPosition());
-            telemetry.addData("Rotation Position", robot.getMovement().getServos()[1].getPosition());
+            telemetry.addData("Arm Extend", robot.getMovement().getCRServo(Naming.CRSERVO_EXTEND_NAME).getPower());
+            telemetry.addData("Grabber Position", robot.getMovement().getServo(Naming.SERVO_GRABBER_NAME).getPosition());
+            telemetry.addData("Rotation Position", robot.getMovement().getServo(Naming.SERVO_ROTATE_NAME).getPosition());
             // Show the elapsed game time and wheel power.
             telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
             telemetry.update();
@@ -174,8 +172,8 @@ public class BasicMovement extends LinearOpMode {
         @Override
         protected String doInBackground(Robot... params) {
             while (opModeIsActive()) {
-                sdl = params[0].getSensor().getRGB(0);
-                sul = params[0].getSensor().getRGB(1);
+                sdl = params[0].getSensor().getRGB(Naming.COLOR_SENSOR_DOWN_LIMIT_NAME);
+                sul = params[0].getSensor().getRGB(Naming.COLOR_SENSOR_UP_LIMIT_NAME);
             }
             return "";
         }

@@ -35,12 +35,12 @@ public class TestGyroTurn extends LinearOpMode {
         Robot robot = initializer.init();
 
         // Initialize gyros
-        robot.getSensor().calibrateGyro(0);
-        robot.getSensor().calibrateGyro(1);
-        robot.getSensor().initGyro(0);
-        robot.getSensor().initGyro(1);
+        robot.getSensor().calibrateGyro(Naming.GYRO_0_NAME);
+        robot.getSensor().calibrateGyro(Naming.GYRO_1_NAME);
+        robot.getSensor().initGyro(Naming.GYRO_0_NAME);
+        robot.getSensor().initGyro(Naming.GYRO_1_NAME);
 
-        double offset = robot.getSensor().getGyros()[0].getAngularOrientation(
+        double offset = robot.getSensor().getGyro(Naming.GYRO_0_NAME).getAngularOrientation(
                 AxesReference.INTRINSIC,
                 AxesOrder.ZYX,
                 AngleUnit.DEGREES
@@ -55,13 +55,13 @@ public class TestGyroTurn extends LinearOpMode {
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            robot.gyroTurn(0, 0.5, 0 + offset);
+            robot.gyroTurn(Naming.GYRO_0_NAME, 0.5, 0 + offset);
             sleep(5000);
-            robot.gyroTurn(0, 0.5, 90 + offset);
+            robot.gyroTurn(Naming.GYRO_0_NAME, 0.5, 90 + offset);
             sleep(5000);
-            robot.gyroTurn(0, 0.5, 180 + offset);
+            robot.gyroTurn(Naming.GYRO_0_NAME, 0.5, 180 + offset);
             sleep(5000);
-            robot.gyroTurn(0, 0.5, 270 + offset);
+            robot.gyroTurn(Naming.GYRO_0_NAME, 0.5, 270 + offset);
             sleep(5000);
         }
     }

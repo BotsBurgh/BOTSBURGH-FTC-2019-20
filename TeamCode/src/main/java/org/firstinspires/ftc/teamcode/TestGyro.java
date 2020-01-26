@@ -31,8 +31,8 @@ public class TestGyro extends LinearOpMode {
         Robot robot = initializer.init();
 
         // Initialize Gyroscope
-        robot.getSensor().initGyro(0);
-        robot.getSensor().initGyro(1);
+        robot.getSensor().initGyro(Naming.GYRO_0_NAME);
+        robot.getSensor().initGyro(Naming.GYRO_1_NAME);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -44,9 +44,9 @@ public class TestGyro extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
             // Do stuff here
-            telemetry.addData("Gyroscope X", robot.getSensor().getGyros()[0].getAngularOrientation().thirdAngle);
-            telemetry.addData("Gyroscope Y", robot.getSensor().getGyros()[0].getAngularOrientation().secondAngle);
-            telemetry.addData("Gyroscope Z", robot.getSensor().getGyros()[0].getAngularOrientation().firstAngle);
+            telemetry.addData("Gyroscope X", robot.getSensor().getGyro(Naming.GYRO_0_NAME).getAngularOrientation().thirdAngle);
+            telemetry.addData("Gyroscope Y", robot.getSensor().getGyro(Naming.GYRO_0_NAME).getAngularOrientation().secondAngle);
+            telemetry.addData("Gyroscope Z", robot.getSensor().getGyro(Naming.GYRO_0_NAME).getAngularOrientation().firstAngle);
             telemetry.update();
         }
     }

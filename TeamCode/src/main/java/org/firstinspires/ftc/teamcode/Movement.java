@@ -23,27 +23,12 @@ import com.qualcomm.robotcore.hardware.Servo;
 import java.util.HashMap;
 
 import lombok.Builder;
-import lombok.Getter;
 
 /**
  * The Movement class. Interfaces with servos and motors so you don't have to
  */
 @Builder
 class Movement {
-    // Name configuration
-    private static final String MOTOR_FL_NAME = "fl";
-    private static final String MOTOR_BL_NAME = "bl";
-    private static final String MOTOR_FR_NAME = "fr";
-    private static final String MOTOR_BR_NAME = "br";
-
-    private static final String SERVO_GRABBER_NAME = "grabber";
-    private static final String SERVO_FOUNDATION_LEFT_NAME = "foundationL";
-    private static final String SERVO_FOUNDATION_RIGHT_NAME = "foundationR";
-    private static final String SERVO_ROTATE_NAME = "rotate";
-
-
-    private static final String MOTOR_LIFT_NAME = "lift";
-
     // Motor configuration
     private static final double COUNTS_PER_MOTOR_REV  = 1440 ;
     private static final double DRIVE_GEAR_REDUCTION  = 1.0 ; // This is < 1.0 if geared UP
@@ -93,9 +78,23 @@ class Movement {
 
     private static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415);
 
-    @Getter private HashMap<String, DcMotor> motors;
-    @Getter private HashMap<String, Servo> servos;
-    @Getter private HashMap <String, CRServo> crServos;
+    private HashMap<String, DcMotor> motors;
+    private HashMap<String, Servo> servos;
+    private HashMap <String, CRServo> crServos;
+
+    // Getters
+
+    DcMotor getMotor(String id) {
+        return motors.get(id);
+    }
+
+    Servo getServo(String id) {
+        return servos.get(id);
+    }
+
+    CRServo getCRServo(String id) {
+        return crServos.get(id);
+    }
 
     /**
      * Moves each of the four motors individually. Best for mecanum drives.
@@ -105,10 +104,10 @@ class Movement {
      * @param brPower Power to the back right wheel
      */
     void move4x4(double flPower, double frPower, double blPower, double brPower) {
-        motors.get(MOTOR_FL_NAME).setPower(flPower);
-        motors.get(MOTOR_FR_NAME).setPower(frPower);
-        motors.get(MOTOR_BL_NAME).setPower(blPower);
-        motors.get(MOTOR_BR_NAME).setPower(brPower);
+        motors.get(Naming.MOTOR_FL_NAME).setPower(flPower);
+        motors.get(Naming.MOTOR_FR_NAME).setPower(frPower);
+        motors.get(Naming.MOTOR_BL_NAME).setPower(blPower);
+        motors.get(Naming.MOTOR_BR_NAME).setPower(brPower);
     }
 
     /**
@@ -117,10 +116,10 @@ class Movement {
      * @param rPower Power to the right side
      */
     void move2x4(double lPower, double rPower) {
-        motors.get(MOTOR_FL_NAME).setPower(lPower);
-        motors.get(MOTOR_FR_NAME).setPower(rPower);
-        motors.get(MOTOR_BL_NAME).setPower(lPower);
-        motors.get(MOTOR_BR_NAME).setPower(rPower);
+        motors.get(Naming.MOTOR_FL_NAME).setPower(lPower);
+        motors.get(Naming.MOTOR_FR_NAME).setPower(rPower);
+        motors.get(Naming.MOTOR_BL_NAME).setPower(lPower);
+        motors.get(Naming.MOTOR_BR_NAME).setPower(rPower);
     }
 
     /**
@@ -129,8 +128,8 @@ class Movement {
      * @param rPower Power sent to back right motor
      */
     void move2x2(double lPower, double rPower) {
-        motors.get(MOTOR_BL_NAME).setPower(lPower);
-        motors.get(MOTOR_BR_NAME).setPower(rPower);
+        motors.get(Naming.MOTOR_BL_NAME).setPower(lPower);
+        motors.get(Naming.MOTOR_BR_NAME).setPower(rPower);
     }
 
     /**
@@ -138,7 +137,7 @@ class Movement {
      * @param speed Speed of the elevator
      */
     void moveElevator(double speed) {
-        motors.get(MOTOR_LIFT_NAME).setPower(speed*ELEVATOR_POWER);
+        motors.get(Naming.MOTOR_LIFT_NAME).setPower(speed*ELEVATOR_POWER);
     }
 
     /**
@@ -182,10 +181,10 @@ class Movement {
      */
     public void moveEnc1x4(int inches) {
         DcMotor fr, fl, br, bl;
-        fr = motors.get(MOTOR_FL_NAME);
-        fl = motors.get(MOTOR_FR_NAME);
-        br = motors.get(MOTOR_BL_NAME);
-        bl = motors.get(MOTOR_BR_NAME);
+        fr = motors.get(Naming.MOTOR_FL_NAME);
+        fl = motors.get(Naming.MOTOR_FR_NAME);
+        br = motors.get(Naming.MOTOR_BL_NAME);
+        bl = motors.get(Naming.MOTOR_BR_NAME);
         fr.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         fl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         br.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -222,8 +221,8 @@ class Movement {
      */
     public void moveEnc1x2(double inches) {
         DcMotor bl, br;
-        bl = motors.get(MOTOR_BL_NAME);
-        br = motors.get(MOTOR_BR_NAME);
+        bl = motors.get(Naming.MOTOR_BL_NAME);
+        br = motors.get(Naming.MOTOR_BR_NAME);
         bl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         br.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         bl.setTargetPosition((int)(inches*COUNTS_PER_INCH));
@@ -248,7 +247,7 @@ class Movement {
      */
     void openGrabber(boolean command) {
         Servo sg; // sg: Servo grabber
-        sg = servos.get(SERVO_GRABBER_NAME);
+        sg = servos.get(Naming.SERVO_GRABBER_NAME);
         if (command) {
             sg.setPosition(GRABBER_OPEN); // Opens the grabber
         } else {
@@ -262,7 +261,7 @@ class Movement {
      */
     void openSwivel(boolean command) {
         Servo ss; // ss: Servo Swivel
-        ss = servos.get(SERVO_ROTATE_NAME);
+        ss = servos.get(Naming.SERVO_ROTATE_NAME);
         if (command) {
             ss.setPosition(0); // Opens the swivel
         } else {
@@ -272,8 +271,8 @@ class Movement {
 
     void grabFoundation(boolean command) {
         Servo slf, srf;
-        slf = servos.get(SERVO_FOUNDATION_LEFT_NAME); // sfl: Servo Left Foundation
-        srf = servos.get(SERVO_FOUNDATION_RIGHT_NAME); // sfr: Servo Right Foundation
+        slf = servos.get(Naming.SERVO_FOUNDATION_LEFT_NAME); // sfl: Servo Left Foundation
+        srf = servos.get(Naming.SERVO_FOUNDATION_RIGHT_NAME); // sfr: Servo Right Foundation
         if (command) { // Grabs foundation
             slf.setPosition(180);
             srf.setPosition(0);

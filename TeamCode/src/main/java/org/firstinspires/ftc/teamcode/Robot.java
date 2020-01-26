@@ -71,7 +71,7 @@ public class Robot {
      *                   0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
      *                   If a relative angle is required, add/subtract from current heading.
      */
-    void gyroTurn(int id, double speed, double angle) {
+    void gyroTurn(String id, double speed, double angle) {
         ElapsedTime runtime = new ElapsedTime();
         runtime.reset();
         while (linearOpMode.opModeIsActive() && !linearOpMode.isStopRequested()) {
@@ -90,10 +90,10 @@ public class Robot {
      * @param angle     Absolute Angle (in Degrees) relative to last gyro reset.
      *                  0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
      *                  If a relative angle is required, add/subtract from current heading.
-     * @param PCoeff    Proportional Gain coefficient
+     * @param PCoeff    Proportional Gain coefficientint id
      * @return onTarget
      */
-    private boolean onHeading(int id, double speed, double angle, double PCoeff) {
+    private boolean onHeading(String id, double speed, double angle, double PCoeff) {
         double  error = getError(id, angle);
         double  steer;
         boolean onTarget = false;
@@ -127,9 +127,9 @@ public class Robot {
      * @return  error angle: Degrees in the range +/- 180. Centered on the robot's frame of reference
      *          +ve error means the robot should turn LEFT (CCW) to reduce error.
      */
-    private double getError(int id, double targetAngle) {
+    private double getError(String id, double targetAngle) {
         // calculate error in -179 to +180 range
-        double error = targetAngle - sensor.getGyros()[id].getAngularOrientation(
+        double error = targetAngle - sensor.getGyro(id).getAngularOrientation(
                 AxesReference.INTRINSIC,
                 AxesOrder.ZYX,
                 AngleUnit.DEGREES
@@ -155,7 +155,7 @@ public class Robot {
      *                   0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
      *                   If a relative angle is required, add/subtract from current heading.
      */
-    void gyroDrive(int id, double speed, double distance, double angle) {
+    void gyroDrive(String id, double speed, double distance, double angle) {
         gyroDrive(id, speed, distance, angle, false);
     }
 
@@ -173,7 +173,7 @@ public class Robot {
      *                   If a relative angle is required, add/subtract from current heading.
      * @param debug      Used to debug this function
      */
-    void gyroDrive(int id, double speed, double distance, double angle, boolean debug) {
+    void gyroDrive(String id, double speed, double distance, double angle, boolean debug) {
         int     newLeftTarget;
         int     newRightTarget;
         int     moveCounts;
@@ -188,8 +188,8 @@ public class Robot {
         ElapsedTime runtime = new ElapsedTime();
         runtime.reset();
 
-        leftDrive  = movement.getMotors()[3];
-        rightDrive = movement.getMotors()[4];
+        leftDrive  = movement.getMotor(Naming.MOTOR_BL_NAME);
+        rightDrive = movement.getMotor(Naming.MOTOR_BR_NAME);
 
         if (linearOpMode.opModeIsActive()) {
             // Determine new target position, and pass to motor controller
