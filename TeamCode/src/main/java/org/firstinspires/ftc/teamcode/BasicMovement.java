@@ -73,8 +73,8 @@ public class BasicMovement extends LinearOpMode {
         Robot robot = initializer.init();
 
         // Zero some servos
-        robot.getMovement().setServo("foundationL", 0); // Foundation
-        robot.getMovement().setServo("foundationR", 180); // More foundation
+        robot.getMovement().setServo(Naming.SERVO_FOUNDATION_LEFT_NAME, 0); // Foundation
+        robot.getMovement().setServo(Naming.SERVO_FOUNDATION_RIGHT_NAME, 180); // More foundation
 
         // Zeroing Swivel (Rotate)
         robot.getMovement().setServo("rotate", 1); // Since this is a digital servo, it is initialized to 1.
