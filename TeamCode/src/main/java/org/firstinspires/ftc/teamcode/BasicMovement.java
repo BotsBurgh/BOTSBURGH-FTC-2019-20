@@ -162,7 +162,11 @@ public class BasicMovement extends LinearOpMode {
                 leftPower  = Range.clip(drive + turn, -mod, mod);
                 rightPower = Range.clip(drive - turn, -mod, mod);
 
-                params[0].getMovement().move2x2(leftPower, rightPower);
+                if (InitRobot.MODE_4x4) {
+                    params[0].getMovement().move2x4(leftPower, rightPower);
+                } else {
+                    params[0].getMovement().move2x2(leftPower, rightPower);
+                }
             }
             return "";
         }

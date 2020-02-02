@@ -40,6 +40,7 @@ import lombok.Getter;
  */
 @Builder
 public class Robot {
+    @Getter private boolean MODE_4x4;
     @Getter private Sensor sensor;
     @Getter private Movement movement;
 
@@ -116,7 +117,12 @@ public class Robot {
         linearOpMode.telemetry.addData("Speed",   "%5.2f:%5.2f",  leftSpeed, rightSpeed);
 
         // Send desired speeds to motors.
-        movement.move2x2(leftSpeed, rightSpeed);
+        if (MODE_4x4) {
+            movement.move2x4(leftSpeed, rightSpeed);
+
+        } else {
+            movement.move2x2(leftSpeed, rightSpeed);
+        }
 
         return onTarget;
     }
@@ -174,44 +180,61 @@ public class Robot {
      * @param debug      Used to debug this function
      */
     void gyroDrive(String id, double speed, double distance, double angle, boolean debug) {
-        int     newLeftTarget;
-        int     newRightTarget;
+        int     newBLTarget, newBRTarget, newFLTarget = 0, newFRTarget = 0;
         int     moveCounts;
         double  max;
         double  error;
         double  steer;
-        double  leftSpeed;
-        double  rightSpeed;
-        DcMotor leftDrive, rightDrive;
+        double  BLSpeed, BRSpeed, FLSpeed = 0, FRSpeed = 0;
+        DcMotor bl, br, fl, fr;
         distance = -distance;
 
         ElapsedTime runtime = new ElapsedTime();
         runtime.reset();
 
-        leftDrive  = movement.getMotor(Naming.MOTOR_BL_NAME);
-        rightDrive = movement.getMotor(Naming.MOTOR_BR_NAME);
+        bl = movement.getMotor(Naming.MOTOR_BL_NAME);
+        br = movement.getMotor(Naming.MOTOR_BR_NAME);
+        fl = movement.getMotor(Naming.MOTOR_FL_NAME);
+        fr = movement.getMotor(Naming.MOTOR_FR_NAME);
 
         if (linearOpMode.opModeIsActive()) {
             // Determine new target position, and pass to motor controller
             moveCounts = (int)(distance * COUNTS_PER_INCH);
-            newLeftTarget = leftDrive.getCurrentPosition() + moveCounts;
-            newRightTarget = rightDrive.getCurrentPosition() + moveCounts;
+            newBLTarget = bl.getCurrentPosition() + moveCounts;
+            newBRTarget = br.getCurrentPosition() + moveCounts;
+            if (MODE_4x4) {
+                newFLTarget = fl.getCurrentPosition() + moveCounts;
+                newFRTarget = fr.getCurrentPosition() + moveCounts;
+            }
 
             // Set Target and Turn On RUN_TO_POSITION
-            leftDrive.setTargetPosition(newLeftTarget);
-            rightDrive.setTargetPosition(newRightTarget);
+            bl.setTargetPosition(newBLTarget);
+            br.setTargetPosition(newBRTarget);
+            if (MODE_4x4) {
+                fl.setTargetPosition(newFLTarget);
+                fr.setTargetPosition(newFRTarget);
+            }
 
-            leftDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            rightDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            bl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            br.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            if (MODE_4x4) {
+                fl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                fr.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            }
 
             // start motion.
             speed = Range.clip(Math.abs(speed), 0.0, 1.0);
-            leftDrive.setPower(speed);
-            rightDrive.setPower(speed);
+            bl.setPower(speed);
+            br.setPower(speed);
+            if (MODE_4x4) {
+                fl.setPower(speed);
+                fr.setPower(speed);
+            }
 
-            // keep looping while we are still active, and BOTH motors are running.
-            while (linearOpMode.opModeIsActive() && (leftDrive.isBusy() && rightDrive.isBusy()) &&
-                    (runtime.seconds()<=DRIVE_TIMEOUT) && !linearOpMode.isStopRequested()) {
+            // keep looping while we are still active, and ALL motors are running.
+            while (linearOpMode.opModeIsActive() && (bl.isBusy() && br.isBusy() && fl.isBusy() &&
+                    fr.isBusy()) && (runtime.seconds()<=DRIVE_TIMEOUT) &&
+                    !linearOpMode.isStopRequested()) {
                 // adjust relative speed based on heading error.
                 //error = getError(id, angle);
                 //steer = getSteer(error, P_DRIVE_COEFF);
@@ -227,36 +250,73 @@ public class Robot {
 
                  */
 
-                leftSpeed = speed;
-                rightSpeed = speed;
+                BLSpeed = speed;
+                BRSpeed = speed;
 
-                // Normalize speeds if either one exceeds +/- 1.0;
-                max = Math.max(Math.abs(leftSpeed), Math.abs(rightSpeed));
-                if (max > 1.0) {
-                    leftSpeed  /= max;
-                    rightSpeed /= max;
+                if (MODE_4x4) {
+                    FLSpeed = speed;
+                    FRSpeed = speed;
                 }
 
-                movement.move2x2(leftSpeed, rightSpeed);
+                // Normalize speeds if either one exceeds +/- 1.0;
+                max = Math.max(Math.abs(BLSpeed), Math.abs(BRSpeed));
+                if (MODE_4x4) {
+                    max = Math.max(max, Math.max(Math.abs(FLSpeed), Math.abs(FRSpeed)));
+                }
+
+                if (max > 1.0) {
+                    BLSpeed /= max;
+                    BRSpeed /= max;
+                    if (MODE_4x4) {
+                        FLSpeed /= max;
+                        FRSpeed /= max;
+                    }
+                }
+
+                if (MODE_4x4) {
+                    movement.move4x4(BLSpeed, BRSpeed, FLSpeed, FRSpeed);
+
+                }
+                movement.move2x2(BLSpeed, BRSpeed);
 
                 if (debug) {
                     // Display drive status for the driver.
-                    //linearOpMode.telemetry.addData("Err/St","%5.1f/%5.1f", error, steer);
-                    linearOpMode.telemetry.addData("Target","%7d:%7d",     newLeftTarget,  newRightTarget);
-                    linearOpMode.telemetry.addData("Actual","%7d:%7d",     leftDrive.getCurrentPosition(),
-                            rightDrive.getCurrentPosition());
-                    linearOpMode.telemetry.addData("Speed", "%5.2f:%5.2f", leftSpeed, rightSpeed);
+                    if (MODE_4x4) {
+                        linearOpMode.telemetry.addData("Target", "%7d:%7d:%7d:%7d",
+                                newBLTarget, newBRTarget, newFLTarget, newFRTarget);
+                        linearOpMode.telemetry.addData("Actual", "%7d:%7d:%7d:%7d",
+                                bl.getCurrentPosition(), br.getCurrentPosition(), fl.getCurrentPosition(),
+                                fr.getCurrentPosition());
+                        linearOpMode.telemetry.addData("Speed", "%5.2f:%5.2f:%5.2f", BLSpeed,
+                                BRSpeed, FLSpeed, FRSpeed);
+                    } else {
+                        linearOpMode.telemetry.addData("Target","%7d:%7d", newBLTarget,
+                                newBRTarget);
+                        linearOpMode.telemetry.addData("Actual","%7d:%7d",
+                                bl.getCurrentPosition(), br.getCurrentPosition());
+                        linearOpMode.telemetry.addData("Speed", "%5.2f:%5.2f", BLSpeed,
+                                BRSpeed);
+                    }
+
                     linearOpMode.telemetry.update();
                 }
             }
         }
 
         // Stop all motion;
-        movement.move2x2(0,0);
+        if (MODE_4x4) {
+            movement.move2x4(0,0);
+        } else {
+            movement.move2x2(0,0);
+        }
 
         // Turn off RUN_TO_POSITION
-        leftDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        bl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        br.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        if (MODE_4x4) {
+            fl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            fr.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
     }
 
     /**
