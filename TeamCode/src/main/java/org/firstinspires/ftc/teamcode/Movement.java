@@ -270,16 +270,22 @@ class Movement {
     }
 
     void grabFoundation(boolean command) {
-        Servo slf, srf;
-        slf = servos.get(Naming.SERVO_FOUNDATION_LEFT_NAME); // sfl: Servo Left Foundation
-        srf = servos.get(Naming.SERVO_FOUNDATION_RIGHT_NAME); // sfr: Servo Right Foundation
+        Servo slf, srf, slfn, srfn;
+        slf  = servos.get(Naming.SERVO_FOUNDATION_LEFT_NAME); // sfl: Servo Left Foundation
+        srf  = servos.get(Naming.SERVO_FOUNDATION_RIGHT_NAME); // sfr: Servo Right Foundation
+        slfn = servos.get(Naming.SERVO_FOUNDATION_LEFT_NEW_NAME); // sfl: Servo Left Foundation
+        srfn = servos.get(Naming.SERVO_FOUNDATION_RIGHT_NEW_NAME); // sfr: Servo Right Foundation
         if (command) { // Grabs foundation
             slf.setPosition(180);
             srf.setPosition(0);
+            slfn.setPosition(1);
+            srfn.setPosition(0.5);
         }
         else { // Releases foundation
             slf.setPosition(0);
             srf.setPosition(180);
+            slfn.setPosition(0.5);
+            srfn.setPosition(0);
         }
     }
 }

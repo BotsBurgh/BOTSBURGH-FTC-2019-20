@@ -12,8 +12,10 @@ As a quick breakdown, you will see the following files:
 1. [Movement.java](#movementjava)
 1. [Robot.java](#robotjava)
 1. [InitRobot.java](#initrobotjava)
+1. [Naming.java](#namingjava)
 1. [BasicMovement.java](#basicmovementjava)
-1. [AutonomousCheat.java](#autonomouscheatjava)
+1. [AutonomousMain.java](#autonomousmainjava)
+1. [Miscellaneous Autonomous Files](#miscellaneous-autonomous-files)
 1. [Miscellaneous Calibration Files](#miscellaneous-calibration-files)
 1. [Miscellaneous Test Files](#miscellaneous-test-files)
 
@@ -187,6 +189,22 @@ This file is the epitome of our code, as it integrates [Sensor.java](#sensorjava
 1. vuForiaTurn: This function uses the VuForia orientation function from [Sensor.java](#sensorjava) to determine the angle of the robot, then, using the [Movement.java](#movementjava) class, it will turn the robot until it meets the target angle. Best suited for autonomous.
 1. vuForiaGoto: This function uses the VuForia position function from [Sensor.java](#sensorjava) and some trigonometry to determine how far the robot must turn (using the vuForiaTurn function above), then drive forward (using the [Movement.java](#movementjava) class). Best suited for autonomous.
 
+So far, there are two main ways of moving around. One way (the one we are using in tournaments) uses gyroscope(s) and encoders to move the robot around. The robot uses a gyroscope to turn and encoders to move forward / backward. Currently, this is the most tested (and buggy) part of our code. It is known for the gyro turn not to work well with four motor drives or with inaccurate gyroscopes. However, for simple robots, this method of moving works fine. A large portion of this code is copied over from the samples, because we wanted to spend the least amount of time on getting the code, and more time testing and tweaking the code.
+
+```java
+void gyroTurn(String id, double speed, double angle) {
+    ElapsedTime runtime = new ElapsedTime();
+    runtime.reset();
+    while (linearOpMode.opModeIsActive() && !linearOpMode.isStopRequested()) {
+        if (onHeading(id, speed, angle, P_TURN_COEFF) && (linearOpMode.opModeIsActive())) {
+            break;
+        } else {
+            linearOpMode.telemetry.update();
+        }
+    }
+}
+```
+
 WARNING: As both the `vuForiaTurn` and `vuForiaGoto` functions are not tested yet (because we don't have a field to test it in), don't use it unless you can find out if it works or not.
 
 The code in here is mostly simple, with the exception of the math parts. In this class, we used two main math equations: the distance formula and the inverse tangent formula. Using the built-in `Math` library, these functions were not too complex.
@@ -224,6 +242,69 @@ InitRobot initializer = new InitRobot(BasicMovement.this, false);
 Robot robot = initializer.init();
 ```
 
+To initialize hardware, we utilize HashMaps to store everything.
+
+```java
+DcMotor bl, br, fl, fr;
+bl = l.hardwareMap.get(DcMotor.class, Naming.MOTOR_BL_NAME);
+br = l.hardwareMap.get(DcMotor.class, Naming.MOTOR_BR_NAME);
+fl = l.hardwareMap.get(DcMotor.class, Naming.MOTOR_FL_NAME);
+fr = l.hardwareMap.get(DcMotor.class, Naming.MOTOR_FR_NAME);
+
+HashMap<String, DcMotor> motors = new HashMap<>();
+
+motors.put(Naming.MOTOR_BL_NAME, bl);
+motors.put(Naming.MOTOR_BR_NAME, br);
+motors.put(Naming.MOTOR_FL_NAME, fl);
+motors.put(Naming.MOTOR_FR_NAME, fr);
+```
+
+Our initializer is dependent on [Naming.java](#namingjava), where we utilize hashmap names to make sure there are less NullPointerExceptions.
+
+We send all of these to the [Robot.java](#robotjava) class and the Robot object is returned after initialization.
+
+```java
+// Add lists into the movement class
+Movement movement = new Movement
+        .MovementBuilder()
+        .motors(motors)
+        .servos(servos)
+        .crServos(crServos)
+        .build();
+
+// Add lists into sensor class
+Sensor sensor = new Sensor
+        .SensorBuilder()
+        .colorSensors(colorSensors)
+        .webcams(webcams)
+        .gyros(gyros)
+        .build();
+
+// Add movement and sensor class into robot class
+robot = new Robot.RobotBuilder()
+        .sensor(sensor)
+        .movement(movement)
+        .linearOpMode(l)
+        .build();
+```
+
+In this file, near the very top, there is a variable called `MODE_4x4`, which can be set to switch everything over from a two motor drive to four motor drive. This will switch over Autonomous and TeleOp from a two motor drive to four motor drive. This is useful for teams who utilize a four motor drive and do not wish to change too much code to make this API work.
+
+## Naming.java
+
+This file appears at first glance to increase complexity of the code, which happens to be against our KISS (Keep it simple, sillyhead) principle. However, this file prevents errors on the programmer side by reducing NullPointerExceptions. By placing the naming of everything in this file, we are able to call the hashmap based entirely on the static strings in this file. By using this, we eliminate any error from typos or misinterpretation. The current process of adding hardware to the robot is to first add the name of the hardware in the file.
+
+For example, if we want to add four drive motors, we would add these lines in the [Naming.java](#namingjava) file.
+
+```java
+static final String MOTOR_FL_NAME = "fl";
+static final String MOTOR_BL_NAME = "bl";
+static final String MOTOR_FR_NAME = "fr";
+static final String MOTOR_BR_NAME = "br";
+```
+
+We would also add the corresponding lines in [InitRobot.java](#initrobotjava).
+
 ## BasicMovement.java
 
 This file is our primary TeleOp program. In this, we integrate the "Big Three" classes to run our robot. This file is a great example of what can be done with the API. In this file, we are doing a few things: First, we are moving around the robot, and second, we are moving the elevator up and down with respect to the color sensors detecting if the elevator is overstepping. However, these are all done with an asynchronous function.
@@ -248,11 +329,15 @@ private class AsyncBase extends AsyncTask<Robot, String, String> {
             // POV Mode uses left stick to go forward, and right stick to turn.
             // - This uses basic math to combine motions and is easier to drive straight.
             double drive = gamepad1.left_stick_y;
-            double turn = gamepad1.right_stick_x;
-            leftPower = Range.clip(drive + turn, -mod, mod);
+            double turn  = gamepad1.right_stick_x;
+            leftPower  = Range.clip(drive + turn, -mod, mod);
             rightPower = Range.clip(drive - turn, -mod, mod);
 
-            params[0].getMovement().move2x2(leftPower, rightPower);
+            if (InitRobot.MODE_4x4) {
+                params[0].getMovement().move2x4(leftPower, rightPower);
+            } else {
+                params[0].getMovement().move2x2(leftPower, rightPower);
+            }
         }
         return "";
     }
@@ -265,7 +350,7 @@ This is called from the main class right before the main loop with this line:
 new AsyncBase().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, robot);
 ```
 
-This needs to be run only once
+This needs to be run only once.
 
 ### Basic Movement Static Variables
 
@@ -288,8 +373,8 @@ if (gamepad1.left_bumper) {
 
 // POV Mode uses left stick to go forward, and right stick to turn.
 // - This uses basic math to combine motions and is easier to drive straight.
-double drive = -gamepad1.left_stick_y;
-double turn  =  gamepad1.right_stick_x;
+double drive = gamepad1.left_stick_y;
+double turn  = gamepad1.right_stick_x;
 leftPower    = Range.clip(drive + turn, -mod, mod);
 rightPower   = Range.clip(drive - turn, -mod, mod);
 ```
@@ -406,3 +491,5 @@ Simple program to set all servos to a position when the user presses X on the ga
 ## Conclusion
 
 This README serves the purpose of educating those who wish to use our API in their robot. Because our code is modular and can be dropped into any other team's code folder and be used easily. The "Big Three" files [Sensor.java](#sensorjava), [Movement.java](#movementjava), and [Robot.java](#robotjava) are strong interfaces with the back-lying code. These files can be used to speed the development of the robot's software, and making switching to Android Studio easier.
+
+*To view an interactive version of this README, visit [https://github.com/BotsBurgh/BOTSBURGH-FTC-2019-20/blob/master/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/readme.md](https://github.com/BotsBurgh/BOTSBURGH-FTC-2019-20/blob/master/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/readme.md).*

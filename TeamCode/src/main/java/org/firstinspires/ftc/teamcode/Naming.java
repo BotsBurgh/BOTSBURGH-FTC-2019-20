@@ -13,6 +13,10 @@ public class Naming {
     static final String SERVO_FOUNDATION_RIGHT_NAME = "foundationRight";
     static final String SERVO_ROTATE_NAME = "rotate";
 
+    // Only for temporary purposes
+    static final String SERVO_FOUNDATION_LEFT_NEW_NAME = "testFoundationLeft";
+    static final String SERVO_FOUNDATION_RIGHT_NEW_NAME = "testFoundationRight";
+
     static final String CRSERVO_EXTEND_NAME = "extender";
     
     static final String COLOR_SENSOR_DOWN_LIMIT_NAME = "scissorDownLimit";

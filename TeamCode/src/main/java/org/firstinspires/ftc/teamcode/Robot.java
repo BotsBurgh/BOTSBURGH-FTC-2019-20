@@ -40,7 +40,6 @@ import lombok.Getter;
  */
 @Builder
 public class Robot {
-    @Getter private boolean MODE_4x4;
     @Getter private Sensor sensor;
     @Getter private Movement movement;
 
@@ -67,6 +66,7 @@ public class Robot {
      *  1) Move gets to the heading (angle)
      *  2) Driver stops the opmode running.
      *
+     * @param id The ID of the gyroscope
      * @param speed Desired speed of turn.
      * @param angle      Absolute Angle (in Degrees) relative to last gyro reset.
      *                   0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
@@ -117,7 +117,7 @@ public class Robot {
         linearOpMode.telemetry.addData("Speed",   "%5.2f:%5.2f",  leftSpeed, rightSpeed);
 
         // Send desired speeds to motors.
-        if (MODE_4x4) {
+        if (InitRobot.MODE_4x4) {
             movement.move2x4(leftSpeed, rightSpeed);
 
         } else {
@@ -202,7 +202,7 @@ public class Robot {
             moveCounts = (int)(distance * COUNTS_PER_INCH);
             newBLTarget = bl.getCurrentPosition() + moveCounts;
             newBRTarget = br.getCurrentPosition() + moveCounts;
-            if (MODE_4x4) {
+            if (InitRobot.MODE_4x4) {
                 newFLTarget = fl.getCurrentPosition() + moveCounts;
                 newFRTarget = fr.getCurrentPosition() + moveCounts;
             }
@@ -210,14 +210,14 @@ public class Robot {
             // Set Target and Turn On RUN_TO_POSITION
             bl.setTargetPosition(newBLTarget);
             br.setTargetPosition(newBRTarget);
-            if (MODE_4x4) {
+            if (InitRobot.MODE_4x4) {
                 fl.setTargetPosition(newFLTarget);
                 fr.setTargetPosition(newFRTarget);
             }
 
             bl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             br.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            if (MODE_4x4) {
+            if (InitRobot.MODE_4x4) {
                 fl.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 fr.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             }
@@ -226,7 +226,7 @@ public class Robot {
             speed = Range.clip(Math.abs(speed), 0.0, 1.0);
             bl.setPower(speed);
             br.setPower(speed);
-            if (MODE_4x4) {
+            if (InitRobot.MODE_4x4) {
                 fl.setPower(speed);
                 fr.setPower(speed);
             }
@@ -253,27 +253,27 @@ public class Robot {
                 BLSpeed = speed;
                 BRSpeed = speed;
 
-                if (MODE_4x4) {
+                if (InitRobot.MODE_4x4) {
                     FLSpeed = speed;
                     FRSpeed = speed;
                 }
 
                 // Normalize speeds if either one exceeds +/- 1.0;
                 max = Math.max(Math.abs(BLSpeed), Math.abs(BRSpeed));
-                if (MODE_4x4) {
+                if (InitRobot.MODE_4x4) {
                     max = Math.max(max, Math.max(Math.abs(FLSpeed), Math.abs(FRSpeed)));
                 }
 
                 if (max > 1.0) {
                     BLSpeed /= max;
                     BRSpeed /= max;
-                    if (MODE_4x4) {
+                    if (InitRobot.MODE_4x4) {
                         FLSpeed /= max;
                         FRSpeed /= max;
                     }
                 }
 
-                if (MODE_4x4) {
+                if (InitRobot.MODE_4x4) {
                     movement.move4x4(BLSpeed, BRSpeed, FLSpeed, FRSpeed);
 
                 }
@@ -281,7 +281,7 @@ public class Robot {
 
                 if (debug) {
                     // Display drive status for the driver.
-                    if (MODE_4x4) {
+                    if (InitRobot.MODE_4x4) {
                         linearOpMode.telemetry.addData("Target", "%7d:%7d:%7d:%7d",
                                 newBLTarget, newBRTarget, newFLTarget, newFRTarget);
                         linearOpMode.telemetry.addData("Actual", "%7d:%7d:%7d:%7d",
@@ -304,7 +304,7 @@ public class Robot {
         }
 
         // Stop all motion;
-        if (MODE_4x4) {
+        if (InitRobot.MODE_4x4) {
             movement.move2x4(0,0);
         } else {
             movement.move2x2(0,0);
@@ -313,7 +313,7 @@ public class Robot {
         // Turn off RUN_TO_POSITION
         bl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         br.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        if (MODE_4x4) {
+        if (InitRobot.MODE_4x4) {
             fl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             fr.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }

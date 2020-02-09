@@ -233,7 +233,7 @@ class Sensor {
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.calibrationDataFile = String.format(Locale.ENGLISH, "BNO055IMUCalibration%2d.json", id);
+        parameters.calibrationDataFile = String.format(Locale.ENGLISH, "BNO055IMUCalibration%s.json", id);
         parameters.loggingEnabled      = true;
         parameters.loggingTag          = "IMU";
         parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();

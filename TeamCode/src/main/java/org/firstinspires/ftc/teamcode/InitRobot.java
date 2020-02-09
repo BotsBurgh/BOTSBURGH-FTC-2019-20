@@ -13,8 +13,13 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import java.util.HashMap;
 
 // TODO: JavaDoc
+
+/**
+ * The Robot Initializer. Place initialzation code here. This prevents needing to sync the init code
+ * between all opmodes.
+ */
 class InitRobot {
-    static final boolean MODE_4x4 = true; // True if you are using 4x4 drive
+    static final boolean MODE_4x4 = false; // True if you are using 4x4 drive
 
     private LinearOpMode l;
 
@@ -67,6 +72,8 @@ class InitRobot {
         Servo rotate = l.hardwareMap.get(Servo.class, Naming.SERVO_ROTATE_NAME);
         Servo fRight = l.hardwareMap.get(Servo.class, Naming.SERVO_FOUNDATION_RIGHT_NAME);
         Servo fLeft = l.hardwareMap.get(Servo.class, Naming.SERVO_FOUNDATION_LEFT_NAME);
+        Servo fLeftNew = l.hardwareMap.get(Servo.class, Naming.SERVO_FOUNDATION_LEFT_NEW_NAME);
+        Servo fRightNew = l.hardwareMap.get(Servo.class, Naming.SERVO_FOUNDATION_RIGHT_NEW_NAME);
 
         // Add servos into the list
         HashMap<String, Servo> servos = new HashMap<>();
@@ -74,6 +81,8 @@ class InitRobot {
         servos.put(Naming.SERVO_ROTATE_NAME, rotate);
         servos.put(Naming.SERVO_FOUNDATION_RIGHT_NAME, fRight);
         servos.put(Naming.SERVO_FOUNDATION_LEFT_NAME, fLeft);
+        servos.put(Naming.SERVO_FOUNDATION_LEFT_NEW_NAME, fLeftNew);
+        servos.put(Naming.SERVO_FOUNDATION_RIGHT_NEW_NAME, fRightNew);
 
         // Get CRServos
         CRServo armExtend = l.hardwareMap.get(CRServo.class, Naming.CRSERVO_EXTEND_NAME);
@@ -81,14 +90,6 @@ class InitRobot {
         // Add CRServos into the list
         HashMap<String, CRServo> crServos = new HashMap<>();
         crServos.put(Naming.CRSERVO_EXTEND_NAME, armExtend);
-
-        // Add lists into the movement class
-        Movement movement = new Movement
-                .MovementBuilder()
-                .motors(motors)
-                .servos(servos)
-                .crServos(crServos)
-                .build();
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -99,7 +100,6 @@ class InitRobot {
             fl.setDirection(DcMotor.Direction.REVERSE);
             fr.setDirection(DcMotor.Direction.FORWARD);
         }
-
 
         // Set motors to spin in the correct direction
         sc.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -136,6 +136,14 @@ class InitRobot {
         gyros.put(Naming.GYRO_0_NAME, gyro0);
         gyros.put(Naming.GYRO_1_NAME, gyro1);
 
+        // Add lists into the movement class
+        Movement movement = new Movement
+                .MovementBuilder()
+                .motors(motors)
+                .servos(servos)
+                .crServos(crServos)
+                .build();
+
         // Add lists into sensor class
         Sensor sensor = new Sensor
                 .SensorBuilder()
@@ -149,12 +157,11 @@ class InitRobot {
                 .sensor(sensor)
                 .movement(movement)
                 .linearOpMode(l)
-                .MODE_4x4(MODE_4x4)
                 .build();
 
         // Initialize gyros
-        for (String i : gyros.keySet()) {
-            robot.getSensor().initGyro(i);
+        for (String key : gyros.keySet()) {
+            robot.getSensor().initGyro(key);
         }
 
         if (vuforia) {
