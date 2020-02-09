@@ -24,7 +24,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class TestServo extends LinearOpMode {
     @Override
     public void runOpMode() {
-        Servo s1 = hardwareMap.get(Servo.class, "s1");
+        // Servo s1 = hardwareMap.get(Servo.class, "s1");
         Servo s2 = hardwareMap.get(Servo.class, "s2");
         Servo s3 = hardwareMap.get(Servo.class, "s3");
         Servo s4 = hardwareMap.get(Servo.class, "s4");
@@ -37,7 +37,7 @@ public class TestServo extends LinearOpMode {
 
         while(opModeIsActive()) {
             if (gamepad1.x) {
-                s1.setPosition(90);
+                // s1.setPosition(90);
                 s2.setPosition(90);
                 s3.setPosition(90);
                 s4.setPosition(90);
@@ -45,7 +45,7 @@ public class TestServo extends LinearOpMode {
                 s6.setPosition(90);
 
                 sleep(1000);
-                s1.setPosition(0);
+                // s1.setPosition(0);
                 s2.setPosition(0);
                 s3.setPosition(0);
                 s4.setPosition(0);
