@@ -22,6 +22,8 @@ public class Naming {
     static final String COLOR_SENSOR_DOWN_LIMIT_NAME = "scissorDownLimit";
     static final String COLOR_SENSOR_UP_LIMIT_NAME = "scissorUpLimit";
 
+    static final String COLOR_SENSOR_PARK = "parkSensor";
+
     static final String GYRO_0_NAME = "imu";
     static final String GYRO_1_NAME = "imu 1";
 

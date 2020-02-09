@@ -65,9 +65,22 @@ class AutonomousMain {
         together_all(-1);
     }
 
-    void park() {
-        robot.getMovement().move2x2(-DRIVE_SPEED_SLOW, -DRIVE_SPEED_SLOW);
-        robot.getLinearOpMode().sleep(1000);
+    /**
+     * Move until we hit a color (red or blue)
+     * @param side -1 is red, 1 is blue
+     */
+    void park(int side) {
+        if (side == -1) {
+            while (!(robot.getSensor().getRGB(Naming.COLOR_SENSOR_PARK) == 0)) {
+                robot.getMovement().move2x2(-DRIVE_SPEED_SLOW, -DRIVE_SPEED_SLOW);
+            }
+            robot.getMovement().move2x2(0, 0);
+        } else if (side == 1) {
+            while (!(robot.getSensor().getRGB(Naming.COLOR_SENSOR_PARK) == 2)) {
+                robot.getMovement().move2x2(-DRIVE_SPEED_SLOW, -DRIVE_SPEED_SLOW);
+            }
+        }
+
         robot.getMovement().move2x2(0,0);
     }
 
