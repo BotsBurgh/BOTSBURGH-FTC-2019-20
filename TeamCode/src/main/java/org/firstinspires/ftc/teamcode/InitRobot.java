@@ -116,11 +116,13 @@ class InitRobot {
         // Get color sensors
         ColorSensor scissorDownLimit = l.hardwareMap.get(ColorSensor.class, Naming.COLOR_SENSOR_DOWN_LIMIT_NAME);
         ColorSensor scissorUpLimit = l.hardwareMap.get(ColorSensor.class, Naming.COLOR_SENSOR_UP_LIMIT_NAME);
+        ColorSensor parkSensor = l.hardwareMap.get(ColorSensor.class, Naming.COLOR_SENSOR_PARK);
 
         // Add color sensors into list
         HashMap<String, ColorSensor> colorSensors = new HashMap<>();
         colorSensors.put(Naming.COLOR_SENSOR_DOWN_LIMIT_NAME, scissorDownLimit);
         colorSensors.put(Naming.COLOR_SENSOR_UP_LIMIT_NAME, scissorUpLimit);
+        colorSensors.put(Naming.COLOR_SENSOR_PARK, parkSensor);
 
         // Get webcams
         WebcamName webcam1 = l.hardwareMap.get(WebcamName.class, Naming.WEBCAME_0_NAME);
