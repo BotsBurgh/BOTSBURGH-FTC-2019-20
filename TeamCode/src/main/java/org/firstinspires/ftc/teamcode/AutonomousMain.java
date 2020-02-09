@@ -65,7 +65,7 @@ class AutonomousMain {
         together_all(-1);
     }
 
-    void cheat() {
+    void park() {
         robot.getMovement().move2x2(-DRIVE_SPEED_SLOW, -DRIVE_SPEED_SLOW);
         robot.getLinearOpMode().sleep(1000);
         robot.getMovement().move2x2(0,0);
