@@ -160,20 +160,28 @@ class Sensor {
      * Gets the RGB value of the color sensor
      * @return 0 if red, 1 if green, 2 if blue, 3 if none
      */
-    int getRGB(String id) {
+    int getRGB(String id, double redThresh, double greenThresh, double blueThresh) {
         double red   = getRed(id);
         double green = getGreen(id);
         double blue  = getBlue(id);
 
-        if ((red>blue) && (red>green) && (red>RED_THESH)) {
+        if ((red>blue) && (red>green) && (red>redThresh)) {
             return 0;
-        } else if ((green>red) && (green>blue) && (green>GREEN_THESH)) {
+        } else if ((green>red) && (green>blue) && (green>greenThresh)) {
             return 1;
-        } else if ((blue>red) && (blue>green) && (blue>BLUE_THESH)) {
+        } else if ((blue>red) && (blue>green) && (blue>blueThresh)) {
             return 2;
         } else {
             return 3;
         }
+    }
+
+    /**
+     * Gets the RGB value of the color sensor
+     * @return 0 if red, 1 if green, 2 if blue, 3 if none
+     */
+    int getRGB(String id) {
+        return getRGB(id, RED_THESH, GREEN_THESH, BLUE_THESH);
     }
 
     BNO055IMU getGyro(String id) {
