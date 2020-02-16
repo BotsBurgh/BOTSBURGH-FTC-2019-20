@@ -74,7 +74,6 @@ class AutonomousMain {
             while (!(robot.getSensor().getRed(Naming.COLOR_SENSOR_PARK) >= 80)) {
                 robot.getMovement().move2x2(-DRIVE_SPEED_SLOW, -DRIVE_SPEED_SLOW);
             }
-            robot.getMovement().move2x2(0, 0);
         } else if (side == 1) {
             while (!(robot.getSensor().getBlue(Naming.COLOR_SENSOR_PARK) >= 70)) {
                 robot.getMovement().move2x2(-DRIVE_SPEED_SLOW, -DRIVE_SPEED_SLOW);

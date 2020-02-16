@@ -42,7 +42,7 @@ class Movement {
     private final static double ELEVATOR_POWER = 1.00;
 
     // Servo configuration
-    private final static int SERVO_SLEEP = 10; // Milliseconds
+    private final static int    SERVO_SLEEP = 10; // Milliseconds
     private final static double SERVO_STEP  = 0.01;  // Degrees
     private final static double GRABBER_OPEN = 0; // Degrees
     private final static double GRABBER_CLOSE = 0.65; // Degrees
@@ -273,8 +273,8 @@ class Movement {
         Servo slf, srf, slfn, srfn;
         slf  = servos.get(Naming.SERVO_FOUNDATION_LEFT_NAME); // sfl: Servo Left Foundation
         srf  = servos.get(Naming.SERVO_FOUNDATION_RIGHT_NAME); // sfr: Servo Right Foundation
-        slfn = servos.get(Naming.SERVO_FOUNDATION_LEFT_NEW_NAME); // sfl: Servo Left Foundation
-        srfn = servos.get(Naming.SERVO_FOUNDATION_RIGHT_NEW_NAME); // sfr: Servo Right Foundation
+        slfn = servos.get(Naming.SERVO_FOUNDATION_LEFT_NEW_NAME); // sfln: Servo Left Foundation New
+        srfn = servos.get(Naming.SERVO_FOUNDATION_RIGHT_NEW_NAME); // sfrn: Servo Right Foundation New
         if (command) { // Grabs foundation
             slf.setPosition(180);
             srf.setPosition(0);
