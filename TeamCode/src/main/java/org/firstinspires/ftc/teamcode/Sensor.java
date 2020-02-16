@@ -81,6 +81,8 @@ class Sensor {
     private static final double RED_THESH =   500;
     private static final double GREEN_THESH = 700;
     private static final double BLUE_THESH =  600;
+    
+    private static final double THRESH_LIMIT = 0.15;
 
     /*
         ######  #######    #     # ####### #######    ####### ######  ### #######
@@ -164,6 +166,11 @@ class Sensor {
         double red   = getRed(id);
         double green = getGreen(id);
         double blue  = getBlue(id);
+
+        if (((Math.abs(red-green)/red) < THRESH_LIMIT) || ((Math.abs(red-green)/green) < THRESH_LIMIT) || ((Math.abs(red-blue)/red) < THRESH_LIMIT) ||
+                ((Math.abs(red-blue)/blue) < THRESH_LIMIT) || ((Math.abs(green-blue)/green) < THRESH_LIMIT) || ((Math.abs(green-blue)/blue) < THRESH_LIMIT)) {
+            return 3;
+        }
 
         if ((red>blue) && (red>green) && (red>redThresh)) {
             return 0;
