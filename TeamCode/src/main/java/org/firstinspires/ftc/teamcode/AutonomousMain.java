@@ -160,10 +160,9 @@ class AutonomousMain {
         shared();
     }
 
-    private void shared() {
-        robot.getMovement().openGrabber(false);
+    void shared() {
+        robot.getMovement().openGrabber(true);
         robot.getMovement().openSwivel(true); // Open arm swivel
-        robot.getMovement().openGrabber(true); // Close openGrabber
     }
 
     private double offset() {
