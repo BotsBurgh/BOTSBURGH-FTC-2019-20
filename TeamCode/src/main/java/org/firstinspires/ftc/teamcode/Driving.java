@@ -24,7 +24,7 @@ import com.qualcomm.robotcore.util.Range;
 import android.os.AsyncTask;
 
 @TeleOp(name="Basic Movement", group="00-TeleOp")
-public class BasicMovement extends LinearOpMode {
+public class Driving extends LinearOpMode {
 
     private static final double DEADZONE    = 0.05; // Controls controller joystick deadzone
     private static final double SERVO_POWER = 1.00;
@@ -69,7 +69,7 @@ public class BasicMovement extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        InitRobot initializer = new InitRobot(BasicMovement.this, false);
+        InitRobot initializer = new InitRobot(Driving.this, false);
         Robot robot = initializer.init();
 
         // Zero some servos
