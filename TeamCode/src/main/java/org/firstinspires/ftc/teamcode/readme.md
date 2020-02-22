@@ -13,7 +13,7 @@ As a quick breakdown, you will see the following files:
 1. [Robot.java](#robotjava)
 1. [InitRobot.java](#initrobotjava)
 1. [Naming.java](#namingjava)
-1. [BasicMovement.java](#basicmovementjava)
+1. [Driving.java](#drivingjava)
 1. [AutonomousMain.java](#autonomousmainjava)
 1. [Miscellaneous Autonomous Files](#miscellaneous-autonomous-files)
 1. [Miscellaneous Calibration Files](#miscellaneous-calibration-files)
@@ -238,7 +238,7 @@ In order to make robot hardware configuration easier, we added a centralized fil
 Here is an example of initializing an OpMode.
 
 ```java
-InitRobot initializer = new InitRobot(BasicMovement.this, false);
+InitRobot initializer = new InitRobot(Driving.this, false);
 Robot robot = initializer.init();
 ```
 
@@ -305,7 +305,7 @@ static final String MOTOR_BR_NAME = "br";
 
 We would also add the corresponding lines in [InitRobot.java](#initrobotjava).
 
-## BasicMovement.java
+## Driving.java
 
 This file is our primary TeleOp program. In this, we integrate the "Big Three" classes to run our robot. This file is a great example of what can be done with the API. In this file, we are doing a few things: First, we are moving around the robot, and second, we are moving the elevator up and down with respect to the color sensors detecting if the elevator is overstepping. However, these are all done with an asynchronous function.
 
@@ -352,7 +352,7 @@ new AsyncBase().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, robot);
 
 This needs to be run only once.
 
-### Basic Movement Static Variables
+### Driving Static Variables
 
 1. DEADZONE: The controller deadzone to prevent accidental nudges to a joystick.
 1. SERVO_POWER: The power to be sent to the servos when moving the arm
