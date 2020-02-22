@@ -142,10 +142,10 @@ class AutonomousMain {
 
     private void together_foundation(int side) {
         double offset = offset();
-        robot.gyroDrive(Naming.GYRO_0_NAME, DRIVE_SPEED, -10, 0, true);
+        robot.gyroDrive(Naming.GYRO_0_NAME, DRIVE_SPEED, -16, 0, true);
         robot.getMovement().grabFoundation(true);
         robot.gyroTurn(Naming.GYRO_0_NAME, TURN_SPEED, side*(-70+offset));
-        robot.gyroDrive(Naming.GYRO_0_NAME, DRIVE_SPEED, -3.5, 0, true);
+        robot.gyroDrive(Naming.GYRO_0_NAME, DRIVE_SPEED, -7, 0, true);
         /*
         robot.gyroDrive(Naming.GYRO_0_NAME,DRIVE_SPEED, 5, 0, true);
         robot.getMovement().grabFoundation(true);
