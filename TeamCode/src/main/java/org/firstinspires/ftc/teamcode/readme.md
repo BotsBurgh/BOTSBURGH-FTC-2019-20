@@ -438,17 +438,37 @@ AutonomousMain contains two functions to move for both red and blue sides. This 
 
 ## Miscellaneous Autonomous Files
 
-### AutonomousBlue.java
+### AutonomousBlueAll
 
-This just calls [AutonomousMain](#autonomousmainjava)'s blue function.
+This just calls [AutonomousMain](#autonomousmainjava)'s BlueAll function. This function is a wrapper for the respective combined function which will do the entire blue autonomous.
 
-### AutonomousCheat.java
+### AutonomousBlueBlock
 
-This just calls [AutonomousMain](#autonomousmainjava)'s cheat function.
+This just calls [AutonomousMain](#autonomousmainjava)'s BlueBlock function. This function is a wrapper for the respective combined function which will do the grabbing of a block and parking.
 
-### AutonomousRed.java
+### AutonomousBlueFoundation
 
-This just calls [AutonomousMain](#autonomousmainjava)'s red function.
+This just calls [AutonomousMain](#autonomousmainjava)'s BlueFoundation function. This function is a wrapper for the respective combined function which will do the foundation.
+
+### AutonomousBluePark
+
+This just calls [AutonomousMain](#autonomousmainjava)'s BluePark function. This function is a wrapper for the respective combined function which will just park.
+
+### AutonomousRedAll
+
+This just calls [AutonomousMain](#autonomousmainjava)'s RedAll function. This function is a wrapper for the respective combined function which will do the entire red autonomous.
+
+### AutonomousRedBlock
+
+This just calls [AutonomousMain](#autonomousmainjava)'s RedBlock function. This function is a wrapper for the respective combined function which will do the grabbing of a block and parking.
+
+### AutonomousRedFoundation
+
+This just calls [AutonomousMain](#autonomousmainjava)'s RedFoundation function. This function is a wrapper for the respective combined function which will do the foundation.
+
+### AutonomousRedPark
+
+This just calls [AutonomousMain](#autonomousmainjava)'s RedPark function. This function is a wrapper for the respective combined function which will just park.
 
 ## Miscellaneous Calibration Files
 
