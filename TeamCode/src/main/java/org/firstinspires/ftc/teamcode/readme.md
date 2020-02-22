@@ -436,6 +436,8 @@ This function sets a number to the color sensor variables, `sul` and `sdl`.
 
 AutonomousMain contains two functions to move for both red and blue sides. This is the central Autonomous file. This contains three functions: Blue, Red, and Cheat. Blue is used for the blue side and Red is used for the red side. Cheat is not what it sounds like, but is more of a backup plan to just park under the bridge.
 
+## Miscellaneous Autonomous Files
+
 ### AutonomousBlue.java
 
 This just calls [AutonomousMain](#autonomousmainjava)'s blue function.
