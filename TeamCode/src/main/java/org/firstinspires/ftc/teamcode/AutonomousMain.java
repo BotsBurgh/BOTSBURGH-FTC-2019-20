@@ -145,7 +145,7 @@ class AutonomousMain {
         robot.gyroDrive(Naming.GYRO_0_NAME, DRIVE_SPEED, -10, 0, true);
         robot.getMovement().grabFoundation(true);
         robot.gyroTurn(Naming.GYRO_0_NAME, TURN_SPEED, side*-70);
-        robot.gyroDrive(Naming.GYRO_0_NAME, DRIVE_SPEED, -3.5, 0, true);)
+        robot.gyroDrive(Naming.GYRO_0_NAME, DRIVE_SPEED, -3.5, 0, true);
         /*
         robot.gyroDrive(Naming.GYRO_0_NAME,DRIVE_SPEED, 5, 0, true);
         robot.getMovement().grabFoundation(true);
