@@ -23,7 +23,7 @@ import com.qualcomm.robotcore.util.Range;
 
 import android.os.AsyncTask;
 
-@TeleOp(name="Basic Movement", group="00-TeleOp")
+@TeleOp(name="Driving", group="00-TeleOp")
 public class Driving extends LinearOpMode {
 
     private static final double DEADZONE    = 0.05; // Controls controller joystick deadzone
