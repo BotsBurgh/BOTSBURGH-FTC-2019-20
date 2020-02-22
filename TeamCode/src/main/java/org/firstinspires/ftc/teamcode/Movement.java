@@ -279,13 +279,12 @@ class Movement {
             slf.setPosition(180);
             srf.setPosition(0);
             slfn.setPosition(1);
-            srfn.setPosition(0.5);
-        }
-        else { // Releases foundation
+            srfn.setPosition(0.4);
+        } else { // Releases foundation
             slf.setPosition(0);
             srf.setPosition(180);
-            slfn.setPosition(0.5);
-            srfn.setPosition(0);
+            slfn.setPosition(0.4);
+            srfn.setPosition(1);
         }
     }
 }

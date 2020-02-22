@@ -194,8 +194,10 @@ public class Robot {
 
         bl = movement.getMotor(Naming.MOTOR_BL_NAME);
         br = movement.getMotor(Naming.MOTOR_BR_NAME);
-        fl = movement.getMotor(Naming.MOTOR_FL_NAME);
-        fr = movement.getMotor(Naming.MOTOR_FR_NAME);
+        if (InitRobot.MODE_4x4) {
+            fl = movement.getMotor(Naming.MOTOR_FL_NAME);
+            fr = movement.getMotor(Naming.MOTOR_FR_NAME);
+        }
 
         if (linearOpMode.opModeIsActive()) {
             // Determine new target position, and pass to motor controller
@@ -232,9 +234,9 @@ public class Robot {
             }
 
             // keep looping while we are still active, and ALL motors are running.
-            while (linearOpMode.opModeIsActive() && (bl.isBusy() && br.isBusy() && fl.isBusy() &&
-                    fr.isBusy()) && (runtime.seconds()<=DRIVE_TIMEOUT) &&
-                    !linearOpMode.isStopRequested()) {
+            while (linearOpMode.opModeIsActive() && (bl.isBusy() && br.isBusy() &&
+                    (!InitRobot.MODE_4x4 || (fl.isBusy() && fr.isBusy())) &&
+                    (runtime.seconds()<=DRIVE_TIMEOUT) && !linearOpMode.isStopRequested())) {
                 // adjust relative speed based on heading error.
                 //error = getError(id, angle);
                 //steer = getSteer(error, P_DRIVE_COEFF);
