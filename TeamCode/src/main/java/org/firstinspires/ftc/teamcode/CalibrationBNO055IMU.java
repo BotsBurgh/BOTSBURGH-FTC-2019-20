@@ -43,8 +43,10 @@ public class CalibrationBNO055IMU extends LinearOpMode {
         telemetry.addData("> ", "Calibrating...");
         telemetry.update();
 
-        robot.getSensor().calibrateGyro(Naming.GYRO_0_NAME);
-        robot.getSensor().calibrateGyro(Naming.GYRO_1_NAME);
+        // Initialize gyros
+        for (String key : robot.getSensor().getGyros().keySet()) {
+            robot.getSensor().initGyro(key);
+        }
 
         telemetry.addData("> ", "Done calibrating");
         telemetry.update();

@@ -267,7 +267,7 @@ class Sensor {
         gyros.get(id).initialize(parameters);
 
         BNO055IMU.CalibrationData calibrationData = gyros.get(id).readCalibrationData();
-        String filename = String.format(Locale.ENGLISH, "BNO055IMUCalibration%d.json", id);
+        String filename = String.format(Locale.ENGLISH, "BNO055IMUCalibration%s.json", id);
         File file = AppUtil.getInstance().getSettingsFile(filename);
         ReadWriteFile.writeFile(file, calibrationData.serialize());
     }
