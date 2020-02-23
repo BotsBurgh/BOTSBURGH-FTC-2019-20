@@ -84,6 +84,11 @@ class InitRobot {
         servos.put(Naming.SERVO_FOUNDATION_LEFT_NEW_NAME, fLeftNew);
         servos.put(Naming.SERVO_FOUNDATION_RIGHT_NEW_NAME, fRightNew);
 
+        // Send power to servos so they don't move
+        for (String key : servos.keySet()) {
+            robot.getMovement().setServo(key, servos.get(key).getPosition());
+        }
+
         // Get CRServos
         CRServo armExtend = l.hardwareMap.get(CRServo.class, Naming.CRSERVO_EXTEND_NAME);
 
