@@ -121,7 +121,8 @@ class AutonomousMain {
         double offset = offset(); // Setting up the offset
         robot.gyroDrive(Naming.GYRO_0_NAME, DRIVE_SPEED, -13, 0, true); // Robot approaches the foundation while driving backward
         sleep(1000);
-        robot.gyroTurn(Naming.GYRO_0_NAME, TURN_SPEED, side*-90+offset); // Robot turns right
+        robot.gyroTurn(Naming.GYRO_0_NAME, TURN_SPEED, side*90+offset); // Robot turns right
+        /*
         sleep(1000);
         robot.gyroDrive(Naming.GYRO_0_NAME, DRIVE_SPEED, -7, 0, true); // Robot approaches moves toward the foundation while driving backward
         sleep(1000);
@@ -133,6 +134,7 @@ class AutonomousMain {
         sleep(1000);
         robot.gyroTurn(Naming.GYRO_0_NAME, TURN_SPEED, side*-70+offset); // Robot turns to place foundation in the parking zone
         sleep(1000);
+         */
     }
 
     /**
