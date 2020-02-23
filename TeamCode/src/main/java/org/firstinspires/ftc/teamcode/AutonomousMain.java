@@ -29,7 +29,7 @@ class AutonomousMain {
 
     private static final double DRIVE_SPEED = 0.85;
     private static final double DRIVE_SPEED_SLOW = 0.7;
-    private static final double TURN_SPEED = 0.6;
+    private static final double TURN_SPEED = 0.4;
 
     Robot robot;
 
@@ -121,9 +121,16 @@ class AutonomousMain {
         double offset = offset(); // Setting up the offset
         robot.gyroDrive(Naming.GYRO_0_NAME, DRIVE_SPEED, -13, 0, true); // Robot approaches the foundation while driving backward
         sleep(1000);
-        robot.gyroTurn(Naming.GYRO_0_NAME, TURN_SPEED, side*90+offset); // Robot turns right
+        robot.gyroTurn(Naming.GYRO_0_NAME, TURN_SPEED, side*-45+offset); // Robot turns right
         sleep(1000);
-        robot.gyroDrive(Naming.GYRO_0_NAME, DRIVE_SPEED, -7, 0, true); // Robot approaches moves toward the foundation while driving backward
+        robot.gyroDrive(Naming.GYRO_0_NAME, DRIVE_SPEED, -17, 0, true); // Robot approaches moves toward the foundation while driving backward
+        sleep(1000);
+        robot.getMovement().grabFoundation(true);
+        sleep(1000);
+        robot.gyroDrive(Naming.GYRO_0_NAME, DRIVE_SPEED, 20, 0, true); // Robot approaches the foundation while driving backward
+        sleep(1000);
+        robot.getMovement().grabFoundation(false);
+
         /*
         sleep(1000);
         robot.gyroTurn(Naming.GYRO_0_NAME, TURN_SPEED, side*90+offset); // Robot approaches moves toward the foundation while driving backward
