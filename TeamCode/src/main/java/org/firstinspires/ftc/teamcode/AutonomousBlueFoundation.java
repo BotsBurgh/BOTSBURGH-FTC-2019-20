@@ -38,7 +38,7 @@ public class AutonomousBlueFoundation extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        am.blue_foundation();
+        am.foundation(Naming.SIDE_BLUE);
 
         //initializer.deInit();
     }

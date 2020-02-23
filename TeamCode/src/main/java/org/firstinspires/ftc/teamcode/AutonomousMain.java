@@ -33,40 +33,12 @@ class AutonomousMain {
 
     Robot robot;
 
+    /**
+     * The autonomous main constructor.
+     * @param r Robot object passed to the AutonomousClass
+     */
     AutonomousMain(Robot r) {
         robot = r;
-    }
-
-    void blue() {
-        // TODO
-    }
-
-    void red() {
-        // TODO
-    }
-
-    void red_block() {
-        together_block(-1);
-    }
-
-    void blue_block() {
-        together_block(1);
-    }
-
-    void red_foundation() {
-        together_foundation(-1);
-    }
-
-    void blue_foundation() {
-        together_foundation(1);
-    }
-
-    void blue_all() {
-        together_all(1);
-    }
-
-    void red_all() {
-        together_all(-1);
     }
 
     /**
@@ -92,7 +64,7 @@ class AutonomousMain {
      * foundation, grab the foundation, pull the foundation to the parking zone, and park
      * @param side -1 is red, 1 is blue
      */
-    private void together_all(int side) {
+    void all(int side) {
         double offset = offset();
 
         // Blocks + Autonomous (In Progress)
@@ -126,10 +98,10 @@ class AutonomousMain {
     }
 
     /**
-     *
+     * Drops off the block to the other side.
      * @param side -1 is red, 1 is blue
      */
-    private void together_block(int side) {
+    void block(int side) {
         double offset = offset();
 
         shared();
@@ -143,7 +115,11 @@ class AutonomousMain {
         robot.gyroDrive(Naming.GYRO_0_NAME,DRIVE_SPEED, -5, 0, true);
     }
 
-    private void together_foundation(int side) {
+    /**
+     * Start on the building side of the field. Move the foundation into the corner and park.
+     * @param side
+     */
+    void foundation(int side) {
         double offset = offset();
         robot.gyroDrive(Naming.GYRO_0_NAME, DRIVE_SPEED, -13, 0, true);
         robot.gyroTurn(Naming.GYRO_0_NAME, TURN_SPEED, side*-90+offset);
@@ -154,26 +130,20 @@ class AutonomousMain {
         sleep(1000);
         robot.gyroDrive(Naming.GYRO_0_NAME, DRIVE_SPEED, 20, 0, true);
         robot.gyroTurn(Naming.GYRO_0_NAME, TURN_SPEED, side*-70+offset);
-        /*
-        robot.gyroDrive(Naming.GYRO_0_NAME,DRIVE_SPEED, 5, 0, true);
-        robot.getMovement().grabFoundation(true);
-        sleep(500);
-        robot.gyroDrive(Naming.GYRO_0_NAME,DRIVE_SPEED, -15, 0, true);
-        robot.gyroTurn(Naming.GYRO_0_NAME,TURN_SPEED, side*27.5+offset);
-        sleep(500);
-        robot.gyroDrive(Naming.GYRO_0_NAME,DRIVE_SPEED,-18, 0, true);
-        robot.getMovement().grabFoundation(false);
-        robot.gyroTurn(Naming.GYRO_0_NAME,TURN_SPEED, side*-90+offset);
-        robot.gyroDrive(Naming.GYRO_0_NAME,DRIVE_SPEED, 22, 0,true);
-        shared();
-         */
     }
 
+    /**
+     * Startup function for all of the autonomous functions
+     */
     private void shared() {
         robot.getMovement().openGrabber(true);
         robot.getMovement().openSwivel(true); // Open arm swivel
     }
 
+    /**
+     * Gets the offset for the autonomous functions. Keeps the values for turning consistent.
+     * @return The angle the robot starts at.
+     */
     private double offset() {
         return robot.getSensor().getGyro(Naming.GYRO_0_NAME).getAngularOrientation(
                 AxesReference.INTRINSIC,
@@ -192,6 +162,10 @@ class AutonomousMain {
         robot.getMovement().moveElevator(0);
     }
 
+    /**
+     * Wrapper for the sleep function for code readability
+     * @param milliseconds How long to sleep
+     */
     private void sleep(int milliseconds) {
         robot.getLinearOpMode().sleep(milliseconds);
     }

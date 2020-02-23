@@ -38,7 +38,7 @@ public class AutonomousBlueBlock extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        am.blue_block();
+        am.block(Naming.SIDE_BLUE);
 
         //initializer.deInit();
     }

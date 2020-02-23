@@ -38,7 +38,7 @@ public class AutonomousRedAll extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        am.red_all();
+        am.all(Naming.SIDE_RED);
 
         //initializer.deInit();
     }

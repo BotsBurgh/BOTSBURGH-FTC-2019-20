@@ -38,6 +38,6 @@ public class AutonomousRedPark extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        am.park(-1);
+        am.park(Naming.SIDE_RED);
     }
 }

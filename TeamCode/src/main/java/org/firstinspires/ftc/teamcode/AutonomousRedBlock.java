@@ -38,7 +38,7 @@ public class AutonomousRedBlock extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        am.red_block();
+        am.block(Naming.SIDE_RED);
 
         //initializer.deInit();
     }

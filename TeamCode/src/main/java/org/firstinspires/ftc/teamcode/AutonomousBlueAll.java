@@ -38,7 +38,7 @@ public class AutonomousBlueAll extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        am.blue_all();
+        am.all(Naming.SIDE_BLUE);
 
         //initializer.deInit();
     }
