@@ -1,5 +1,9 @@
 package org.firstinspires.ftc.teamcode;
 
+/**
+ * The Naming class makes it easier to prevent NullPointerExceptions when adding and getting items
+ * from a HashMap.
+ */
 public class Naming {
     // Name configuration
     static final String MOTOR_LIFT_NAME = "scissorLift";

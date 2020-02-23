@@ -20,6 +20,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 
+/**
+ * This file makes it easier to prevent repetition between autonomous files. By keeping everything
+ * together, we are able to prevent redundancy with the autonomous programs.
+ */
 class AutonomousMain {
     // Declare OpMode Members
 
@@ -71,11 +75,11 @@ class AutonomousMain {
      */
     void park(int side) {
         if (side == -1) {
-            while (!(robot.getSensor().getRed(Naming.COLOR_SENSOR_PARK) >= 80)) {
+            while (!(robot.getSensor().getRed(Naming.COLOR_SENSOR_PARK) >= 80)) { // FIXME: Bug where some situations will cause a false positive, eg: a highly reflective surface on the field
                 robot.getMovement().move2x2(-DRIVE_SPEED_SLOW, -DRIVE_SPEED_SLOW);
             }
         } else if (side == 1) {
-            while (!(robot.getSensor().getBlue(Naming.COLOR_SENSOR_PARK) >= 70)) {
+            while (!(robot.getSensor().getBlue(Naming.COLOR_SENSOR_PARK) >= 70)) { // FIXME: Bug where some situations will cause a false positive, eg: a highly reflective surface on the field
                 robot.getMovement().move2x2(-DRIVE_SPEED_SLOW, -DRIVE_SPEED_SLOW);
             }
         }
@@ -84,7 +88,8 @@ class AutonomousMain {
     }
 
     /**
-     *
+     * Does all of the autonomous: Grab a block (w/out VuForia), drop off the block on the
+     * foundation, grab the foundation, pull the foundation to the parking zone, and park
      * @param side -1 is red, 1 is blue
      */
     private void together_all(int side) {
@@ -114,11 +119,10 @@ class AutonomousMain {
         robot.gyroDrive(Naming.GYRO_0_NAME,DRIVE_SPEED,-18, 0, true); // Robot moves the foundation close to the building zone
         robot.getMovement().grabFoundation(false); // Robot releases foundation
         robot.gyroTurn(Naming.GYRO_0_NAME,TURN_SPEED, -side*90+offset); // Robot turns to knock foundation into building site
-        while (robot.getSensor().getRGB("scissorDownLimit") != 0) {
-            robot.getMovement().moveElevator(1);
-        }
-        robot.getMovement().moveElevator(0);
-        robot.gyroDrive(Naming.GYRO_0_NAME,DRIVE_SPEED, 19, 0,true); // Robot drives under alliance bridge and parks
+
+        elevatorDown(); // Move the elevator down
+
+        park(side); // Robot drives under alliance bridge and parks
     }
 
     /**
@@ -127,7 +131,6 @@ class AutonomousMain {
      */
     private void together_block(int side) {
         double offset = offset();
-
 
         shared();
         robot.gyroDrive(Naming.GYRO_0_NAME,DRIVE_SPEED, 20, 0, true);
@@ -166,17 +169,27 @@ class AutonomousMain {
          */
     }
 
-    void shared() {
+    private void shared() {
         robot.getMovement().openGrabber(true);
         robot.getMovement().openSwivel(true); // Open arm swivel
     }
 
     private double offset() {
-        return robot.getSensor().getGyro("imu").getAngularOrientation(
+        return robot.getSensor().getGyro(Naming.GYRO_0_NAME).getAngularOrientation(
                 AxesReference.INTRINSIC,
                 AxesOrder.ZYX,
                 AngleUnit.DEGREES
         ).firstAngle;
+    }
+
+    /**
+     * Move the elevator all the way down
+     */
+    private void elevatorDown() {
+        while (robot.getSensor().getRGB(Naming.COLOR_SENSOR_DOWN_LIMIT_NAME) != 0) { // Move down the elevator
+            robot.getMovement().moveElevator(1);
+        }
+        robot.getMovement().moveElevator(0);
     }
 
     private void sleep(int milliseconds) {
