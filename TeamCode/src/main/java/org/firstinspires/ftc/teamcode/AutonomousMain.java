@@ -103,10 +103,8 @@ class AutonomousMain {
      */
     void block(int side) {
         double offset = offset();
-
         shared();
-        robot.gyroDrive(Naming.GYRO_0_NAME,DRIVE_SPEED, 20, 0, true);
-        robot.getMovement().openGrabber(false);
+        robot.gyroDrive(Naming.GYRO_0_NAME,DRIVE_SPEED, 20, 0, true); // Robot approaches the
         sleep(500);
         robot.gyroDrive(Naming.GYRO_0_NAME,DRIVE_SPEED, -10, 0, true);
         robot.gyroTurn(Naming.GYRO_0_NAME,TURN_SPEED, side*90 + offset);
@@ -120,16 +118,16 @@ class AutonomousMain {
      * @param side
      */
     void foundation(int side) {
-        double offset = offset();
-        robot.gyroDrive(Naming.GYRO_0_NAME, DRIVE_SPEED, -13, 0, true);
-        robot.gyroTurn(Naming.GYRO_0_NAME, TURN_SPEED, side*-90+offset);
-        robot.gyroDrive(Naming.GYRO_0_NAME, DRIVE_SPEED, 7, 0, true);
-        robot.gyroTurn(Naming.GYRO_0_NAME, TURN_SPEED, side*90+offset);
-        sleep(1000);
-        robot.getMovement().grabFoundation(true);
-        sleep(1000);
-        robot.gyroDrive(Naming.GYRO_0_NAME, DRIVE_SPEED, 20, 0, true);
-        robot.gyroTurn(Naming.GYRO_0_NAME, TURN_SPEED, side*-70+offset);
+        double offset = offset(); // Setting up the offset
+        robot.gyroDrive(Naming.GYRO_0_NAME, DRIVE_SPEED, -13, 0, true); // Robot approaches the foundation while driving backward
+        robot.gyroTurn(Naming.GYRO_0_NAME, TURN_SPEED, side*-90+offset); // Robot turns right
+        robot.gyroDrive(Naming.GYRO_0_NAME, DRIVE_SPEED, 7, 0, true); // Robot approaches moves toward the foundation while driving backward
+        robot.gyroTurn(Naming.GYRO_0_NAME, TURN_SPEED, side*90+offset); // Robot approaches moves toward the foundation while driving backward
+        sleep(1000); // Robot stops to grab foundation
+        robot.getMovement().grabFoundation(true); // Robot turns toward the foundation
+        sleep(1000); // Robot stop to grab foundation
+        robot.gyroDrive(Naming.GYRO_0_NAME, DRIVE_SPEED, 20, 0, true); // Robot moves toward the parking zone
+        robot.gyroTurn(Naming.GYRO_0_NAME, TURN_SPEED, side*-70+offset); // Robot turns to place foundation in the parking zone
     }
 
     /**
