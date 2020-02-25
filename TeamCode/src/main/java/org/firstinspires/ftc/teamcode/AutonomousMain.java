@@ -127,7 +127,7 @@ class AutonomousMain {
         sleep(1000);
         robot.getMovement().grabFoundation(true);
         sleep(1000);
-        robot.gyroDrive(Naming.GYRO_0_NAME, DRIVE_SPEED, 20, 0, true); // Robot approaches the foundation while driving backward
+        robot.gyroDrive(Naming.GYRO_0_NAME, DRIVE_SPEED, 23, 0, true); // Robot approaches the foundation while driving backward
         sleep(1000);
         robot.getMovement().grabFoundation(false);
 
