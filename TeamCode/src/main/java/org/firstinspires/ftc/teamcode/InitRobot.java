@@ -70,8 +70,6 @@ class InitRobot {
         // Get servos
         Servo grabber = l.hardwareMap.get(Servo.class, Naming.SERVO_GRABBER_NAME);
         Servo rotate = l.hardwareMap.get(Servo.class, Naming.SERVO_ROTATE_NAME);
-        Servo fRight = l.hardwareMap.get(Servo.class, Naming.SERVO_FOUNDATION_RIGHT_NAME);
-        Servo fLeft = l.hardwareMap.get(Servo.class, Naming.SERVO_FOUNDATION_LEFT_NAME);
         Servo fLeftNew = l.hardwareMap.get(Servo.class, Naming.SERVO_FOUNDATION_LEFT_NEW_NAME);
         Servo fRightNew = l.hardwareMap.get(Servo.class, Naming.SERVO_FOUNDATION_RIGHT_NEW_NAME);
 
@@ -79,8 +77,6 @@ class InitRobot {
         HashMap<String, Servo> servos = new HashMap<>();
         servos.put(Naming.SERVO_GRABBER_NAME, grabber);
         servos.put(Naming.SERVO_ROTATE_NAME, rotate);
-        servos.put(Naming.SERVO_FOUNDATION_RIGHT_NAME, fRight);
-        servos.put(Naming.SERVO_FOUNDATION_LEFT_NAME, fLeft);
         servos.put(Naming.SERVO_FOUNDATION_LEFT_NEW_NAME, fLeftNew);
         servos.put(Naming.SERVO_FOUNDATION_RIGHT_NEW_NAME, fRightNew);
 

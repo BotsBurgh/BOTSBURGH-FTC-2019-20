@@ -20,14 +20,14 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name="Autonomous Red Block", group="00-Red Autonomous")
-public class AutonomousRedBlock extends LinearOpMode {
+@Autonomous(name="Autonomous Red Block Wall", group="00-Red Autonomous")
+public class AutonomousRedBlockWall extends LinearOpMode {
     // Declare OpMode Members
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
     public void runOpMode() {
-        InitRobot initializer = new InitRobot(AutonomousRedBlock.this, false);
+        InitRobot initializer = new InitRobot(AutonomousRedBlockWall.this, false);
         Robot robot = initializer.init();
         AutonomousMain am = new AutonomousMain(robot);
 
@@ -38,7 +38,7 @@ public class AutonomousRedBlock extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        am.block(Naming.SIDE_RED);
+        am.block(Naming.SIDE_RED, true);
 
         //initializer.deInit();
     }
