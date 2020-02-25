@@ -31,7 +31,7 @@ class AutonomousMain {
     private static final double DRIVE_SPEED_SLOW = 0.7;
     private static final double TURN_SPEED = 0.4;
 
-    Robot robot;
+    private Robot robot;
 
     /**
      * The autonomous main constructor.
@@ -115,7 +115,7 @@ class AutonomousMain {
 
     /**
      * Start on the building side of the field. Move the foundation into the corner and park.
-     * @param side
+     * @param side -1 is red, 1 is blue
      */
     void foundation(int side) {
         double offset = offset(); // Setting up the offset
