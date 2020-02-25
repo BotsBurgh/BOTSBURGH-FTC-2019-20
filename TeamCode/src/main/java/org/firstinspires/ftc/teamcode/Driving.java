@@ -72,9 +72,7 @@ public class Driving extends LinearOpMode {
         InitRobot initializer = new InitRobot(Driving.this, false);
         Robot robot = initializer.init();
 
-        // Zero some servos
-        robot.getMovement().setServo(Naming.SERVO_FOUNDATION_LEFT_NAME, 0); // Foundation
-        robot.getMovement().setServo(Naming.SERVO_FOUNDATION_RIGHT_NAME, 180); // More foundation
+        robot.getMovement().grabFoundation(false);
 
         // Zeroing Swivel (Rotate)
         robot.getMovement().setServo(Naming.SERVO_ROTATE_NAME, robot.getMovement().getServo(Naming.SERVO_ROTATE_NAME).getPosition());

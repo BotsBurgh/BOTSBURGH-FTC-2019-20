@@ -141,13 +141,15 @@ class AutonomousMain {
         sleep(1000);
         robot.gyroTurn(Naming.GYRO_0_NAME, TURN_SPEED, side*-45+offset); // Robot becomes parallel to foundation
         sleep(1000);
-        robot.gyroDrive(Naming.GYRO_0_NAME, DRIVE_SPEED, -17, 0, true); // Robot approaches the foundation while driving backward
+        robot.gyroDrive(Naming.GYRO_0_NAME, DRIVE_SPEED, -16, 0, true); // Robot approaches the foundation while driving backward
         sleep(1000);
         robot.getMovement().grabFoundation(true); // Robot grabs the foundation
         sleep(1000);
         robot.gyroDrive(Naming.GYRO_0_NAME, DRIVE_SPEED, 23, 0, true); // Robot approaches the wall while driving forward
         sleep(1000);
         robot.getMovement().grabFoundation(false); // Robot lets go of the foundation
+        sleep(1000);
+        robot.gyroTurn(Naming.GYRO_0_NAME, TURN_SPEED, side*-45+offset);
     }
 
     /**

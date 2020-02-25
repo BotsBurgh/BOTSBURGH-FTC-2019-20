@@ -274,11 +274,11 @@ class Movement {
         slfn = servos.get(Naming.SERVO_FOUNDATION_LEFT_NEW_NAME); // sfln: Servo Left Foundation New
         srfn = servos.get(Naming.SERVO_FOUNDATION_RIGHT_NEW_NAME); // sfrn: Servo Right Foundation New
         if (command) { // Grabs foundation
-            slfn.setPosition(0.4);
-            srfn.setPosition(1);
+            slfn.setPosition(0.95);
+            srfn.setPosition(0.95);
         } else { // Releases foundation
-            slfn.setPosition(1);
-            srfn.setPosition(0.4);
+            slfn.setPosition(0.3);
+            srfn.setPosition(0.3);
         }
     }
 }

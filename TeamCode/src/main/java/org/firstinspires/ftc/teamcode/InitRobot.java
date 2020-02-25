@@ -73,6 +73,9 @@ class InitRobot {
         Servo fLeftNew = l.hardwareMap.get(Servo.class, Naming.SERVO_FOUNDATION_LEFT_NEW_NAME);
         Servo fRightNew = l.hardwareMap.get(Servo.class, Naming.SERVO_FOUNDATION_RIGHT_NEW_NAME);
 
+        fLeftNew.setDirection(Servo.Direction.REVERSE);
+        fRightNew.setDirection(Servo.Direction.FORWARD);
+
         // Add servos into the list
         HashMap<String, Servo> servos = new HashMap<>();
         servos.put(Naming.SERVO_GRABBER_NAME, grabber);
