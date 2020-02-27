@@ -63,7 +63,7 @@ Most rookie teams don't need to edit anything below this section, but they shoul
 
 ### Sensor Functions
 
-1. getRGB: Returns an integer whether the color detected by the sensor is red, green, or blue based on the thresholds outlined earlier. 0 for red, 1 for green, 2 for blue, 3 for grey.
+1. getRGB: Returns an integer whether the color detected by the sensor is red, green, or blue based on the thresholds outlined earlier. 0 for red, 1 for green, 2 for blue, 3 for grey. Is overloaded for custom thresholds.
 1. getRed: Returns raw red value.
 1. getGreen: Returns raw green value.
 1. getBlue: Returns raw blue.
@@ -75,7 +75,7 @@ Most rookie teams don't need to edit anything below this section, but they shoul
 1. getVuforiaPosition: Returns a Vector of the position of the robot based on VuForia.
 1. getVuforiaRotation: Returns an Orientation of the rotation of the robot based on VuForia.
 1. initTfod: Initializes TensorFlow object detection.
-1. getTfod: Gets the skystones detected with VuForia and TensorFlow.
+1. getTfodPositions: Gets the skystones detected with VuForia and TensorFlow.
 1. deactivateVuforia: Turns off VuForia.
 1. deactivateTfod: Turns off TFOD.
 
@@ -119,8 +119,6 @@ Movement.java fulfills similar requirements that [Sensor.java](#sensorjava) does
 
 ### Static Variables
 
-1. TURN_POWER: How much power to send to the motors when we are turning in Autonomous.
-1. DRIVE_POWER: How much power to send to the motors when we are moving straight forward in autonomous.
 1. ELEVATOR_POWER: The maximum power sent to the elevator / scissor lift.
 1. SERVO_STEP: The degrees the servo should scan by.
 1. SERVO_SLEEP: The time (in milliseconds) we should wait before scanning the next step in a servo. The total time it will take to scan a servo can be represented by multiplying SERVO_SLEEP by degrees, then dividing by SERVO_STEP.
@@ -129,6 +127,8 @@ Movement.java fulfills similar requirements that [Sensor.java](#sensorjava) does
 1. WHEEL_DIAMETER_INCHES: The diameter of the wheel (used for encoders).
 1. GRABBER_OPEN: The position of the servo of the grabber in the "open" position
 1. GRABBER_CLOSE: The position of the servo of the grabber in the "close" position
+1. FOUNDATION_OPEN: THe position of the servo(s) of the foundation grabber in the "open" position.
+1. FOUNDATION_CLOSE: THe position of the servo(s) of the foundation grabber in the "open" position.
 
 Unlike [Sensor.java](#sensorjava), there is not really much more to this than the configuration variable listed above other than a static variable used for combining `COUNTS_PER_MOTOR_REV`, `DRIVE_GEAR_REDUCTION`, and `WHEEL_DIAMETER_INCHES` into `COUNTS_PER_INCH`. Most rookie teams don't need to edit anything below this section, but they should in order to get a better understanding of what is going on. Below, we are going to look at two main things: First, we are going to look at the functions, and lastly we are going to look at the MovementBuilder class.
 
@@ -141,23 +141,21 @@ Unlike [Sensor.java](#sensorjava), there is not really much more to this than th
 1. setServo: Sets a servo to a specific position. Useful for a grabber.
 1. scanServo: Scans a servo (moves the servo to a position slowly). Useful for something requiring less speed.
 1. setServoSpeed: Sets the speed of a CR Servo.
-1. moveEnc1x4: Moves the robot forward using the encoder and four motors with one variable (inches). Note that encoders are unreliable, and you should use the gyroDrive functionality in [Robot.java](#robotjava).
-1. moveEnc1x2: Moves the robot forward using the encoder and two motors with one variable (inches). Note that encoders are unreliable, and you should use the gyroDrive functionality in [Robot.java](#robotjava).
 
 ### MovementBuilder
 
 Similarly to [Sensor.java](#sensorjava), we also are using a builder class to replace our constructors. We added a single line — `@Builder` — to add a builder.
 
 ```java
-DcMotor sc = hardwareMap.get(DcMotor.class, "scissorLift");
-DcMotor lb = hardwareMap.get(DcMotor.class, "lb");
-DcMotor rb = hardwareMap.get(DcMotor.class, "rb");
+DcMotor sc, bl, br, fl, fr;
+sc = l.hardwareMap.get(DcMotor.class, Naming.MOTOR_LIFT_NAME);
+bl = l.hardwareMap.get(DcMotor.class, Naming.MOTOR_BL_NAME);
+br = l.hardwareMap.get(DcMotor.class, Naming.MOTOR_BR_NAME);
 
-DcMotor[] motors = new DcMotor[] {
-        sc,
-        null, null, // Because we don't have front motors
-        lb, rb
-};
+HashMap<String, DcMotor> motors = new HashMap<>();
+motors.put(Naming.MOTOR_LIFT_NAME, sc);
+motors.put(Naming.MOTOR_BL_NAME, bl);
+motors.put(Naming.MOTOR_BR_NAME, br);
 
 Movement base = new Movement
         .MovementBuilder()
@@ -181,7 +179,7 @@ We set the motors to use their own variables so we could change some settings of
 
 This file is the epitome of our code, as it integrates [Sensor.java](#sensorjava) and [Movement.java](#movementjava) into one class. This allows us to create functions combining both [Sensor.java](#sensorjava) and [Movement.java](#movementjava), such as those which need to move based on VuForia. In this class, we have a few functions doing just that:
 
-1. gyroTurn: This turns the robot based on the internal gyroscope. Simple code, integrates gyroscope functionality from [Sensor.java](#sensorjava) and the `move2x2` function from [Movement.java](#movementjava). Useful for autonomous in conditions where VuForia is unavailable or unreliable. However, as VuForia is more accurate, you *should* use that instead. See the functions below for instructions on how to do that.
+1. gyroTurn: This turns the robot based on the internal gyroscope. Simple code, integrates gyroscope functionality from [Sensor.java](#sensorjava) and the `move2x2` or `move4x4` function from [Movement.java](#movementjava). Useful for autonomous in conditions where VuForia is unavailable or unreliable. However, as VuForia is more accurate, you *should* use that instead. See the functions below for instructions on how to do that.
 1. onHeading: Performs one cycle of closed loop heading control.
 1. getError: Determines the error between the target angle and the robot's current heading.
 1. gyroDrive: This moves the robot forward based on encoders, and corrects for drift based on gyroscopes. When possible, use vuForiaGoto to move the robot, as it is more accurate. However, this is good for situations where VuForia functionality is unreliable. Best suited for autonomous.
@@ -286,6 +284,8 @@ robot = new Robot.RobotBuilder()
         .movement(movement)
         .linearOpMode(l)
         .build();
+
+return robot;
 ```
 
 In this file, near the very top, there is a variable called `MODE_4x4`, which can be set to switch everything over from a two motor drive to four motor drive. This will switch over Autonomous and TeleOp from a two motor drive to four motor drive. This is useful for teams who utilize a four motor drive and do not wish to change too much code to make this API work.
@@ -434,17 +434,17 @@ This function sets a number to the color sensor variables, `sul` and `sdl`.
 
 ## AutonomousMain.java
 
-AutonomousMain contains two functions to move for both red and blue sides. This is the central Autonomous file. This contains three functions: Blue, Red, and Cheat. Blue is used for the blue side and Red is used for the red side. Cheat is not what it sounds like, but is more of a backup plan to just park under the bridge.
+AutonomousMain contains two functions to move for both red and blue sides. This is the central Autonomous file. This contains many functions which contain instructions for moving around the robot autonomously based on the situation. Most functions are implemented in the [Miscellaneous Autonomous Files](#miscellaneous-autonomous-files) section as individual programs for ease of use during the competition.
 
 ## Miscellaneous Autonomous Files
 
-### AutonomousBlueAll
+### AutonomousBlueBlockBridge
 
-This just calls [AutonomousMain](#autonomousmainjava)'s BlueAll function. This function is a wrapper for the respective combined function which will do the entire blue autonomous.
+This just calls [AutonomousMain](#autonomousmainjava)'s BlueBlock function. This function is a wrapper for the respective combined function which will do the grabbing of a block and parking near the bridge.
 
-### AutonomousBlueBlock
+### AutonomousBlueBlockWall
 
-This just calls [AutonomousMain](#autonomousmainjava)'s BlueBlock function. This function is a wrapper for the respective combined function which will do the grabbing of a block and parking.
+This just calls [AutonomousMain](#autonomousmainjava)'s BlueBlock function. This function is a wrapper for the respective combined function which will do the grabbing of a block and parking near the wall.
 
 ### AutonomousBlueFoundation
 
@@ -454,13 +454,13 @@ This just calls [AutonomousMain](#autonomousmainjava)'s BlueFoundation function.
 
 This just calls [AutonomousMain](#autonomousmainjava)'s BluePark function. This function is a wrapper for the respective combined function which will just park.
 
-### AutonomousRedAll
+### AutonomousRedBlockBridge
 
-This just calls [AutonomousMain](#autonomousmainjava)'s RedAll function. This function is a wrapper for the respective combined function which will do the entire red autonomous.
+This just calls [AutonomousMain](#autonomousmainjava)'s RedBlockBridge function. This function is a wrapper for the respective combined function which will do the grabbing of a block and parking near the bridge side.
 
-### AutonomousRedBlock
+### AutonomousRedBlockWall
 
-This just calls [AutonomousMain](#autonomousmainjava)'s RedBlock function. This function is a wrapper for the respective combined function which will do the grabbing of a block and parking.
+This just calls [AutonomousMain](#autonomousmainjava)'s RedBlock function. This function is a wrapper for the respective combined function which will do the grabbing of a block and parking near the wall side.
 
 ### AutonomousRedFoundation
 

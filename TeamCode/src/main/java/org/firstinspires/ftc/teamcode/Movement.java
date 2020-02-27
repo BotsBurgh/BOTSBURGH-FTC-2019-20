@@ -29,13 +29,8 @@ import lombok.Builder;
  */
 @Builder
 class Movement {
-    // Motor configuration
-    private static final double COUNTS_PER_MOTOR_REV  = 1440 ;
-    private static final double DRIVE_GEAR_REDUCTION  = 1.0 ; // This is < 1.0 if geared UP
-    private static final double WHEEL_DIAMETER_INCHES = 4.0 ; // For calculating circumference
 
     // Autonomous
-    final double TURN_POWER  = 0.4; // How fast to turn
     final double DRIVE_POWER = 0.6; // How fast to drive
 
     // Elevator configuration
@@ -48,6 +43,9 @@ class Movement {
     private final static double GRABBER_CLOSE = 0.65; // Degrees
     private final static double SWIVEL_OPEN = 0; // Degrees
     private final static double SWIVEL_CLOSE = 1; // Degrees
+    private final static double FOUNDATION_OPEN = 0.3;
+    private final static double FOUNDATION_CLOSE = 0.95;
+
 
     /**
      ######  #######    #     # ####### #######    ####### ######  ### #######
@@ -75,8 +73,6 @@ class Movement {
      ####### ### #     # #######
      (Unless if you know what you are doing)
      */
-
-    private static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.1415);
 
     private HashMap<String, DcMotor> motors;
     private HashMap<String, Servo> servos;
@@ -176,72 +172,6 @@ class Movement {
     }
 
     /**
-     * Moves the robot with four chassis motors a set number of inches
-     * @param inches Inches to move forward (or backward)
-     */
-    public void moveEnc1x4(int inches) {
-        DcMotor fr, fl, br, bl;
-        fr = motors.get(Naming.MOTOR_FL_NAME);
-        fl = motors.get(Naming.MOTOR_FR_NAME);
-        br = motors.get(Naming.MOTOR_BL_NAME);
-        bl = motors.get(Naming.MOTOR_BR_NAME);
-        fr.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        fl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        br.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        bl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        fr.setTargetPosition(inches);
-        fl.setTargetPosition(inches);
-        br.setTargetPosition(inches);
-        bl.setTargetPosition(inches);
-        fr.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        fl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        br.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        bl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        if (inches < 0) {
-            fr.setPower(DRIVE_POWER);
-            fl.setPower(DRIVE_POWER);
-            br.setPower(DRIVE_POWER);
-            bl.setPower(DRIVE_POWER);
-        } else if (inches > 0) {
-            fr.setPower(-DRIVE_POWER);
-            fl.setPower(-DRIVE_POWER);
-            br.setPower(-DRIVE_POWER);
-            bl.setPower(-DRIVE_POWER);
-        } else {
-            fr.setPower(0);
-            fl.setPower(0);
-            br.setPower(0);
-            bl.setPower(0);
-        }
-    }
-
-    /**
-     * Moves the robot with two chassis motors a set number of inches
-     * @param inches Inches to move forward (or backward)
-     */
-    public void moveEnc1x2(double inches) {
-        DcMotor bl, br;
-        bl = motors.get(Naming.MOTOR_BL_NAME);
-        br = motors.get(Naming.MOTOR_BR_NAME);
-        bl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        br.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        bl.setTargetPosition((int)(inches*COUNTS_PER_INCH));
-        br.setTargetPosition((int)(inches*COUNTS_PER_INCH));
-        bl.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        br.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        if (inches < 0) {
-            bl.setPower(DRIVE_POWER);
-            br.setPower(DRIVE_POWER);
-        } else if (inches > 0) {
-            bl.setPower(-DRIVE_POWER);
-            br.setPower(-DRIVE_POWER);
-        } else {
-            bl.setPower(0);
-            br.setPower(0);
-        }
-    }
-
-    /**
      * Opens the grabber based on a boolean assignment
      * @param command true to open the grabber or false to close the grabber
      */
@@ -274,11 +204,11 @@ class Movement {
         slfn = servos.get(Naming.SERVO_FOUNDATION_LEFT_NEW_NAME); // sfln: Servo Left Foundation New
         srfn = servos.get(Naming.SERVO_FOUNDATION_RIGHT_NEW_NAME); // sfrn: Servo Right Foundation New
         if (command) { // Grabs foundation
-            slfn.setPosition(0.95);
-            srfn.setPosition(0.95);
+            slfn.setPosition(FOUNDATION_CLOSE);
+            srfn.setPosition(FOUNDATION_CLOSE);
         } else { // Releases foundation
-            slfn.setPosition(0.3);
-            srfn.setPosition(0.3);
+            slfn.setPosition(FOUNDATION_OPEN);
+            srfn.setPosition(FOUNDATION_OPEN);
         }
     }
 }

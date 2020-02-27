@@ -335,7 +335,7 @@ public class Robot {
      * Turn using VuForia. Not tested yet.
      * @param degrees Degrees to turn
      */
-    void vuForiaTurn(double degrees) {
+    void vuForiaTurn(double TURN_POWER, double degrees) {
         Orientation startingOri = sensor.getVuforiaRotation();
         double startingDegrees = startingOri.thirdAngle; // x
         double currentDegrees = sensor.getVuforiaRotation().thirdAngle;
@@ -343,13 +343,13 @@ public class Robot {
         if (degrees < startingDegrees) {
             // Turn left
             while ((degrees < currentDegrees) && linearOpMode.opModeIsActive()) {
-                movement.move2x2(-movement.TURN_POWER, movement.TURN_POWER);
+                movement.move2x2(-TURN_POWER, TURN_POWER);
                 currentDegrees = sensor.getVuforiaRotation().thirdAngle;
             }
         } else if (degrees > startingDegrees) {
             // Turn right
             while ((degrees > currentDegrees) && linearOpMode.opModeIsActive()) {
-                movement.move2x2(movement.TURN_POWER, -movement.TURN_POWER);
+                movement.move2x2(TURN_POWER, -TURN_POWER);
                 currentDegrees = sensor.getVuforiaRotation().thirdAngle;
             }
         } else {
@@ -362,7 +362,7 @@ public class Robot {
      * Go to a position on the field using VuForia. Not tested yet
      * @param targetPos VectorF to go to
      */
-    void vuForiaGoto(VectorF targetPos) {
+    void vuForiaGoto(double DRIVE_SPEED, VectorF targetPos) {
         VectorF startingPos = sensor.getVuforiaPosition();
         Orientation startingOri = sensor.getVuforiaRotation();
 
@@ -381,7 +381,7 @@ public class Robot {
                                                                         // Z-Axis
         // Alright, now we have to turn to the targetOri and drive forward until we get to the targetPos
         // First, turn the robot
-        vuForiaTurn(targetOri.thirdAngle);
+        vuForiaTurn(DRIVE_SPEED, targetOri.thirdAngle);
 
         // Next, go to the position we want to drive to
         startingPos = sensor.getVuforiaPosition(); // We may have moved a little bit when we turned
