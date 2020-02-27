@@ -73,10 +73,14 @@ public class Robot {
      *                   If a relative angle is required, add/subtract from current heading.
      */
     void gyroTurn(String id, double speed, double angle) {
+        gyroTurn(id, speed, angle, true, true);
+    }
+
+    void gyroTurn(String id, double speed, double angle, boolean left, boolean right) {
         ElapsedTime runtime = new ElapsedTime();
         runtime.reset();
         while (linearOpMode.opModeIsActive() && !linearOpMode.isStopRequested()) {
-            if (onHeading(id, speed, angle, P_TURN_COEFF) && (linearOpMode.opModeIsActive())) {
+            if (onHeading(id, speed, angle, P_TURN_COEFF, left, right) && (linearOpMode.opModeIsActive())) {
                 break;
             } else {
                 linearOpMode.telemetry.update();
@@ -94,12 +98,16 @@ public class Robot {
      * @param PCoeff    Proportional Gain coefficientint id
      * @return onTarget
      */
-    private boolean onHeading(String id, double speed, double angle, double PCoeff) {
+    private boolean onHeading(String id, double speed, double angle, double PCoeff, boolean left, boolean right) {
         double  error = getError(id, angle);
         double  steer;
         boolean onTarget = false;
         double  leftSpeed;
         double  rightSpeed;
+
+        double leftMod  = left ? 1 : 0;
+        double rightMod = right ? 1 : 0;
+
 
         if (Math.abs(error) <= HEADING_THRESHOLD) {
             steer      = 0.0;
@@ -118,10 +126,9 @@ public class Robot {
 
         // Send desired speeds to motors.
         if (InitRobot.MODE_4x4) {
-            movement.move2x4(leftSpeed, rightSpeed);
-
+            movement.move2x4(leftSpeed*leftMod, rightSpeed*rightMod);
         } else {
-            movement.move2x2(leftSpeed, rightSpeed);
+            movement.move2x2(leftSpeed*leftMod, rightSpeed*rightMod);
         }
 
         return onTarget;
