@@ -446,9 +446,13 @@ This just calls [AutonomousMain](#autonomousmainjava)'s BlueBlock function. This
 
 This just calls [AutonomousMain](#autonomousmainjava)'s BlueBlock function. This function is a wrapper for the respective combined function which will do the grabbing of a block and parking near the wall.
 
-### AutonomousBlueFoundation
+### AutonomousBlueFoundationBridge
 
-This just calls [AutonomousMain](#autonomousmainjava)'s BlueFoundation function. This function is a wrapper for the respective combined function which will do the foundation.
+This just calls [AutonomousMain](#autonomousmainjava)'s BlueFoundation function. This function is a wrapper for the respective combined function which will do the foundation and park near the bridge.
+
+### AutonomousBlueFoundationWall
+
+This just calls [AutonomousMain](#autonomousmainjava)'s BlueFoundation function. This function is a wrapper for the respective combined function which will do the foundation and park near the bridge.
 
 ### AutonomousBluePark
 
@@ -462,9 +466,13 @@ This just calls [AutonomousMain](#autonomousmainjava)'s RedBlockBridge function.
 
 This just calls [AutonomousMain](#autonomousmainjava)'s RedBlock function. This function is a wrapper for the respective combined function which will do the grabbing of a block and parking near the wall side.
 
-### AutonomousRedFoundation
+### AutonomousRedFoundationBridge
 
-This just calls [AutonomousMain](#autonomousmainjava)'s RedFoundation function. This function is a wrapper for the respective combined function which will do the foundation.
+This just calls [AutonomousMain](#autonomousmainjava)'s RedFoundation function. This function is a wrapper for the respective combined function which will do the foundation and park near the bridge.
+
+### AutonomousRedFoundationWall
+
+This just calls [AutonomousMain](#autonomousmainjava)'s RedFoundation function. This function is a wrapper for the respective combined function which will do the foundation and park near the wall.
 
 ### AutonomousRedPark
 
