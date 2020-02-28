@@ -131,23 +131,33 @@ class AutonomousMain {
         park(side, -1);
     }
 
+    void foundation(int side) {
+        foundation(side, false);
+    }
+
     /**
      * Start on the building side of the field. Move the foundation into the corner and park.
      * @param side -1 is red, 1 is blue
      */
-    void foundation(int side) {
+    void foundation(int side, boolean wall) {
         double offset = offset(); // Setting up the offset
-        robot.gyroDrive(Naming.GYRO_0_NAME, DRIVE_SPEED, 45, 0, true); // Robot approaches the block
+        robot.gyroDrive(Naming.GYRO_0_NAME, DRIVE_SPEED, 46, 0, true); // Robot approaches the block
         sleep(500);
         robot.gyroTurn(Naming.GYRO_0_NAME, TURN_SPEED, side*90+offset);
-        robot.gyroTurn(Naming.GYRO_0_NAME, TURN_SPEED, side*-20+offset);
         sleep(500);
-        robot.gyroDrive(Naming.GYRO_0_NAME, DRIVE_SPEED, 15, 0, true);
+        robot.gyroDrive(Naming.GYRO_0_NAME, DRIVE_SPEED, 8, 0, true);
         sleep(500);
-        robot.gyroTurn(Naming.GYRO_0_NAME, TURN_SPEED, side*-45+offset);
+        robot.gyroTurn(Naming.GYRO_0_NAME, TURN_SPEED, side*150+offset);
         sleep(500);
-        robot.gyroDrive(Naming.GYRO_0_NAME, DRIVE_SPEED, -16, 0, true); // Robot approaches the block
-
+        robot.gyroDrive(Naming.GYRO_0_NAME, DRIVE_SPEED, 20, 0, true);
+        sleep(500);
+        if (wall) {
+            robot.gyroTurn(Naming.GYRO_0_NAME, TURN_SPEED, side * -128 + offset);
+        } else {
+            robot.gyroTurn(Naming.GYRO_0_NAME, TURN_SPEED, side * -100 + offset);
+        }
+        sleep(500);
+        park(side);
         /*
         robot.gyroDrive(Naming.GYRO_0_NAME, DRIVE_SPEED, -13, 0, true); // Robot approaches the block
         sleep(500);

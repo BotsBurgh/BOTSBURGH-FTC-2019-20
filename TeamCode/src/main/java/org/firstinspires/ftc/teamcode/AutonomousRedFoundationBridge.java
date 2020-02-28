@@ -16,40 +16,30 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.AnalogInput;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name="Encoder Calibration", group="10-Calibration")
-public class CalibrationEncoder extends LinearOpMode {
+@Autonomous(name="Autonomous Red Foundation Bridge", group="00-Red Autonomous")
+public class AutonomousRedFoundationBridge extends LinearOpMode {
     // Declare OpMode Members
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
     public void runOpMode() {
-        InitRobot initializer = new InitRobot(CalibrationEncoder.this, false);
+        InitRobot initializer = new InitRobot(AutonomousRedFoundationBridge.this, false);
         Robot robot = initializer.init();
-
-        for (String key : robot.getMovement().getMotors().keySet()) {
-            robot.getMovement().getMotor(key).setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        }
+        AutonomousMain am = new AutonomousMain(robot);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
+        // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
 
-        while (opModeIsActive()) {
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
-            for (String key : robot.getMovement().getMotors().keySet()) {
-                String formattedKey = key.concat(": ");
-                telemetry.addData(formattedKey, robot.getMovement().getMotor(key).getCurrentPosition());
-            }
+        am.foundation(Naming.SIDE_RED);
 
-            telemetry.update();
-        }
+        //initializer.deInit();
     }
 }

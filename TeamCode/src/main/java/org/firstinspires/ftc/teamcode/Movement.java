@@ -23,6 +23,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import java.util.HashMap;
 
 import lombok.Builder;
+import lombok.Getter;
 
 /**
  * The Movement class. Interfaces with servos and motors so you don't have to
@@ -74,9 +75,9 @@ class Movement {
      (Unless if you know what you are doing)
      */
 
-    private HashMap<String, DcMotor> motors;
-    private HashMap<String, Servo> servos;
-    private HashMap <String, CRServo> crServos;
+    @Getter private HashMap<String, DcMotor> motors;
+    @Getter private HashMap<String, Servo> servos;
+    @Getter private HashMap <String, CRServo> crServos;
 
     // Getters
 
