@@ -23,6 +23,10 @@ import com.qualcomm.robotcore.util.Range;
 
 import android.os.AsyncTask;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+
 @TeleOp(name="Driving", group="00-TeleOp")
 public class Driving extends LinearOpMode {
 
@@ -133,6 +137,7 @@ public class Driving extends LinearOpMode {
             telemetry.addData("Arm Extend", robot.getMovement().getCRServo(Naming.CRSERVO_EXTEND_NAME).getPower());
             telemetry.addData("Grabber Position", robot.getMovement().getServo(Naming.SERVO_GRABBER_NAME).getPosition());
             telemetry.addData("Rotation Position", robot.getMovement().getServo(Naming.SERVO_ROTATE_NAME).getPosition());
+            telemetry.addData("Gyro", offset(robot));
             // Show the elapsed game time and wheel power.
             telemetry.addData("Motors", "left (%.2f), right (%.2f)", leftPower, rightPower);
             telemetry.update();
@@ -203,5 +208,13 @@ public class Driving extends LinearOpMode {
             }
             return "";
         }
+    }
+
+    private double offset(Robot robot) {
+        return robot.getSensor().getGyro(Naming.GYRO_0_NAME).getAngularOrientation(
+                AxesReference.INTRINSIC,
+                AxesOrder.ZYX,
+                AngleUnit.DEGREES
+        ).firstAngle;
     }
 }

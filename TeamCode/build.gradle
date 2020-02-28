@@ -14,10 +14,6 @@
 // Include common definitions from above.
 apply from: '../build.common.gradle'
 
-android {
-    buildToolsVersion = '29.0.2'
-}
-
 dependencies {
     compileOnly 'org.projectlombok:lombok:1.18.10'
     annotationProcessor 'org.projectlombok:lombok:1.18.10'

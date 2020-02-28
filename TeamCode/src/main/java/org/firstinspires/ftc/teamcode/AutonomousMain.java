@@ -69,6 +69,7 @@ class AutonomousMain {
      * @param side -1 is red, 1 is blue
      */
     void all(int side) {
+        calibrateAllGyros();
         double offset = offset();
 
         // Blocks + Autonomous (In Progress)
@@ -111,6 +112,7 @@ class AutonomousMain {
      * @param wall true if we want to stay near the wall
      */
     void block(int side, boolean wall) {
+        calibrateAllGyros();
         double offset = offset();
         shared();
         sleep(500);
@@ -140,8 +142,16 @@ class AutonomousMain {
      * @param side -1 is red, 1 is blue
      */
     void foundation(int side, boolean wall) {
+        calibrateAllGyros();
+
         double offset = offset(); // Setting up the offset
-        robot.gyroDrive(Naming.GYRO_0_NAME, DRIVE_SPEED, 46, 0, true);
+
+        if (side == Naming.SIDE_BLUE) {
+            robot.gyroDrive(Naming.GYRO_0_NAME, DRIVE_SPEED_SLOW, 42, 0, true);
+        } else if (side == Naming.SIDE_RED) {
+            robot.gyroDrive(Naming.GYRO_0_NAME, DRIVE_SPEED_SLOW, 46, 0, true);
+        }
+
         sleep(500);
         robot.gyroTurn(Naming.GYRO_0_NAME, TURN_SPEED, side*90+offset);
         sleep(500);
@@ -188,6 +198,13 @@ class AutonomousMain {
             robot.getMovement().moveElevator(1);
         }
         robot.getMovement().moveElevator(0);
+    }
+
+    private void calibrateAllGyros() {
+        // Initialize gyros
+        for (String key : robot.getSensor().getGyros().keySet()) {
+            robot.getSensor().calibrateGyro(key);
+        }
     }
 
     /**

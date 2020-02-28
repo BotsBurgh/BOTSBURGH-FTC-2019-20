@@ -80,7 +80,7 @@ public class Robot {
         ElapsedTime runtime = new ElapsedTime();
         runtime.reset();
         while (linearOpMode.opModeIsActive() && !linearOpMode.isStopRequested()) {
-            if (onHeading(id, speed, angle, P_TURN_COEFF, left, right) && (linearOpMode.opModeIsActive())) {
+            if (onHeading(id, speed, angle, P_TURN_COEFF, left, right)) {
                 break;
             } else {
                 linearOpMode.telemetry.update();
@@ -204,6 +204,13 @@ public class Robot {
         if (InitRobot.MODE_4x4) {
             fl = movement.getMotor(Naming.MOTOR_FL_NAME);
             fr = movement.getMotor(Naming.MOTOR_FR_NAME);
+        }
+
+        bl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        br.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        if (InitRobot.MODE_4x4) {
+            fl.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            fr.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         }
 
         if (linearOpMode.opModeIsActive()) {
