@@ -36,6 +36,10 @@ public class CalibrationEncoder extends LinearOpMode {
             robot.getMovement().getMotor(key).setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         }
 
+        for (String key : robot.getMovement().getMotors().keySet()) {
+            robot.getMovement().getMotor(key).setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        }
+
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 

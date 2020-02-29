@@ -73,14 +73,10 @@ public class Robot {
      *                   If a relative angle is required, add/subtract from current heading.
      */
     void gyroTurn(String id, double speed, double angle) {
-        gyroTurn(id, speed, angle, true, true);
-    }
-
-    void gyroTurn(String id, double speed, double angle, boolean left, boolean right) {
         ElapsedTime runtime = new ElapsedTime();
         runtime.reset();
         while (linearOpMode.opModeIsActive() && !linearOpMode.isStopRequested()) {
-            if (onHeading(id, speed, angle, P_TURN_COEFF, left, right)) {
+            if (onHeading(id, speed, angle, P_TURN_COEFF) || !linearOpMode.opModeIsActive()) {
                 break;
             } else {
                 linearOpMode.telemetry.update();
@@ -95,19 +91,15 @@ public class Robot {
      * @param angle     Absolute Angle (in Degrees) relative to last gyro reset.
      *                  0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
      *                  If a relative angle is required, add/subtract from current heading.
-     * @param PCoeff    Proportional Gain coefficientint id
+     * @param PCoeff    Proportional Gain coefficient id
      * @return onTarget
      */
-    private boolean onHeading(String id, double speed, double angle, double PCoeff, boolean left, boolean right) {
+    private boolean onHeading(String id, double speed, double angle, double PCoeff) {
         double  error = getError(id, angle);
         double  steer;
         boolean onTarget = false;
         double  leftSpeed;
         double  rightSpeed;
-
-        double leftMod  = left ? 1 : 0;
-        double rightMod = right ? 1 : 0;
-
 
         if (Math.abs(error) <= HEADING_THRESHOLD) {
             steer      = 0.0;
@@ -126,9 +118,9 @@ public class Robot {
 
         // Send desired speeds to motors.
         if (InitRobot.MODE_4x4) {
-            movement.move2x4(leftSpeed*leftMod, rightSpeed*rightMod);
+            movement.move2x4(leftSpeed, rightSpeed);
         } else {
-            movement.move2x2(leftSpeed*leftMod, rightSpeed*rightMod);
+            movement.move2x2(leftSpeed, rightSpeed);
         }
 
         return onTarget;

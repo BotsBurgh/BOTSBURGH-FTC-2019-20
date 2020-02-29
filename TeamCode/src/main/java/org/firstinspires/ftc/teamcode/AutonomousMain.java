@@ -69,7 +69,6 @@ class AutonomousMain {
      * @param side -1 is red, 1 is blue
      */
     void all(int side) {
-        calibrateAllGyros();
         double offset = offset();
 
         // Blocks + Autonomous (In Progress)
@@ -112,7 +111,6 @@ class AutonomousMain {
      * @param wall true if we want to stay near the wall
      */
     void block(int side, boolean wall) {
-        calibrateAllGyros();
         double offset = offset();
         shared();
         sleep(500);
@@ -142,29 +140,31 @@ class AutonomousMain {
      * @param side -1 is red, 1 is blue
      */
     void foundation(int side, boolean wall) {
-        calibrateAllGyros();
 
         double offset = offset(); // Setting up the offset
 
-        if (side == Naming.SIDE_BLUE) {
-            robot.gyroDrive(Naming.GYRO_0_NAME, DRIVE_SPEED_SLOW, 42, 0, true);
-        } else if (side == Naming.SIDE_RED) {
-            robot.gyroDrive(Naming.GYRO_0_NAME, DRIVE_SPEED_SLOW, 46, 0, true);
-        }
-
+        robot.gyroDrive(Naming.GYRO_0_NAME, DRIVE_SPEED_SLOW, 43.3, 0, true);
         sleep(500);
-        robot.gyroTurn(Naming.GYRO_0_NAME, TURN_SPEED, side*90+offset);
+        robot.gyroTurn(Naming.GYRO_0_NAME, TURN_SPEED, side*100+offset);
         sleep(500);
-        robot.gyroDrive(Naming.GYRO_0_NAME, DRIVE_SPEED, 8, 0, true);
+        robot.gyroDrive(Naming.GYRO_0_NAME, DRIVE_SPEED, 6, 0, true);
         sleep(500);
         robot.gyroTurn(Naming.GYRO_0_NAME, TURN_SPEED, side*150+offset);
         sleep(500);
         robot.gyroDrive(Naming.GYRO_0_NAME, DRIVE_SPEED, 20, 0, true);
         sleep(500);
         if (wall) {
-            robot.gyroTurn(Naming.GYRO_0_NAME, TURN_SPEED, side * -128 + offset);
+            if (side == Naming.SIDE_RED) {
+                robot.gyroTurn(Naming.GYRO_0_NAME, TURN_SPEED, side * -123 + offset);
+            } else {
+                robot.gyroTurn(Naming.GYRO_0_NAME, TURN_SPEED, side * -128 + offset);
+            }
         } else {
-            robot.gyroTurn(Naming.GYRO_0_NAME, TURN_SPEED, side * -100 + offset);
+            if (side == Naming.SIDE_RED) {
+                robot.gyroTurn(Naming.GYRO_0_NAME, TURN_SPEED, side * -95 + offset);
+            } else {
+                robot.gyroTurn(Naming.GYRO_0_NAME, TURN_SPEED, side * -110 + offset);
+            }
         }
         sleep(500);
         park(side);
@@ -198,13 +198,6 @@ class AutonomousMain {
             robot.getMovement().moveElevator(1);
         }
         robot.getMovement().moveElevator(0);
-    }
-
-    private void calibrateAllGyros() {
-        // Initialize gyros
-        for (String key : robot.getSensor().getGyros().keySet()) {
-            robot.getSensor().calibrateGyro(key);
-        }
     }
 
     /**
