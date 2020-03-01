@@ -21,8 +21,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Config.InitRobot;
-import org.firstinspires.ftc.teamcode.Config.Naming;
+import org.firstinspires.ftc.teamcode.Api.Config.InitRobot;
+import org.firstinspires.ftc.teamcode.Api.Config.Naming;
 import org.firstinspires.ftc.teamcode.Api.Robot;
 
 @Autonomous(name="Autonomous Blue All", group="01-Blue Autonomous")

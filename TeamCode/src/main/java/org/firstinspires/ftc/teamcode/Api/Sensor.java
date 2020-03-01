@@ -36,7 +36,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
-import org.firstinspires.ftc.teamcode.Config.VuForiaKey;
+import org.firstinspires.ftc.teamcode.Api.Config.VuForiaKey;
 
 import java.io.File;
 import java.util.ArrayList;
