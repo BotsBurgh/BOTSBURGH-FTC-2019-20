@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Config;
 
 /**
  * The Naming class makes it easier to prevent NullPointerExceptions when adding and getting items

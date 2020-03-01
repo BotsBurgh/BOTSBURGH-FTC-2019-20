@@ -20,7 +20,7 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.Naming;
+import org.firstinspires.ftc.teamcode.Config.Naming;
 
 import java.util.HashMap;
 import java.util.Objects;
@@ -28,7 +28,6 @@ import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 /**
  * The Movement class. Interfaces with servos and motors so you don't have to

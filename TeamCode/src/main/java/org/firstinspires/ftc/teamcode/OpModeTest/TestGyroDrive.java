@@ -21,7 +21,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Config.InitRobot;
-import org.firstinspires.ftc.teamcode.Naming;
+import org.firstinspires.ftc.teamcode.Config.Naming;
 import org.firstinspires.ftc.teamcode.Api.Robot;
 
 @Autonomous(name="Gyroscope Driving Test", group="02-Test")

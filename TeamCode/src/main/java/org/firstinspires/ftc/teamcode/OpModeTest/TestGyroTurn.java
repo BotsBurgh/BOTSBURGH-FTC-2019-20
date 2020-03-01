@@ -24,7 +24,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.teamcode.Config.InitRobot;
-import org.firstinspires.ftc.teamcode.Naming;
+import org.firstinspires.ftc.teamcode.Config.Naming;
 import org.firstinspires.ftc.teamcode.Api.Robot;
 
 @Autonomous(name="Gyroscope Turning Test", group="02-Test")

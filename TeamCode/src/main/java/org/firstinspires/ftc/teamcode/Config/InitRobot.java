@@ -5,18 +5,14 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 
 import org.firstinspires.ftc.teamcode.Api.Movement;
-import org.firstinspires.ftc.teamcode.Api.MovementImpl;
 import org.firstinspires.ftc.teamcode.Api.Robot;
 import org.firstinspires.ftc.teamcode.Api.Sensor;
-
-import org.firstinspires.ftc.teamcode.Naming;
 
 import java.util.HashMap;
 import java.util.Objects;
@@ -145,24 +141,21 @@ public class InitRobot {
         gyros.put(Naming.GYRO_1_NAME, gyro1);
 
         // Add lists into the movement class
-        Movement movement = new Movement
-                .MovementBuilder()
+        Movement movement = Movement.builder()
                 .motors(motors)
                 .servos(servos)
                 .crServos(crServos)
                 .build();
 
         // Add lists into sensor class
-        Sensor sensor = new Sensor
-                .SensorBuilder()
+        Sensor sensor = Sensor.builder()
                 .colorSensors(colorSensors)
                 .webcams(webcams)
                 .gyros(gyros)
                 .build();
 
         // Add movement and sensor class into robot class
-        robot = new Robot
-                .RobotBuilder()
+        robot = Robot.builder()
                 .sensor(sensor)
                 .movement(movement)
                 .linearOpMode(l)
