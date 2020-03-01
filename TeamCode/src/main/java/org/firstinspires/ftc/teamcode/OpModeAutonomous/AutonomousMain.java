@@ -178,9 +178,9 @@ class AutonomousMain {
      * Startup function for all of the autonomous functions
      */
     private void autonomousShared() {
-        robot.getMovement().openGrabber(true);
-        sleep(1000);
         robot.getMovement().openSwivel(true);
+        sleep(1000);
+        robot.getMovement().openGrabber(true);
     }
 
     /**
