@@ -74,7 +74,7 @@ class AutonomousMain {
         double offset = offset();
 
         // Blocks + Autonomous (In Progress)
-        shared(); // Preparation for block grabbing
+        autonomousShared(); // Preparation for block grabbing
         sleep(250);
         robot.gyroDrive(Naming.GYRO_0_NAME,DRIVE_SPEED, 18.5, 0, true); // Robot approaches the block
         sleep(500); // Wait time to prepare the grabber for grabbing the block
@@ -114,8 +114,10 @@ class AutonomousMain {
      */
     void block(int side, boolean wall) {
         double offset = offset();
-        shared();
-        sleep(500);
+
+        autonomousShared();
+        sleep(1000);
+
         robot.gyroDrive(Naming.GYRO_0_NAME, DRIVE_SPEED_SLOW, 24, 0, true); // Robot approaches the block
         sleep(400);
         robot.getMovement().openGrabber(false);
@@ -175,9 +177,10 @@ class AutonomousMain {
     /**
      * Startup function for all of the autonomous functions
      */
-    private void shared() {
+    private void autonomousShared() {
         robot.getMovement().openGrabber(true);
-        robot.getMovement().openSwivel(true); // Open arm swivel
+        sleep(1000);
+        robot.getMovement().openSwivel(true);
     }
 
     /**

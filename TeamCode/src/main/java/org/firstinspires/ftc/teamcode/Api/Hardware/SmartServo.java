@@ -53,7 +53,7 @@ public class SmartServo {
                 if (this.position != position) {
                     double min = servo.getPwmRange().usPulseLower;
                     double max = servo.getPwmRange().usPulseUpper;
-                    servo.setPosition(((position-min)/max)*(max-min)+min);
+                    servo.setPosition(((position-min)/max)*(maxPos-minPos)+minPos);
                 }
             }
         }

@@ -41,16 +41,16 @@ public class Movement {
     final double DRIVE_POWER = 0.6; // How fast to drive
 
     // Elevator configuration
-    private final static double ELEVATOR_POWER = 1.00;
+    private final static double ELEVATOR_POWER   = 1.00;
 
     // Servo configuration
-    private final static int    SERVO_SLEEP = 10; // Milliseconds
-    private final static double SERVO_STEP  = 0.01;  // Degrees
-    private final static double GRABBER_OPEN = 0; // Degrees
-    private final static double GRABBER_CLOSE = 0.65; // Degrees
-    private final static double SWIVEL_OPEN = 0; // Degrees
-    private final static double SWIVEL_CLOSE = 1; // Degrees
-    private final static double FOUNDATION_OPEN = 0.3;
+    private final static int    SERVO_SLEEP      = 10; // Milliseconds
+    private final static double SERVO_STEP       = 0.01;  // Degrees
+    private final static double GRABBER_OPEN     = 0; // Degrees
+    private final static double GRABBER_CLOSE    = 0.65; // Degrees
+    private final static double SWIVEL_OPEN      = 0; // Degrees
+    private final static double SWIVEL_CLOSE     = 1; // Degrees
+    private final static double FOUNDATION_OPEN  = 0.3;
     private final static double FOUNDATION_CLOSE = 0.95;
 
 
@@ -203,10 +203,10 @@ public class Movement {
         ss = servos.get(Naming.SERVO_ROTATE_NAME);
         if (command) {
             assert ss != null;
-            ss.setPosition(0); // Opens the swivel
+            ss.setPosition(SWIVEL_OPEN); // Opens the swivel
         } else {
             assert ss != null;
-            ss.setPosition(1); // Closes the swivel
+            ss.setPosition(SWIVEL_CLOSE); // Closes the swivel
         }
     }
 
