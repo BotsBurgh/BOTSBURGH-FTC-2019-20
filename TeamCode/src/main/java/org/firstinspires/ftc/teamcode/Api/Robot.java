@@ -146,7 +146,7 @@ public class Robot {
             error -= 360;
         }
 
-        while (error <= -180) {
+        while (error < -180) {
             error += 360;
         }
 
