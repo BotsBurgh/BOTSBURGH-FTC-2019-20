@@ -20,7 +20,9 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.Config.Naming;
+import org.firstinspires.ftc.teamcode.Api.Config.Naming;
+import org.firstinspires.ftc.teamcode.Api.Hardware.SmartMotor;
+import org.firstinspires.ftc.teamcode.Api.Hardware.SmartServo;
 
 import java.util.HashMap;
 import java.util.Objects;
@@ -79,17 +81,17 @@ public class Movement {
      (Unless if you know what you are doing)
      */
 
-    @Getter(AccessLevel.PUBLIC) private HashMap<String, DcMotor> motors;
-    @Getter(AccessLevel.PUBLIC) private HashMap<String, Servo> servos;
+    @Getter(AccessLevel.PUBLIC) private HashMap<String, SmartMotor> motors;
+    @Getter(AccessLevel.PUBLIC) private HashMap<String, SmartServo> servos;
     @Getter(AccessLevel.PUBLIC) private HashMap <String, CRServo> crServos;
 
     // Getters
 
-    public DcMotor getMotor(String id) {
+    public SmartMotor getMotor(String id) {
         return motors.get(id);
     }
 
-    public Servo getServo(String id) {
+    public SmartServo getServo(String id) {
         return servos.get(id);
     }
 
@@ -181,7 +183,7 @@ public class Movement {
      * @param command true to open the grabber or false to close the grabber
      */
     public void openGrabber(boolean command) {
-        Servo sg; // sg: Servo grabber
+        SmartServo sg; // sg: Servo grabber
         sg = servos.get(Naming.SERVO_GRABBER_NAME);
         if (command) {
             assert sg != null;
@@ -197,7 +199,7 @@ public class Movement {
      * @param command true to open the swivel or false to close the swivel
      */
     public void openSwivel(boolean command) {
-        Servo ss; // ss: Servo Swivel
+        SmartServo ss; // ss: Servo Swivel
         ss = servos.get(Naming.SERVO_ROTATE_NAME);
         if (command) {
             assert ss != null;
@@ -209,7 +211,7 @@ public class Movement {
     }
 
     public void grabFoundation(boolean command) {
-        Servo slfn, srfn;
+        SmartServo slfn, srfn;
         slfn = servos.get(Naming.SERVO_FOUNDATION_LEFT_NEW_NAME); // sfln: Servo Left Foundation New
         srfn = servos.get(Naming.SERVO_FOUNDATION_RIGHT_NEW_NAME); // sfrn: Servo Right Foundation New
         if (command) { // Grabs foundation

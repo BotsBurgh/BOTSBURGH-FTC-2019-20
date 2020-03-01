@@ -21,7 +21,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Config.InitRobot;
+import org.firstinspires.ftc.teamcode.Api.Config.InitRobot;
 import org.firstinspires.ftc.teamcode.Api.Robot;
 
 @TeleOp(name="Encoder Calibration", group="10-Calibration")
@@ -39,7 +39,7 @@ public class CalibrationEncoder extends LinearOpMode {
         }
 
         for (String key : robot.getMovement().getMotors().keySet()) {
-            robot.getMovement().getMotor(key).setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            robot.getMovement().getMotor(key).getMotor().setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         }
 
         telemetry.addData("Status", "Initialized");
@@ -52,7 +52,7 @@ public class CalibrationEncoder extends LinearOpMode {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             for (String key : robot.getMovement().getMotors().keySet()) {
                 String formattedKey = key.concat(": ");
-                telemetry.addData(formattedKey, robot.getMovement().getMotor(key).getCurrentPosition());
+                telemetry.addData(formattedKey, robot.getMovement().getMotor(key).getMotor().getCurrentPosition());
             }
 
             telemetry.update();

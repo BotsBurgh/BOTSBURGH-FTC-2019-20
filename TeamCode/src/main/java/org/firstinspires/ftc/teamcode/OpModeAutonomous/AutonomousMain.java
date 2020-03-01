@@ -19,7 +19,7 @@ package org.firstinspires.ftc.teamcode.OpModeAutonomous;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-import org.firstinspires.ftc.teamcode.Config.Naming;
+import org.firstinspires.ftc.teamcode.Api.Config.Naming;
 import org.firstinspires.ftc.teamcode.Api.Robot;
 
 /**

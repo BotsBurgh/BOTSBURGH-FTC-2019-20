@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Config;
+package org.firstinspires.ftc.teamcode.Api.Config;
 
 public class VuForiaKey {
     public static final String VUFORIAKEY =

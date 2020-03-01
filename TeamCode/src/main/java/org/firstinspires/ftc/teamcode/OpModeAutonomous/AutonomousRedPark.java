@@ -20,8 +20,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Config.InitRobot;
-import org.firstinspires.ftc.teamcode.Config.Naming;
+import org.firstinspires.ftc.teamcode.Api.Config.InitRobot;
+import org.firstinspires.ftc.teamcode.Api.Config.Naming;
 import org.firstinspires.ftc.teamcode.Api.Robot;
 
 @Autonomous(name="Autonomous Red Park", group="00-Red Autonomous")

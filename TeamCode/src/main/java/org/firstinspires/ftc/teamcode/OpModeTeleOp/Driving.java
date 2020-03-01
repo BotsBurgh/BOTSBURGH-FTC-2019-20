@@ -27,8 +27,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.teamcode.Api.Robot;
-import org.firstinspires.ftc.teamcode.Config.InitRobot;
-import org.firstinspires.ftc.teamcode.Config.Naming;
+import org.firstinspires.ftc.teamcode.Api.Config.InitRobot;
+import org.firstinspires.ftc.teamcode.Api.Config.Naming;
 
 @TeleOp(name="Driving", group="00-TeleOp")
 public class Driving extends LinearOpMode {

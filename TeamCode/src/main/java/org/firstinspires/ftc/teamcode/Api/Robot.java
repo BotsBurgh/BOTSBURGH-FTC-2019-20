@@ -27,8 +27,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.teamcode.Config.InitRobot;
-import org.firstinspires.ftc.teamcode.Config.Naming;
+import org.firstinspires.ftc.teamcode.Api.Config.InitRobot;
+import org.firstinspires.ftc.teamcode.Api.Config.Naming;
+import org.firstinspires.ftc.teamcode.Api.Hardware.SmartMotor;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -146,7 +147,7 @@ public class Robot {
             error -= 360;
         }
 
-        while (error <= -180) {
+        while (error < -180) {
             error += 360;
         }
 
@@ -187,7 +188,7 @@ public class Robot {
         double  error;
         double  steer;
         double  BLSpeed, BRSpeed, FLSpeed = 0, FRSpeed = 0;
-        DcMotor bl, br, fl, fr;
+        SmartMotor bl, br, fl, fr;
         distance = -distance;
 
         ElapsedTime runtime = new ElapsedTime();
