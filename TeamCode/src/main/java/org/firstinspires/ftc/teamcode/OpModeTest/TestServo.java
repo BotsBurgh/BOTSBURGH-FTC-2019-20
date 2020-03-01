@@ -14,46 +14,44 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.OpModeTest;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.AnalogInput;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.hardware.Servo;
 
-@TeleOp(name="Encoder Calibration", group="10-Calibration")
-public class CalibrationEncoder extends LinearOpMode {
-    // Declare OpMode Members
-    private ElapsedTime runtime = new ElapsedTime();
-
+@TeleOp(name="ServoTester", group="20-Test")
+public class TestServo extends LinearOpMode {
     @Override
     public void runOpMode() {
-        InitRobot initializer = new InitRobot(CalibrationEncoder.this, false);
-        Robot robot = initializer.init();
-
-        for (String key : robot.getMovement().getMotors().keySet()) {
-            robot.getMovement().getMotor(key).setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        }
-
-        for (String key : robot.getMovement().getMotors().keySet()) {
-            robot.getMovement().getMotor(key).setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        }
+        // Servo s1 = hardwareMap.get(Servo.class, "s1");
+        Servo s2 = hardwareMap.get(Servo.class, "s2");
+        Servo s3 = hardwareMap.get(Servo.class, "s3");
+        Servo s4 = hardwareMap.get(Servo.class, "s4");
+        Servo s5 = hardwareMap.get(Servo.class, "s5");
+        Servo s6 = hardwareMap.get(Servo.class, "s6");
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
-
         waitForStart();
-        runtime.reset();
 
-        while (opModeIsActive()) {
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
-            for (String key : robot.getMovement().getMotors().keySet()) {
-                String formattedKey = key.concat(": ");
-                telemetry.addData(formattedKey, robot.getMovement().getMotor(key).getCurrentPosition());
+        while(opModeIsActive()) {
+            if (gamepad1.x) {
+                // s1.setPosition(90);
+                s2.setPosition(90);
+                s3.setPosition(90);
+                s4.setPosition(90);
+                s5.setPosition(90);
+                s6.setPosition(90);
+
+                sleep(1000);
+                // s1.setPosition(0);
+                s2.setPosition(0);
+                s3.setPosition(0);
+                s4.setPosition(0);
+                s5.setPosition(0);
+                s6.setPosition(0);
             }
-
-            telemetry.update();
         }
     }
 }

@@ -14,32 +14,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.OpModeCalibration;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name="Autonomous Red Block Bridge", group="00-Red Autonomous")
-public class AutonomousRedBlockBridge extends LinearOpMode {
+@TeleOp(name="Potentiometer Calibration", group="10-Calibration")
+public class CalibrationPotentiometer extends LinearOpMode {
     // Declare OpMode Members
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
     public void runOpMode() {
-        InitRobot initializer = new InitRobot(AutonomousRedBlockBridge.this, false);
-        Robot robot = initializer.init();
-        AutonomousMain am = new AutonomousMain(robot);
+        // Get potentiometer
+        AnalogInput pot = hardwareMap.get(AnalogInput.class, "pot");
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
 
-        am.block(Naming.SIDE_RED);
-
-        //initializer.deInit();
+        while (opModeIsActive()) {
+            telemetry.addData("Potentiometer", pot.getVoltage());
+            telemetry.addData("Status", "Run Time: " + runtime.toString());
+            telemetry.update();
+        }
     }
 }

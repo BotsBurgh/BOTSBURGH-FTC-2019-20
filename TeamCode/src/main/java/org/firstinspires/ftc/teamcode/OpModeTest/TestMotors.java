@@ -14,52 +14,50 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.OpModeTest;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name="Color Sensor Calibration", group="10-Calibration")
-/*
- * The main purpose of this is to calibrate our color sensors. We found that ambient red was causing
- * issues, so we made this file to get proper values for our Sensor class.
- */
-public class CalibrationColorSensor extends LinearOpMode {
-    private static final double RED_THESH =   500;
-    private static final double GREEN_THESH = 700;
-    private static final double BLUE_THESH =  600;
+@TeleOp(name="Motor Testing", group="20-Test")
+public class TestMotors extends LinearOpMode {
+    // Declare OpMode Members
+    private static final double MOTOR_TEST_POWER = 1.0; // Power to test motors with
+    private ElapsedTime runtime = new ElapsedTime();
 
-    double red, green, blue;
-    int def;
     @Override
     public void runOpMode() {
-        ColorSensor cl1 = hardwareMap.get(ColorSensor.class, "cl");
+        DcMotor m1, m2, m3, m4;
+
+        m1 = hardwareMap.get(DcMotor.class, "m1");
+        m2 = hardwareMap.get(DcMotor.class, "m2");
+        m3 = hardwareMap.get(DcMotor.class, "m3");
+        m4 = hardwareMap.get(DcMotor.class, "m4");
+
+        telemetry.addData("Status", "Initialized");
+        telemetry.update();
 
         waitForStart();
+        runtime.reset();
 
         while (opModeIsActive()) {
-            // do stuff
-            red   = cl1.red();
-            green = cl1.green();
-            blue  = cl1.blue();
-
-            if ((red>blue) && (red>green) && (red>RED_THESH)) {
-                def =  0;
-            } else if ((green>red) && (green>blue) && (green>GREEN_THESH)) {
-                def = 1;
-            } else if ((blue>red) && (blue>green) && (blue>BLUE_THESH)) {
-                def = 2;
+            // Send power to motors to check which ones are working
+            if (gamepad1.x) {
+                m1.setPower(MOTOR_TEST_POWER);
+                m2.setPower(MOTOR_TEST_POWER);
+                m3.setPower(MOTOR_TEST_POWER);
+                m4.setPower(MOTOR_TEST_POWER);
             } else {
-                def = 3;
+                m1.setPower(0);
+                m2.setPower(0);
+                m3.setPower(0);
+                m4.setPower(0);
             }
-            telemetry.addData("Red", red);
-            telemetry.addData("Green", green);
-            telemetry.addData("Blue", blue);
-            telemetry.addData("Def", def);
 
+            telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.update();
-            sleep(50);
         }
     }
 }

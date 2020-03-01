@@ -14,20 +14,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.OpModeAutonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name="Autonomous Blue Foundation Bridge", group="01-Blue Autonomous")
-public class AutonomousBlueFoundationBridge extends LinearOpMode {
+import org.firstinspires.ftc.teamcode.Config.InitRobot;
+import org.firstinspires.ftc.teamcode.Naming;
+import org.firstinspires.ftc.teamcode.Api.Robot;
+
+@Autonomous(name="Autonomous Red Block Bridge", group="00-Red Autonomous")
+public class AutonomousRedBlockBridge extends LinearOpMode {
     // Declare OpMode Members
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
     public void runOpMode() {
-        InitRobot initializer = new InitRobot(AutonomousBlueFoundationBridge.this, false);
+        InitRobot initializer = new InitRobot(AutonomousRedBlockBridge.this, false);
         Robot robot = initializer.init();
         AutonomousMain am = new AutonomousMain(robot);
 
@@ -38,7 +42,7 @@ public class AutonomousBlueFoundationBridge extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        am.foundation(Naming.SIDE_BLUE);
+        am.block(Naming.SIDE_RED);
 
         //initializer.deInit();
     }

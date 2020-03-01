@@ -14,22 +14,24 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.OpModeAutonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name="Autonomous Blue All", group="01-Blue Autonomous")
-@Disabled
-public class AutonomousBlueAll extends LinearOpMode {
+import org.firstinspires.ftc.teamcode.Config.InitRobot;
+import org.firstinspires.ftc.teamcode.Naming;
+import org.firstinspires.ftc.teamcode.Api.Robot;
+
+@Autonomous(name="Autonomous Red Block Wall", group="00-Red Autonomous")
+public class AutonomousRedBlockWall extends LinearOpMode {
     // Declare OpMode Members
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
     public void runOpMode() {
-        InitRobot initializer = new InitRobot(AutonomousBlueAll.this, false);
+        InitRobot initializer = new InitRobot(AutonomousRedBlockWall.this, false);
         Robot robot = initializer.init();
         AutonomousMain am = new AutonomousMain(robot);
 
@@ -40,7 +42,7 @@ public class AutonomousBlueAll extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        am.all(Naming.SIDE_BLUE);
+        am.block(Naming.SIDE_RED, true);
 
         //initializer.deInit();
     }

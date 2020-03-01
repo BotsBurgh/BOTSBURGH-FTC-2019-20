@@ -1,43 +1,50 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Config;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 
-import java.util.HashMap;
+import org.firstinspires.ftc.teamcode.Api.Movement;
+import org.firstinspires.ftc.teamcode.Api.MovementImpl;
+import org.firstinspires.ftc.teamcode.Api.Robot;
+import org.firstinspires.ftc.teamcode.Api.Sensor;
 
-// TODO: JavaDoc
+import org.firstinspires.ftc.teamcode.Naming;
+
+import java.util.HashMap;
+import java.util.Objects;
 
 /**
  * The Robot Initializer. Place initialzation code here. This prevents needing to sync the init code
  * between all opmodes.
  */
-class InitRobot {
-    static final boolean MODE_4x4 = false; // True if you are using 4x4 drive
+public class InitRobot {
+    public static final boolean MODE_4x4 = false; // True if you are using 4x4 drive
 
     private LinearOpMode l;
 
     private boolean vuforia;
 
-    InitRobot(LinearOpMode linearOpMode, Boolean vuforiaEnabled) {
+    public InitRobot(LinearOpMode linearOpMode, Boolean vuforiaEnabled) {
         this.l = linearOpMode;
         this.vuforia = vuforiaEnabled;
     }
 
-    InitRobot(LinearOpMode linearOpMode) {
+    public InitRobot(LinearOpMode linearOpMode) {
         this(linearOpMode, true);
     }
 
-    Robot robot;
+    private Robot robot;
 
     // TODO: JavaDoc
-    Robot init() {
+    public Robot init() {
         /*
         * #######                   ######
         * #       #####  # #####    #     # ###### #       ####  #    #
@@ -154,7 +161,8 @@ class InitRobot {
                 .build();
 
         // Add movement and sensor class into robot class
-        robot = new Robot.RobotBuilder()
+        robot = new Robot
+                .RobotBuilder()
                 .sensor(sensor)
                 .movement(movement)
                 .linearOpMode(l)
@@ -162,7 +170,7 @@ class InitRobot {
 
         // Send power to servos so they don't move
         for (String key : servos.keySet()) {
-            robot.getMovement().setServo(key, servos.get(key).getPosition());
+            robot.getMovement().setServo(key, Objects.requireNonNull(servos.get(key)).getPosition());
         }
 
         // Initialize gyros

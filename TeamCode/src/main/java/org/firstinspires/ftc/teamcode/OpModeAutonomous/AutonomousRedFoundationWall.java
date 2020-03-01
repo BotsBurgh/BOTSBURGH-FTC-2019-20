@@ -14,44 +14,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.OpModeAutonomous;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name="ServoTester", group="20-Test")
-public class TestServo extends LinearOpMode {
+import org.firstinspires.ftc.teamcode.Config.InitRobot;
+import org.firstinspires.ftc.teamcode.Naming;
+import org.firstinspires.ftc.teamcode.Api.Robot;
+
+@Autonomous(name="Autonomous Red Foundation Wall", group="00-Red Autonomous")
+public class AutonomousRedFoundationWall extends LinearOpMode {
+    // Declare OpMode Members
+    private ElapsedTime runtime = new ElapsedTime();
+
     @Override
     public void runOpMode() {
-        // Servo s1 = hardwareMap.get(Servo.class, "s1");
-        Servo s2 = hardwareMap.get(Servo.class, "s2");
-        Servo s3 = hardwareMap.get(Servo.class, "s3");
-        Servo s4 = hardwareMap.get(Servo.class, "s4");
-        Servo s5 = hardwareMap.get(Servo.class, "s5");
-        Servo s6 = hardwareMap.get(Servo.class, "s6");
+        InitRobot initializer = new InitRobot(AutonomousRedFoundationWall.this, false);
+        Robot robot = initializer.init();
+        AutonomousMain am = new AutonomousMain(robot);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
+
+        // Wait for the game to start (driver presses PLAY)
         waitForStart();
+        runtime.reset();
 
-        while(opModeIsActive()) {
-            if (gamepad1.x) {
-                // s1.setPosition(90);
-                s2.setPosition(90);
-                s3.setPosition(90);
-                s4.setPosition(90);
-                s5.setPosition(90);
-                s6.setPosition(90);
+        am.foundation(Naming.SIDE_RED, true);
 
-                sleep(1000);
-                // s1.setPosition(0);
-                s2.setPosition(0);
-                s3.setPosition(0);
-                s4.setPosition(0);
-                s5.setPosition(0);
-                s6.setPosition(0);
-            }
-        }
+        //initializer.deInit();
     }
 }

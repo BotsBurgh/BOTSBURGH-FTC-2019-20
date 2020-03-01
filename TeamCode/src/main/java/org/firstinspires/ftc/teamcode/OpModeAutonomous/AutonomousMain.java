@@ -14,11 +14,13 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.OpModeAutonomous;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.teamcode.Naming;
+import org.firstinspires.ftc.teamcode.Api.Robot;
 
 /**
  * This file makes it easier to prevent repetition between autonomous files. By keeping everything
@@ -155,7 +157,7 @@ class AutonomousMain {
         sleep(500);
         if (wall) {
             if (side == Naming.SIDE_RED) {
-                robot.gyroTurn(Naming.GYRO_0_NAME, TURN_SPEED, side * -123 + offset);
+                robot.gyroTurn(Naming.GYRO_0_NAME, TURN_SPEED, side * -125 + offset);
             } else {
                 robot.gyroTurn(Naming.GYRO_0_NAME, TURN_SPEED, side * -128 + offset);
             }

@@ -14,33 +14,52 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.OpModeCalibration;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.AnalogInput;
-import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 
-@TeleOp(name="Potentiometer Calibration", group="10-Calibration")
-public class CalibrationPotentiometer extends LinearOpMode {
-    // Declare OpMode Members
-    private ElapsedTime runtime = new ElapsedTime();
+@TeleOp(name="Color Sensor Calibration", group="10-Calibration")
+/*
+ * The main purpose of this is to calibrate our color sensors. We found that ambient red was causing
+ * issues, so we made this file to get proper values for our Sensor class.
+ */
+public class CalibrationColorSensor extends LinearOpMode {
+    private static final double RED_THESH =   500;
+    private static final double GREEN_THESH = 700;
+    private static final double BLUE_THESH =  600;
 
+    double red, green, blue;
+    int def;
     @Override
     public void runOpMode() {
-        // Get potentiometer
-        AnalogInput pot = hardwareMap.get(AnalogInput.class, "pot");
-
-        telemetry.addData("Status", "Initialized");
-        telemetry.update();
+        ColorSensor cl1 = hardwareMap.get(ColorSensor.class, "cl");
 
         waitForStart();
-        runtime.reset();
 
         while (opModeIsActive()) {
-            telemetry.addData("Potentiometer", pot.getVoltage());
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
+            // do stuff
+            red   = cl1.red();
+            green = cl1.green();
+            blue  = cl1.blue();
+
+            if ((red>blue) && (red>green) && (red>RED_THESH)) {
+                def =  0;
+            } else if ((green>red) && (green>blue) && (green>GREEN_THESH)) {
+                def = 1;
+            } else if ((blue>red) && (blue>green) && (blue>BLUE_THESH)) {
+                def = 2;
+            } else {
+                def = 3;
+            }
+            telemetry.addData("Red", red);
+            telemetry.addData("Green", green);
+            telemetry.addData("Blue", blue);
+            telemetry.addData("Def", def);
+
             telemetry.update();
+            sleep(50);
         }
     }
 }

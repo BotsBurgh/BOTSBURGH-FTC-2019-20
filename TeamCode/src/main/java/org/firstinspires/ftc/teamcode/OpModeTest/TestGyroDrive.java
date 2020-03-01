@@ -14,24 +14,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.OpModeTest;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name = "BNO055 IMU Calibration", group = "10-Calibration")
-public class CalibrationBNO055IMU extends LinearOpMode {
+import org.firstinspires.ftc.teamcode.Config.InitRobot;
+import org.firstinspires.ftc.teamcode.Naming;
+import org.firstinspires.ftc.teamcode.Api.Robot;
 
-    // Declare OpMode members.
+@Autonomous(name="Gyroscope Driving Test", group="02-Test")
+public class TestGyroDrive extends LinearOpMode {
+    // Declare OpMode Members
     private ElapsedTime runtime = new ElapsedTime();
+
+    private static final double DRIVE_SPEED = 0.5;
 
     @Override
     public void runOpMode() {
-        InitRobot initializer = new InitRobot(CalibrationBNO055IMU.this, false);
-
+        InitRobot initializer = new InitRobot(TestGyroDrive.this, false);
         Robot robot = initializer.init();
+        
+        // Initialize gyros
+        robot.getSensor().calibrateGyro(Naming.GYRO_0_NAME);
+        robot.getSensor().calibrateGyro(Naming.GYRO_1_NAME);
+        robot.getSensor().initGyro(Naming.GYRO_0_NAME);
+        robot.getSensor().initGyro(Naming.GYRO_1_NAME);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -40,15 +49,6 @@ public class CalibrationBNO055IMU extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        telemetry.addData("> ", "Calibrating...");
-        telemetry.update();
-
-        // Initialize gyros
-        for (String key : robot.getSensor().getGyros().keySet()) {
-            robot.getSensor().initGyro(key);
-        }
-
-        telemetry.addData("> ", "Done calibrating");
-        telemetry.update();
+        robot.gyroDrive(Naming.GYRO_0_NAME, DRIVE_SPEED,18, robot.getSensor().getGyro(Naming.GYRO_0_NAME).getAngularOrientation().firstAngle, true);
     }
 }

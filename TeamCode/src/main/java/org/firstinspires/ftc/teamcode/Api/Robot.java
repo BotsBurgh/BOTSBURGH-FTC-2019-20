@@ -14,7 +14,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Api;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -27,6 +27,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.teamcode.Config.InitRobot;
+import org.firstinspires.ftc.teamcode.Naming;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -72,7 +74,7 @@ public class Robot {
      *                   0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
      *                   If a relative angle is required, add/subtract from current heading.
      */
-    void gyroTurn(String id, double speed, double angle) {
+    public void gyroTurn(String id, double speed, double angle) {
         ElapsedTime runtime = new ElapsedTime();
         runtime.reset();
         while (linearOpMode.opModeIsActive() && !linearOpMode.isStopRequested()) {
@@ -160,7 +162,7 @@ public class Robot {
      *                   0 = fwd. +ve is CCW from fwd. -ve is CW from forward.
      *                   If a relative angle is required, add/subtract from current heading.
      */
-    void gyroDrive(String id, double speed, double distance, double angle) {
+    public void gyroDrive(String id, double speed, double distance, double angle) {
         gyroDrive(id, speed, distance, angle, false);
     }
 
@@ -178,7 +180,7 @@ public class Robot {
      *                   If a relative angle is required, add/subtract from current heading.
      * @param debug      Used to debug this function
      */
-    void gyroDrive(String id, double speed, double distance, double angle, boolean debug) {
+    public void gyroDrive(String id, double speed, double distance, double angle, boolean debug) {
         int     newBLTarget, newBRTarget, newFLTarget = 0, newFRTarget = 0;
         int     moveCounts;
         double  max;
@@ -341,7 +343,7 @@ public class Robot {
      * Turn using VuForia. Not tested yet.
      * @param degrees Degrees to turn
      */
-    void vuForiaTurn(double TURN_POWER, double degrees) {
+    public void vuForiaTurn(double TURN_POWER, double degrees) {
         Orientation startingOri = sensor.getVuforiaRotation();
         double startingDegrees = startingOri.thirdAngle; // x
         double currentDegrees = sensor.getVuforiaRotation().thirdAngle;
@@ -368,7 +370,7 @@ public class Robot {
      * Go to a position on the field using VuForia. Not tested yet
      * @param targetPos VectorF to go to
      */
-    void vuForiaGoto(double DRIVE_SPEED, VectorF targetPos) {
+    public void vuForiaGoto(double DRIVE_SPEED, VectorF targetPos) {
         VectorF startingPos = sensor.getVuforiaPosition();
         Orientation startingOri = sensor.getVuforiaRotation();
 

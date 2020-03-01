@@ -14,39 +14,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Api;
 
-import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
+import com.qualcomm.robotcore.hardware.AnalogInput;
+import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
+import com.qualcomm.robotcore.util.ReadWriteFile;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
 import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
-import com.qualcomm.robotcore.hardware.AnalogInput;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
-import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
-import com.qualcomm.robotcore.util.ReadWriteFile;
-
-import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
+import org.firstinspires.ftc.teamcode.Config.VuForiaKey;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 
 import static org.firstinspires.ftc.robotcore.external.navigation.AngleUnit.DEGREES;
 import static org.firstinspires.ftc.robotcore.external.navigation.AxesOrder.XYZ;
@@ -60,6 +61,7 @@ import static org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocaliz
  * information.
  */
 @Builder
+public
 class Sensor {
     // Potentiometer configuration
     private static final int    POT_MAX = 270;   // Max range in degrees
@@ -151,18 +153,18 @@ class Sensor {
     private boolean targetVisible;
 
     // TODO: Add more sensor capability
-    @Getter private HashMap<String, BNO055IMU> gyros; // Initialize gyroscopes
-    @Getter private HashMap<String, AnalogInput> pots; // Initialize potentiometers
-    @Getter private HashMap<String, DigitalChannel> buttons; // Initialize buttons
-    @Getter private HashMap<String, ColorSensor> colorSensors; // Initialize color sensors
-    @Getter private HashMap<String, DistanceSensor> distances; // Initialize distance sensors
-    @Getter private HashMap<String, WebcamName> webcams; // Initialize webcams
+    @Getter(AccessLevel.PUBLIC) private HashMap<String, BNO055IMU> gyros; // Initialize gyroscopes
+    @Getter(AccessLevel.PUBLIC) private HashMap<String, AnalogInput> pots; // Initialize potentiometers
+    @Getter(AccessLevel.PUBLIC) private HashMap<String, DigitalChannel> buttons; // Initialize buttons
+    @Getter(AccessLevel.PUBLIC) private HashMap<String, ColorSensor> colorSensors; // Initialize color sensors
+    @Getter(AccessLevel.PUBLIC) private HashMap<String, DistanceSensor> distances; // Initialize distance sensors
+    @Getter(AccessLevel.PUBLIC) private HashMap<String, WebcamName> webcams; // Initialize webcams
 
     /**
      * Gets the RGB value of the color sensor
      * @return 0 if red, 1 if green, 2 if blue, 3 if none
      */
-    int getRGB(String id, double redThresh, double greenThresh, double blueThresh) {
+    public int getRGB(String id, double redThresh, double greenThresh, double blueThresh) {
         double red   = getRed(id);
         double green = getGreen(id);
         double blue  = getBlue(id);
@@ -187,11 +189,11 @@ class Sensor {
      * Gets the RGB value of the color sensor
      * @return 0 if red, 1 if green, 2 if blue, 3 if none
      */
-    int getRGB(String id) {
+    public int getRGB(String id) {
         return getRGB(id, RED_THESH, GREEN_THESH, BLUE_THESH);
     }
 
-    BNO055IMU getGyro(String id) {
+    public BNO055IMU getGyro(String id) {
         return gyros.get(id);
     }
 
@@ -200,8 +202,8 @@ class Sensor {
      * @param id ID of the color sensor
      * @return Boolean on if the sensor detects red or not
      */
-    int getRed(String id) {
-        return colorSensors.get(id).red();
+    public int getRed(String id) {
+        return Objects.requireNonNull(colorSensors.get(id)).red();
     }
 
     /**
@@ -209,8 +211,8 @@ class Sensor {
      * @param id ID of the color sensor
      * @return Boolean on if the sensor detects green or not
      */
-    int getGreen(String id) {
-        return colorSensors.get(id).green();
+    public int getGreen(String id) {
+        return Objects.requireNonNull(colorSensors.get(id)).green();
     }
 
     /**
@@ -218,8 +220,8 @@ class Sensor {
      * @param id ID of the color sensor
      * @return Boolean on if the sensor detects blue or not
      */
-    int getBlue(String id) {
-        return colorSensors.get(id).blue();
+    public int getBlue(String id) {
+        return Objects.requireNonNull(colorSensors.get(id)).blue();
     }
 
     /**
@@ -227,8 +229,8 @@ class Sensor {
      * @param id ID of the button
      * @return Boolean of if the button is pressed or not
      */
-    boolean getButton(String id) {
-        return !(buttons.get(id).getState());
+    public boolean getButton(String id) {
+        return !(Objects.requireNonNull(buttons.get(id)).getState());
     }
 
     /**
@@ -236,37 +238,38 @@ class Sensor {
      * @param id ID of the potentiometer
      * @return Degrees of the potentiometer
      */
-    double getPotDeg(String id) {
-        return (POT_MAX/(Vmax-Vmin))*(pots.get(id).getVoltage()-Vmin); // Converts voltage to angle (degrees)
+    public double getPotDeg(String id) {
+        return (POT_MAX/(Vmax-Vmin))*(Objects.requireNonNull(pots.get(id)).getVoltage()-Vmin); // Converts voltage to angle (degrees)
     }
 
     /**
      * Initializes the gyroscope.
      * @param id ID of the gyroscope
      */
-    void initGyro(String id) {
+    public void initGyro(String id) {
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         parameters.calibrationDataFile = String.format(Locale.ENGLISH, "BNO055IMUCalibration%s.json", id);
         parameters.loggingEnabled      = true;
         parameters.loggingTag          = "IMU";
+        parameters.mode                = BNO055IMU.SensorMode.IMU;
         parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
 
-        gyros.get(id).initialize(parameters);
+        Objects.requireNonNull(gyros.get(id)).initialize(parameters);
     }
 
     /**
      * Calibrates a gyroscope
      * @param id ID of the gyroscope to calibrate
      */
-    void calibrateGyro(String id) {
+    public void calibrateGyro(String id) {
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.loggingEnabled = true;
         parameters.loggingTag     = "IMU";
-        gyros.get(id).initialize(parameters);
+        Objects.requireNonNull(gyros.get(id)).initialize(parameters);
 
-        BNO055IMU.CalibrationData calibrationData = gyros.get(id).readCalibrationData();
+        BNO055IMU.CalibrationData calibrationData = Objects.requireNonNull(gyros.get(id)).readCalibrationData();
         String filename = String.format(Locale.ENGLISH, "BNO055IMUCalibration%s.json", id);
         File file = AppUtil.getInstance().getSettingsFile(filename);
         ReadWriteFile.writeFile(file, calibrationData.serialize());
@@ -277,7 +280,7 @@ class Sensor {
      * @param cameraMonitorViewId Camera screen ID (usually 0)
      * @param webcamId Webcam ID
      */
-    void initVuforia(int cameraMonitorViewId, int webcamId) {
+    public void initVuforia(int cameraMonitorViewId, int webcamId) {
         // Probably needs to be called only once to
         // initialize. Not really tested yet. It's gonna cause some issues, so we're gonna have to
         // add some type of check step if to make sure it has not already been initialized.
@@ -469,7 +472,7 @@ class Sensor {
      * Gets the position of the robot relative tot he field using VuForia
      * @return A VectorF with the position of the robot
      */
-    VectorF getVuforiaPosition() {
+    public VectorF getVuforiaPosition() {
         VectorF translation;
         targetVisible = false;
         for (VuforiaTrackable trackable : allTrackables) {
@@ -500,7 +503,7 @@ class Sensor {
      * Gets the orientation of the robot relative to the field
      * @return An Orientation of the robots
      */
-    Orientation getVuforiaRotation() {
+    public Orientation getVuforiaRotation() {
         Orientation rotation;
         targetVisible = false;
         for (VuforiaTrackable trackable : allTrackables) {
@@ -531,7 +534,7 @@ class Sensor {
      * Gets the locations of the sky stones with VuForia and TensorFlow.
      * @return An array of positions. 0 is top, 1 is left, 2 is right, 3 is bottom
      */
-    ArrayList<ArrayList<Float>> getTfodPositions() {
+    public ArrayList<ArrayList<Float>> getTfodPositions() {
         /*
         {
             { distance from top of the first skystone, left, right, bottom }
@@ -570,7 +573,7 @@ class Sensor {
     /**
      * Initialize the TensorFlow Object Detection engine.
      */
-    void initTfod(int tfodMonitorViewId) {
+    public void initTfod(int tfodMonitorViewId) {
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
         tfodParameters.minimumConfidence = 0.8;
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
@@ -583,14 +586,14 @@ class Sensor {
     /**
      * Deactivates VuForia. Run once at the end of the OpMode
      */
-    void deactivateVuforia() {
+    public void deactivateVuforia() {
         targetsSkyStone.deactivate();
     }
 
     /**
      * Deactivates TensorFlow object detection. One once at the end of the OpMode.
      */
-    void deactivateTfod() {
+    public void deactivateTfod() {
         tfod.deactivate();
     }
 }

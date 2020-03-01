@@ -14,25 +14,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.OpModeAutonomous;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name="Gyroscope Test", group="20-Test")
-public class TestGyro extends LinearOpMode {
+import org.firstinspires.ftc.teamcode.Config.InitRobot;
+import org.firstinspires.ftc.teamcode.Naming;
+import org.firstinspires.ftc.teamcode.Api.Robot;
+
+@Autonomous(name="Autonomous Blue All", group="01-Blue Autonomous")
+@Disabled
+public class AutonomousBlueAll extends LinearOpMode {
     // Declare OpMode Members
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
     public void runOpMode() {
-        InitRobot initializer = new InitRobot(TestGyro.this);
+        InitRobot initializer = new InitRobot(AutonomousBlueAll.this, false);
         Robot robot = initializer.init();
-
-        // Initialize Gyroscope
-        robot.getSensor().initGyro(Naming.GYRO_0_NAME);
-        robot.getSensor().initGyro(Naming.GYRO_1_NAME);
+        AutonomousMain am = new AutonomousMain(robot);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -41,13 +44,8 @@ public class TestGyro extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        // run until the end of the match (driver presses STOP)
-        while (opModeIsActive()) {
-            // Do stuff here
-            telemetry.addData("Gyroscope X", robot.getSensor().getGyro(Naming.GYRO_0_NAME).getAngularOrientation().thirdAngle);
-            telemetry.addData("Gyroscope Y", robot.getSensor().getGyro(Naming.GYRO_0_NAME).getAngularOrientation().secondAngle);
-            telemetry.addData("Gyroscope Z", robot.getSensor().getGyro(Naming.GYRO_0_NAME).getAngularOrientation().firstAngle);
-            telemetry.update();
-        }
+        am.all(Naming.SIDE_BLUE);
+
+        //initializer.deInit();
     }
 }

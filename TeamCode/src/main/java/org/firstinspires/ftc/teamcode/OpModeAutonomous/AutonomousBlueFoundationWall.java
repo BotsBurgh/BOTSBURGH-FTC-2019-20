@@ -14,50 +14,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.OpModeAutonomous;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@TeleOp(name="Motor Testing", group="20-Test")
-public class TestMotors extends LinearOpMode {
+import org.firstinspires.ftc.teamcode.Config.InitRobot;
+import org.firstinspires.ftc.teamcode.Naming;
+import org.firstinspires.ftc.teamcode.Api.Robot;
+
+@Autonomous(name="Autonomous Blue Foundation Wall", group="01-Blue Autonomous")
+public class AutonomousBlueFoundationWall extends LinearOpMode {
     // Declare OpMode Members
-    private static final double MOTOR_TEST_POWER = 1.0; // Power to test motors with
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
     public void runOpMode() {
-        DcMotor m1, m2, m3, m4;
-
-        m1 = hardwareMap.get(DcMotor.class, "m1");
-        m2 = hardwareMap.get(DcMotor.class, "m2");
-        m3 = hardwareMap.get(DcMotor.class, "m3");
-        m4 = hardwareMap.get(DcMotor.class, "m4");
+        InitRobot initializer = new InitRobot(AutonomousBlueFoundationWall.this, false);
+        Robot robot = initializer.init();
+        AutonomousMain am = new AutonomousMain(robot);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
+        // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
 
-        while (opModeIsActive()) {
-            // Send power to motors to check which ones are working
-            if (gamepad1.x) {
-                m1.setPower(MOTOR_TEST_POWER);
-                m2.setPower(MOTOR_TEST_POWER);
-                m3.setPower(MOTOR_TEST_POWER);
-                m4.setPower(MOTOR_TEST_POWER);
-            } else {
-                m1.setPower(0);
-                m2.setPower(0);
-                m3.setPower(0);
-                m4.setPower(0);
-            }
+        am.foundation(Naming.SIDE_BLUE, true);
 
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.update();
-        }
+        //initializer.deInit();
     }
 }

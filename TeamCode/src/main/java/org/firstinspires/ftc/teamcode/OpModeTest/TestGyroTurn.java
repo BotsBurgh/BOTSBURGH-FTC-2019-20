@@ -14,22 +14,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.OpModeTest;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name="Autonomous Red Foundation Wall", group="00-Red Autonomous")
-public class AutonomousRedFoundationWall extends LinearOpMode {
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.teamcode.Config.InitRobot;
+import org.firstinspires.ftc.teamcode.Naming;
+import org.firstinspires.ftc.teamcode.Api.Robot;
+
+@Autonomous(name="Gyroscope Turning Test", group="02-Test")
+public class TestGyroTurn extends LinearOpMode {
     // Declare OpMode Members
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
     public void runOpMode() {
-        InitRobot initializer = new InitRobot(AutonomousRedFoundationWall.this, false);
+        InitRobot initializer = new InitRobot(TestGyroTurn.this, false);
         Robot robot = initializer.init();
-        AutonomousMain am = new AutonomousMain(robot);
+
+        // Initialize gyros
+        robot.getSensor().calibrateGyro(Naming.GYRO_0_NAME);
+        robot.getSensor().calibrateGyro(Naming.GYRO_1_NAME);
+        robot.getSensor().initGyro(Naming.GYRO_0_NAME);
+        robot.getSensor().initGyro(Naming.GYRO_1_NAME);
+
+        double offset = robot.getSensor().getGyro(Naming.GYRO_0_NAME).getAngularOrientation(
+                AxesReference.INTRINSIC,
+                AxesOrder.ZYX,
+                AngleUnit.DEGREES
+        ).firstAngle;
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -38,8 +56,16 @@ public class AutonomousRedFoundationWall extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        am.foundation(Naming.SIDE_RED, true);
-
-        //initializer.deInit();
+        // run until the end of the match (driver presses STOP)
+        while (opModeIsActive()) {
+            robot.gyroTurn(Naming.GYRO_0_NAME, 0.5, 0 + offset);
+            sleep(5000);
+            robot.gyroTurn(Naming.GYRO_0_NAME, 0.5, 90 + offset);
+            sleep(5000);
+            robot.gyroTurn(Naming.GYRO_0_NAME, 0.5, 180 + offset);
+            sleep(5000);
+            robot.gyroTurn(Naming.GYRO_0_NAME, 0.5, 270 + offset);
+            sleep(5000);
+        }
     }
 }

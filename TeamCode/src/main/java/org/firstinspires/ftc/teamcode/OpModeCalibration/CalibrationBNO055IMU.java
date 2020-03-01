@@ -14,22 +14,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.OpModeCalibration;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name="Autonomous Blue Block Bridge", group="01-Blue Autonomous")
-public class AutonomousBlueBlockBridge extends LinearOpMode {
-    // Declare OpMode Members
+import org.firstinspires.ftc.teamcode.Config.InitRobot;
+import org.firstinspires.ftc.teamcode.Api.Robot;
+
+@TeleOp(name = "BNO055 IMU Calibration", group = "10-Calibration")
+public class CalibrationBNO055IMU extends LinearOpMode {
+
+    // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
 
     @Override
     public void runOpMode() {
-        InitRobot initializer = new InitRobot(AutonomousBlueBlockBridge.this, false);
+        InitRobot initializer = new InitRobot(CalibrationBNO055IMU.this, false);
+
         Robot robot = initializer.init();
-        AutonomousMain am = new AutonomousMain(robot);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -38,8 +42,15 @@ public class AutonomousBlueBlockBridge extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        am.block(Naming.SIDE_BLUE);
+        telemetry.addData("> ", "Calibrating...");
+        telemetry.update();
 
-        //initializer.deInit();
+        // Initialize gyros
+        for (String key : robot.getSensor().getGyros().keySet()) {
+            robot.getSensor().initGyro(key);
+        }
+
+        telemetry.addData("> ", "Done calibrating");
+        telemetry.update();
     }
 }

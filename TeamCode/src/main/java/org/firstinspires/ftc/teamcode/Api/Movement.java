@@ -14,22 +14,27 @@ DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Api;
 
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import java.util.HashMap;
+import org.firstinspires.ftc.teamcode.Naming;
 
+import java.util.HashMap;
+import java.util.Objects;
+
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * The Movement class. Interfaces with servos and motors so you don't have to
  */
 @Builder
-class Movement {
+public class Movement {
 
     // Autonomous
     final double DRIVE_POWER = 0.6; // How fast to drive
@@ -75,21 +80,21 @@ class Movement {
      (Unless if you know what you are doing)
      */
 
-    @Getter private HashMap<String, DcMotor> motors;
-    @Getter private HashMap<String, Servo> servos;
-    @Getter private HashMap <String, CRServo> crServos;
+    @Getter(AccessLevel.PUBLIC) private HashMap<String, DcMotor> motors;
+    @Getter(AccessLevel.PUBLIC) private HashMap<String, Servo> servos;
+    @Getter(AccessLevel.PUBLIC) private HashMap <String, CRServo> crServos;
 
     // Getters
 
-    DcMotor getMotor(String id) {
+    public DcMotor getMotor(String id) {
         return motors.get(id);
     }
 
-    Servo getServo(String id) {
+    public Servo getServo(String id) {
         return servos.get(id);
     }
 
-    CRServo getCRServo(String id) {
+    public CRServo getCRServo(String id) {
         return crServos.get(id);
     }
 
@@ -100,11 +105,11 @@ class Movement {
      * @param blPower Power to the back left wheel
      * @param brPower Power to the back right wheel
      */
-    void move4x4(double flPower, double frPower, double blPower, double brPower) {
-        motors.get(Naming.MOTOR_FL_NAME).setPower(flPower);
-        motors.get(Naming.MOTOR_FR_NAME).setPower(frPower);
-        motors.get(Naming.MOTOR_BL_NAME).setPower(blPower);
-        motors.get(Naming.MOTOR_BR_NAME).setPower(brPower);
+    public void move4x4(double flPower, double frPower, double blPower, double brPower) {
+        Objects.requireNonNull(motors.get(Naming.MOTOR_FL_NAME)).setPower(flPower);
+        Objects.requireNonNull(motors.get(Naming.MOTOR_FR_NAME)).setPower(frPower);
+        Objects.requireNonNull(motors.get(Naming.MOTOR_BL_NAME)).setPower(blPower);
+        Objects.requireNonNull(motors.get(Naming.MOTOR_BR_NAME)).setPower(brPower);
     }
 
     /**
@@ -112,11 +117,11 @@ class Movement {
      * @param lPower Power to the left side
      * @param rPower Power to the right side
      */
-    void move2x4(double lPower, double rPower) {
-        motors.get(Naming.MOTOR_FL_NAME).setPower(lPower);
-        motors.get(Naming.MOTOR_FR_NAME).setPower(rPower);
-        motors.get(Naming.MOTOR_BL_NAME).setPower(lPower);
-        motors.get(Naming.MOTOR_BR_NAME).setPower(rPower);
+    public void move2x4(double lPower, double rPower) {
+        Objects.requireNonNull(motors.get(Naming.MOTOR_FL_NAME)).setPower(lPower);
+        Objects.requireNonNull(motors.get(Naming.MOTOR_FR_NAME)).setPower(rPower);
+        Objects.requireNonNull(motors.get(Naming.MOTOR_BL_NAME)).setPower(lPower);
+        Objects.requireNonNull(motors.get(Naming.MOTOR_BR_NAME)).setPower(rPower);
     }
 
     /**
@@ -124,17 +129,17 @@ class Movement {
      * @param lPower Power sent to back left motor
      * @param rPower Power sent to back right motor
      */
-    void move2x2(double lPower, double rPower) {
-        motors.get(Naming.MOTOR_BL_NAME).setPower(lPower);
-        motors.get(Naming.MOTOR_BR_NAME).setPower(rPower);
+    public void move2x2(double lPower, double rPower) {
+        Objects.requireNonNull(motors.get(Naming.MOTOR_BL_NAME)).setPower(lPower);
+        Objects.requireNonNull(motors.get(Naming.MOTOR_BR_NAME)).setPower(rPower);
     }
 
     /**
      * Moves the lift up and down, depending on the power sent to the motor. Subject to threshold
      * @param speed Speed of the elevator
      */
-    void moveElevator(double speed) {
-        motors.get(Naming.MOTOR_LIFT_NAME).setPower(speed*ELEVATOR_POWER);
+    public void moveElevator(double speed) {
+        Objects.requireNonNull(motors.get(Naming.MOTOR_LIFT_NAME)).setPower(speed*ELEVATOR_POWER);
     }
 
     /**
@@ -142,8 +147,8 @@ class Movement {
      * @param id ID of the servo
      * @param degrees Position (in degrees) to set the servo to.
      */
-    void setServo(String id, double degrees) {
-        servos.get(id).setPosition(degrees);
+    public void setServo(String id, double degrees) {
+        Objects.requireNonNull(servos.get(id)).setPosition(degrees);
     }
 
     /**
@@ -151,14 +156,14 @@ class Movement {
      * @param id ID of servo
      * @param degrees Position (in degrees) to scan the servo to.
      */
-    void scanServo(String id, double degrees, boolean clockwise) {
-        while (Math.abs(servos.get(id).getPosition() - degrees) < 0.001) {
+    public void scanServo(String id, double degrees, boolean clockwise) {
+        while (Math.abs(Objects.requireNonNull(servos.get(id)).getPosition() - degrees) < 0.001) {
             if (clockwise) {
                 // Scan down
-                servos.get(id).setPosition(servos.get(id).getPosition() - SERVO_STEP);
+                Objects.requireNonNull(servos.get(id)).setPosition(Objects.requireNonNull(servos.get(id)).getPosition() - SERVO_STEP);
             } else {
                 // Scan up
-                servos.get(id).setPosition(servos.get(id).getPosition() + SERVO_STEP);
+                Objects.requireNonNull(servos.get(id)).setPosition(Objects.requireNonNull(servos.get(id)).getPosition() + SERVO_STEP);
             }
         }
     }
@@ -168,20 +173,22 @@ class Movement {
      * @param id ID of CRServo
      * @param power Power (and subsequently speed) sent to CRServo
      */
-    void setServoSpeed(String id, double power) {
-        crServos.get(id).setPower(power);
+    public void setServoSpeed(String id, double power) {
+        Objects.requireNonNull(crServos.get(id)).setPower(power);
     }
 
     /**
      * Opens the grabber based on a boolean assignment
      * @param command true to open the grabber or false to close the grabber
      */
-    void openGrabber(boolean command) {
+    public void openGrabber(boolean command) {
         Servo sg; // sg: Servo grabber
         sg = servos.get(Naming.SERVO_GRABBER_NAME);
         if (command) {
+            assert sg != null;
             sg.setPosition(GRABBER_OPEN); // Opens the grabber
         } else {
+            assert sg != null;
             sg.setPosition(GRABBER_CLOSE); // Closes the grabber
         }
     }
@@ -190,25 +197,31 @@ class Movement {
      * Opens the swivel based on a boolean assignment
      * @param command true to open the swivel or false to close the swivel
      */
-    void openSwivel(boolean command) {
+    public void openSwivel(boolean command) {
         Servo ss; // ss: Servo Swivel
         ss = servos.get(Naming.SERVO_ROTATE_NAME);
         if (command) {
+            assert ss != null;
             ss.setPosition(0); // Opens the swivel
         } else {
+            assert ss != null;
             ss.setPosition(1); // Closes the swivel
         }
     }
 
-    void grabFoundation(boolean command) {
+    public void grabFoundation(boolean command) {
         Servo slfn, srfn;
         slfn = servos.get(Naming.SERVO_FOUNDATION_LEFT_NEW_NAME); // sfln: Servo Left Foundation New
         srfn = servos.get(Naming.SERVO_FOUNDATION_RIGHT_NEW_NAME); // sfrn: Servo Right Foundation New
         if (command) { // Grabs foundation
+            assert slfn != null;
             slfn.setPosition(FOUNDATION_CLOSE);
+            assert srfn != null;
             srfn.setPosition(FOUNDATION_CLOSE);
         } else { // Releases foundation
+            assert slfn != null;
             slfn.setPosition(FOUNDATION_OPEN);
+            assert srfn != null;
             srfn.setPosition(FOUNDATION_OPEN);
         }
     }
