@@ -17,9 +17,8 @@ public class Naming {
     public static final String SERVO_FOUNDATION_RIGHT_NAME        = "foundationRight";
     public static final String SERVO_ROTATE_NAME                  = "rotate";
 
-    // Only for temporary purposes
-    public static final String SERVO_FOUNDATION_LEFT_NEW_NAME     = "testFoundationLeft";
-    public static final String SERVO_FOUNDATION_RIGHT_NEW_NAME    = "testFoundationRight";
+    public static final String SERVO_FOUNDATION_LEFT_NAME     = "foundationLeft";
+    public static final String SERVO_FOUNDATION_RIGHT_NAME    = "foundationRight";
 
     public static final String CRSERVO_EXTEND_NAME                = "extender";
     
